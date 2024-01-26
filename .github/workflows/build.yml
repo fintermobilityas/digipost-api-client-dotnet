@@ -4,26 +4,23 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 3.1.101
-    - name: Print openssl version
-      run: |
-        openssl version
-    - name: Decrypt signing key to use for strong-name
-      env:
-        SIGNINGKEY_ENC_PASSWORD: ${{ secrets.signingkeyEncPassword }}
-      run: |
-        openssl aes-256-cbc -salt -pbkdf2 -k "$SIGNINGKEY_ENC_PASSWORD" -in signingkey.snk.enc -out signingkey.snk -d
+        dotnet-version: |
+          6.0.418
+          8.0.1
+
     - name: Install dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --configuration Release --no-restore
+
     - name: Test
       run: dotnet test --no-restore --verbosity normal
