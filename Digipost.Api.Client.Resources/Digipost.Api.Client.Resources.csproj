@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <PackageId>Digipost.Api.Client.Resources</PackageId>
+        <IsPackable>true</IsPackable>
     </PropertyGroup>
 
     <PropertyGroup>

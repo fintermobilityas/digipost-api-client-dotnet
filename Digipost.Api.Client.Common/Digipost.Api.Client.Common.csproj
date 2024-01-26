@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <PackageId>Digipost.Api.Client.Common</PackageId>
+        <IsPackable>true</IsPackable>
     </PropertyGroup>
 
     <PropertyGroup>
