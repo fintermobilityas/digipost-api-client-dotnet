@@ -1,6 +1,5 @@
 <Project>
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
 
         <Authors>Digipost AS</Authors>
         <Company>Posten Norge AS</Company>
