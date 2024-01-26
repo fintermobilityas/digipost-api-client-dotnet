@@ -1,17 +1,15 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Security;
 
 namespace Digipost.Api.Client.Internal
 {
@@ -89,13 +87,11 @@ namespace Digipost.Api.Client.Internal
 
         internal static string ComputeHash(byte[] inputBytes)
         {
-            IDigest digest = new Sha256Digest();
-            var hash = new byte[digest.GetDigestSize()];
-
-            digest.BlockUpdate(inputBytes, 0, inputBytes.Length);
-            digest.DoFinal(hash, 0);
-
-            return Convert.ToBase64String(hash);
+            using (var sha256 = SHA256.Create())
+            {
+                var hashBytes = sha256.ComputeHash(inputBytes);
+                return Convert.ToBase64String(hashBytes);
+            }
         }
 
         internal static string ComputeSignature(string method, Uri uri, string date, string contentSha256Hash,
@@ -135,18 +131,16 @@ namespace Digipost.Api.Client.Internal
                 _logger.LogDebug("=== SIGNATURE DATA END ===");
             }
 
-            byte[] messageBytes = Encoding.UTF8.GetBytes(messageHeader);
+            var messageBytes = Encoding.UTF8.GetBytes(messageHeader);
 
+            using (var rsa = businessCertificate.GetRSAPrivateKey())
+            using (var sha256 = SHA256.Create())
+            {
+                var hash = sha256.ComputeHash(messageBytes);
+                var signature = rsa.SignHash(hash, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
-            var privKey = DotNetUtilities.GetRsaKeyPair(businessCertificate.GetRSAPrivateKey());
-
-            ISigner signer = SignerUtilities.GetSigner("SHA-256withRSA");
-            signer.Init(true, privKey.Private);
-            signer.BlockUpdate(messageBytes, 0, messageBytes.Length);
-
-            var base64Signature = Convert.ToBase64String(signer.GenerateSignature());
-
-            return base64Signature;
+                return Convert.ToBase64String(signature);
+            }
         }
 
         private class UriParts
