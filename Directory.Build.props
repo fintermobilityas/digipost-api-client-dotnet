@@ -2,9 +2,6 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
 
-        <Version>0.0.0.0</Version>
-        <AssemblyVersion>0.0.0.0</AssemblyVersion>
-
         <Authors>Digipost AS</Authors>
         <Company>Posten Norge AS</Company>
         <Copyright>Copyright © 2022 Posten Norge AS</Copyright>
@@ -13,6 +10,8 @@
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageTags>Posten Digipost digital elektronisk dotnet api klient client</PackageTags>
         <Description>Klientbibliotek for integrasjon mot Digipost REST-API.</Description>
+
+        <PackageOutputPath Condition="$(PackageOutputPath) == ''">$(MSBuildThisFileDirectory)\nupkgs</PackageOutputPath>
 
         <UserSecretsId>enterprise-certificate</UserSecretsId>
     </PropertyGroup>
