@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
 
         <Version>0.0.0.0</Version>
         <AssemblyVersion>0.0.0.0</AssemblyVersion>
@@ -9,13 +9,12 @@
         <Company>Posten Norge AS</Company>
         <Copyright>Copyright © 2022 Posten Norge AS</Copyright>
 
-        <PackageProjectUrl>https://github.com/digipost/digipost-api-client-dotnet/</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/fintermobilityas/digipost-api-client-dotnet/</PackageProjectUrl>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageTags>Posten Digipost digital elektronisk dotnet api klient client</PackageTags>
         <Description>Klientbibliotek for integrasjon mot Digipost REST-API.</Description>
 
         <UserSecretsId>enterprise-certificate</UserSecretsId>
-        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     </PropertyGroup>
 
 </Project>

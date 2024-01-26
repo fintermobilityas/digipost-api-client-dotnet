@@ -1,36 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk" DefaultTargets="Build">
 
     <PropertyGroup>
-        <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>..\signingkey.snk</AssemblyOriginatorKeyFile>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <RootNamespace>Digipost.Api.Client.Common.Tests</RootNamespace>
-        <AssemblyName>Digipost.Api.Client.Common.Tests</AssemblyName>
-        <ProjectGuid>{BC85F48B-9584-41F7-BBE8-EBBEC1EEC7E8}</ProjectGuid>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <NoWarn>1591</NoWarn>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <NoWarn>1591</NoWarn>
-        <DocumentationFile>bin\Release\Digipost.Api.Client.XML</DocumentationFile>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
@@ -42,29 +13,9 @@
         <PackageReference Include="xunit.assert" />
         <PackageReference Include="xunit.core" />
         <PackageReference Include="xunit.runner.visualstudio" />
-        <ProjectReference Include="..\Digipost.Api.Client.Common\Digipost.Api.Client.Common.csproj">
-            <Project>{CD338E5A-1ED0-4331-B34E-8292FA8E387B}</Project>
-            <Name>Digipost.Api.Client.Common</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Digipost.Api.Client.Resources\Digipost.Api.Client.Resources.csproj">
-            <Project>{18CBB05A-B0AE-42FF-870F-1C213A238751}</Project>
-            <Name>Digipost.Api.Client.Resources</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Digipost.Api.Client.Tests\Digipost.Api.Client.Tests.csproj">
-            <Project>{966A701B-7E91-4C41-BA28-B5C5E800E63D}</Project>
-            <Name>Digipost.Api.Client.Tests</Name>
-        </ProjectReference>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Include="..\SharedAssemblyInfo.cs">
-            <Link>Properties\SharedAssemblyInfo.cs</Link>
-        </Compile>
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="..\signingkey.snk">
-            <Link>signingkey.snk</Link>
-        </None>
+        <ProjectReference Include="..\Digipost.Api.Client.Common\Digipost.Api.Client.Common.csproj" />
+        <ProjectReference Include="..\Digipost.Api.Client.Resources\Digipost.Api.Client.Resources.csproj" />
+        <ProjectReference Include="..\Digipost.Api.Client.Tests\Digipost.Api.Client.Tests.csproj" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
