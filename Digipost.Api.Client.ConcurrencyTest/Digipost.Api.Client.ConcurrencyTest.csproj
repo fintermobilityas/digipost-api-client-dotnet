@@ -6,8 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BouncyCastle.Cryptography" />
-        <PackageReference Include="Difi.Felles.Utility" />
         <PackageReference Include="Digipost.Api.Client.Shared" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <ProjectReference Include="..\Digipost.Api.Client.Common\Digipost.Api.Client.Common.csproj" />
