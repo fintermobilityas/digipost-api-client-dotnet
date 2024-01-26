@@ -31,7 +31,7 @@ namespace Digipost.Api.Client.Common.Tests.Print
 
                 Assert.Equal(PrintColors.Colors, printDetails.PrintColors);
                 Assert.Equal(NondeliverableHandling.ReturnToSender, printDetails.NondeliverableHandling);
-                Comparator.AssertEqual(printinstruction, printDetails.PrintInstructions);
+                Comparator.AssertEqual(printinstruction, printDetails.PrintInstructions.PrintInstruction);
             }
 
             [Fact]
@@ -55,7 +55,7 @@ namespace Digipost.Api.Client.Common.Tests.Print
 
                 Assert.Equal(PrintColors.Colors, printDetails.PrintColors);
                 Assert.Equal(NondeliverableHandling.Shred, printDetails.NondeliverableHandling);
-                Comparator.AssertEqual(printinstruction, printDetails.PrintInstructions);
+                Comparator.AssertEqual(printinstruction, printDetails.PrintInstructions.PrintInstruction);
             }
         }
     }
