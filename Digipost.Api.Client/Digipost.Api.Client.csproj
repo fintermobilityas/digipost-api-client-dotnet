@@ -10,15 +10,11 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="Difi.Felles.Utility" />
         <PackageReference Include="Digipost.Api.Client.Shared" />
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" />
         <PackageReference Include="Microsoft.Extensions.Logging" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
         <PackageReference Include="NLog.Extensions.Logging" />
         <PackageReference Include="System.Net.Http" />
-        <PackageReference Include="System.Net.Requests" />
         <ProjectReference Include="..\Digipost.Api.Client.Common\Digipost.Api.Client.Common.csproj" />
         <ProjectReference Include="..\Digipost.Api.Client.Inbox\Digipost.Api.Client.Inbox.csproj" />
         <ProjectReference Include="..\Digipost.Api.Client.Archive\Digipost.Api.Client.Archive.csproj" />
