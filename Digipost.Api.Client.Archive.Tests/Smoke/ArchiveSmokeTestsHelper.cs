@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Utilities;
+using Digipost.Api.Client.Shared.Tests;
 using Digipost.Api.Client.Tests.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

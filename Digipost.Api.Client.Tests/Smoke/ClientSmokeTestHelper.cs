@@ -14,6 +14,7 @@ using Digipost.Api.Client.Common.Share;
 using Digipost.Api.Client.Common.Utilities;
 using Digipost.Api.Client.DataTypes.Core;
 using Digipost.Api.Client.Send;
+using Digipost.Api.Client.Shared.Tests;
 using Digipost.Api.Client.Tests.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

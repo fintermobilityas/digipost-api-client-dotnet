@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.Docs", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.Archive", "Digipost.Api.Client.Archive\Digipost.Api.Client.Archive.csproj", "{1BEC9279-D6C5-4C26-B926-13081F1C3DBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.ArchiveTests", "Digipost.Api.Client.Archive.Tests\Digipost.Api.Client.Archive.Tests.csproj", "{c22f80a7-08e5-4836-9e24-e7bb431e9a5d}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.ArchiveTests", "Digipost.Api.Client.Archive.Tests\Digipost.Api.Client.Archive.Tests.csproj", "{C22F80A7-08E5-4836-9E24-E7BB431E9A5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.Inbox", "Digipost.Api.Client.Inbox\Digipost.Api.Client.Inbox.csproj", "{F23C5F66-E398-4234-8FB1-443D958FDF1A}"
 EndProject
@@ -25,6 +25,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.Send.Tests", "Digipost.Api.Client.Send.Tests\Digipost.Api.Client.Send.Tests.csproj", "{57566E3A-1DE1-4020-B1B3-8AEDD79ED4AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.Tests", "Digipost.Api.Client.Tests\Digipost.Api.Client.Tests.csproj", "{966A701B-7E91-4C41-BA28-B5C5E800E63D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.Shared.Tests", "Digipost.Api.Client.Shared.Tests\Digipost.Api.Client.Shared.Tests.csproj", "{A4322FAD-E7DB-4D2D-A1A8-2A7A893A2FAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,5 +86,9 @@ Global
 		{966A701B-7E91-4C41-BA28-B5C5E800E63D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{966A701B-7E91-4C41-BA28-B5C5E800E63D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{966A701B-7E91-4C41-BA28-B5C5E800E63D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4322FAD-E7DB-4D2D-A1A8-2A7A893A2FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4322FAD-E7DB-4D2D-A1A8-2A7A893A2FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4322FAD-E7DB-4D2D-A1A8-2A7A893A2FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4322FAD-E7DB-4D2D-A1A8-2A7A893A2FAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

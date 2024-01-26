@@ -6,11 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Digipost.Api.Client.Shared" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <ProjectReference Include="..\Digipost.Api.Client.Common\Digipost.Api.Client.Common.csproj" />
         <ProjectReference Include="..\Digipost.Api.Client.Resources\Digipost.Api.Client.Resources.csproj"/> 
         <ProjectReference Include="..\Digipost.Api.Client.Send\Digipost.Api.Client.Send.csproj" />
         <ProjectReference Include="..\Digipost.Api.Client\Digipost.Api.Client.csproj" />
+        <ProjectReference Include="..\Digipost.Api.Client.Shared.Tests\Digipost.Api.Client.Shared.Tests.csproj" />
     </ItemGroup>
 </Project>

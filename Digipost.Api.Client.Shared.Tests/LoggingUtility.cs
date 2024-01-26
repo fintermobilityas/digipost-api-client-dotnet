@@ -3,11 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace Digipost.Api.Client.Common.Utilities
+namespace Digipost.Api.Client.Shared.Tests
 {
     public static class LoggingUtility
     {
-        internal static IServiceProvider CreateServiceProviderAndSetUpLogging()
+        public static IServiceProvider CreateServiceProviderAndSetUpLogging()
         {
             var services = new ServiceCollection();
 

@@ -14,6 +14,7 @@ using Digipost.Api.Client.Internal;
 using Digipost.Api.Client.Resources.Certificate;
 using Digipost.Api.Client.Resources.Xml;
 using Digipost.Api.Client.Send;
+using Digipost.Api.Client.Shared.Tests;
 using Digipost.Api.Client.Tests.Fakes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
