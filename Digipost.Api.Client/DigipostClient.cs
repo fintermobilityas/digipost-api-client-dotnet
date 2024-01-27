@@ -203,7 +203,7 @@ namespace Digipost.Api.Client
             var root = await GetRoot(new ApiRootUri());
             var senderInformationUri = root.GetSenderInformationUri(senderToUse);
 
-            return new SenderInformationApi(_entrypointCache, _requestHelper).GetSenderInformation(senderInformationUri);
+            return await new SenderInformationApi(_entrypointCache, _requestHelper).GetSenderInformation(senderInformationUri);
         }
 
         public async Task<SenderInformation> GetSenderInformation(SenderOrganisation senderOrganisation)
@@ -211,7 +211,7 @@ namespace Digipost.Api.Client
             var root = await GetRoot(new ApiRootUri());
             var senderInformationUri = root.GetSenderInformationUri(senderOrganisation.OrganisationNumber, senderOrganisation.PartId);
 
-            return new SenderInformationApi(_entrypointCache, _requestHelper).GetSenderInformation(senderInformationUri);
+            return await new SenderInformationApi(_entrypointCache, _requestHelper).GetSenderInformation(senderInformationUri);
         }
 
         public async Task<Inbox.Inbox> GetInbox(Sender senderId)
