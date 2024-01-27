@@ -8,10 +8,10 @@
     <PackageVersion Include="Difi.Felles.Utility" Version="5.0.1" />
     <PackageVersion Include="Digipost.Api.Client.DataTypes.Core" Version="4.0.0" />
     <PackageVersion Include="Digipost.Api.Client.Shared" Version="7.1.5" />
-    <PackageVersion Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageVersion Include="NLog" Version="5.2.8" />

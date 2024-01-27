@@ -1,7 +1,7 @@
 using System;
 using Digipost.Api.Client.Common.Print;
 
-namespace Digipost.Api.Client.Send;
+namespace Digipost.Api.Client.Common;
 
 public class RequestForRegistration
 {

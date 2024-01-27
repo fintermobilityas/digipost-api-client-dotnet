@@ -11,7 +11,6 @@ using Digipost.Api.Client.Common.Recipient;
 using Digipost.Api.Client.Common.Search;
 using Digipost.Api.Client.Common.SenderInfo;
 using Digipost.Api.Client.Common.Share;
-using Digipost.Api.Client.Send;
 using V8;
 using Identification = V8.Identification;
 using Link = Digipost.Api.Client.Common.Entrypoint.Link;

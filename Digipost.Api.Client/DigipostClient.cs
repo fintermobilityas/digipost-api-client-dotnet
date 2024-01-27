@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
@@ -128,53 +127,58 @@ public sealed class DigipostClient : IDigipostClient
     readonly ClientConfig _clientConfig;
     readonly RequestHelper _requestHelper;
     readonly IMemoryCache _entrypointCache;
-
     readonly ILoggerFactory _loggerFactory;
 
-    public DigipostClient(ClientConfig clientConfig, X509Certificate2 enterpriseCertificate, ILoggerFactory loggerFactory)
+    public DigipostClient(ClientConfig clientConfig, X509Certificate2 certificate, ILoggerFactory loggerFactory) : 
+        this(clientConfig, BuildNonPooledHttpClient(clientConfig, certificate, loggerFactory), loggerFactory)
+    {
+
+    }
+    
+    
+    internal DigipostClient(ClientConfig clientConfig, HttpClient httpClient, ILoggerFactory loggerFactory)
     {
         _loggerFactory = loggerFactory;
         _entrypointCache = new MemoryCache(new MemoryCacheOptions());
 
         _clientConfig = clientConfig;
-        var httpClient = GetHttpClient(enterpriseCertificate, clientConfig.WebProxy, clientConfig.Credential);
         _requestHelper = new RequestHelper(httpClient, _loggerFactory);
     }
 
     async Task<SendMessageApi> _sendMessageApi()
     {
-        return new SendMessageApi(new SendRequestHelper(_requestHelper), _loggerFactory, await GetRootAsync(new ApiRootUri()));
+        var root = await GetRootAsync(new ApiRootUri());
+        return new SendMessageApi(new SendRequestHelper(_requestHelper), _loggerFactory, root);
     }
 
-    HttpClient GetHttpClient(X509Certificate2 enterpriseCertificate, WebProxy proxy = null, NetworkCredential credential = null)
+    static HttpClient BuildNonPooledHttpClient(ClientConfig clientConfig, X509Certificate2 certificate, ILoggerFactory loggerFactory)
     {
-        var allDelegationHandlers = new List<DelegatingHandler> { new AuthenticationHandler(_clientConfig, enterpriseCertificate, _loggerFactory) };
-
         var httpMessageHandler = new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
         };
-        if (proxy != null)
+
+        if (clientConfig.WebProxy != null)
         {
-            proxy.Credentials = credential;
-            httpMessageHandler.Proxy = proxy;
+            httpMessageHandler.Proxy = clientConfig.WebProxy;
             httpMessageHandler.UseProxy = true;
             httpMessageHandler.UseDefaultCredentials = false;
         }
-        var httpClient = HttpClientFactory.Create(
-            httpMessageHandler,
-            allDelegationHandlers.ToArray()
-        );
 
-        httpClient.Timeout = TimeSpan.FromMilliseconds(_clientConfig.TimeoutMilliseconds);
-        httpClient.BaseAddress = new Uri(_clientConfig.Environment.Url.AbsoluteUri);
+        var authenticationHandler = new AuthenticationHandler(clientConfig, certificate, loggerFactory);
+        authenticationHandler.InnerHandler = httpMessageHandler;
+
+        var httpClient = new HttpClient(authenticationHandler);
+
+        httpClient.Timeout = TimeSpan.FromMilliseconds(clientConfig.TimeoutMilliseconds);
+        httpClient.BaseAddress = new Uri(clientConfig.Environment.Url.AbsoluteUri);
 
         return httpClient;
     }
-
+    
     public async Task<Root> GetRootAsync(ApiRootUri apiRootUri, CancellationToken cancellationToken = default)
     {
-        var cacheKey = "root" + apiRootUri;
+        var cacheKey = $"root{apiRootUri}";
 
         if (_entrypointCache.TryGetValue(cacheKey, out Root root))
         {
@@ -219,7 +223,7 @@ public sealed class DigipostClient : IDigipostClient
     public async Task<IArchiveApi> GetArchiveAsync(Sender senderId = null, CancellationToken cancellationToken = default)
     {
         var root = await GetRootAsync(new ApiRootUri(senderId), cancellationToken);
-        return new Archive.ArchiveApi(_requestHelper, _loggerFactory, root);
+        return new ArchiveApi(_requestHelper, _loggerFactory, root);
     }
     
     public async Task<IDocumentsApi> DocumentsApiAsync(Sender sender = null, CancellationToken cancellationToken = default)

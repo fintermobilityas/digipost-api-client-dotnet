@@ -38,17 +38,14 @@ public class DigipostApiIntegrationTests
         Certificate = CertificateResource.Certificate();
     }
 
-    internal HttpClient GetHttpClient(
-        FakeResponseHandler fakehandler)
+    HttpClient GetHttpClient(HttpMessageHandler fakeHandler)
     {
         ClientConfig.LogRequestAndResponse = true;
 
-        var allDelegationHandlers = new List<DelegatingHandler> { new AuthenticationHandler(ClientConfig, Certificate, new NullLoggerFactory()) };
-
-        var httpClient = HttpClientFactory.Create(
-            fakehandler,
-            allDelegationHandlers.ToArray()
-        );
+        var authHandler = new AuthenticationHandler(ClientConfig, Certificate, new NullLoggerFactory());
+        authHandler.InnerHandler = fakeHandler;
+        
+        var httpClient = new HttpClient(authHandler);
 
         httpClient.BaseAddress = new Uri("http://www.fakeBaseAddress.no");
 
