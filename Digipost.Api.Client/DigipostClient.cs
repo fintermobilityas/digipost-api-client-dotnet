@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Digipost.Api.Client.Api;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Entrypoint;
-using Digipost.Api.Client.Common.Exceptions;
 using Digipost.Api.Client.Common.Identify;
 using Digipost.Api.Client.Common.Relations;
 using Digipost.Api.Client.Common.Search;
@@ -133,7 +132,7 @@ namespace Digipost.Api.Client
         Task<ISearchDetailsResult> SearchAsync(string query);
     }
 
-    public class DigipostClient : IDigipostClient
+    public sealed class DigipostClient : IDigipostClient
     {
         private readonly ClientConfig _clientConfig;
         private readonly RequestHelper _requestHelper;
