@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+        <PackageReference Include="Digipost.Api.Client.DataTypes.Core" />
     </ItemGroup>
     
     <ItemGroup>

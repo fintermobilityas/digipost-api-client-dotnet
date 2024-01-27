@@ -5,6 +5,7 @@ using Digipost.Api.Client;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Enums;
 using Digipost.Api.Client.Common.Recipient;
+using Digipost.Api.Client.DataTypes.Core;
 using Digipost.Api.Client.Extensions;
 using Digipost.Api.Client.Send;
 using Microsoft.Extensions.DependencyInjection;
