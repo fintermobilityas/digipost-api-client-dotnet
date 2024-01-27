@@ -1,4 +1,5 @@
-﻿using Digipost.Api.Client.Tests.Utilities;
+﻿using System.Threading.Tasks;
+using Digipost.Api.Client.Tests.Utilities;
 using Xunit;
 using Xunit.Sdk;
 
@@ -15,12 +16,15 @@ namespace Digipost.Api.Client.Inbox.Tests.Smoke
 
         // To test this, log on to the account you are using and upload a document to the inbox.
         [Fact(Skip = "Skipping due to missing inbox for test users")]
-        public void Get_inbox_and_read_document()
+        public async Task Get_inbox_and_read_document()
         {
-            _t
-                .Get_inbox()
+            var inbox = await _t.Get_inbox();
+
+            var fetchDocumentData = await inbox
                 .Expect_inbox_to_have_documents()
-                .Fetch_document_data()
+                .Fetch_document_data();
+            
+            await fetchDocumentData
                 .Delete_document();
         }
     }

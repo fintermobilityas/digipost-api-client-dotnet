@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Enums;
 using Digipost.Api.Client.Common.Identify;
@@ -70,7 +71,7 @@ namespace Digipost.Api.Client.ConcurrencyTest
             return _documentBytes ?? (_documentBytes = ContentResource.Hoveddokument.PlainText());
         }
 
-        public async void Send(DigipostClient digipostClient, RequestType requestType)
+        public async Task Send(DigipostClient digipostClient, RequestType requestType)
         {
             try
             {

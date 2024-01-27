@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Digipost.Api.Client.Api;
+using Digipost.Api.Client.Archive;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Entrypoint;
 using Digipost.Api.Client.Common.Identify;
@@ -31,56 +32,56 @@ namespace Digipost.Api.Client
         /// </summary>
         /// <param name="apiRootUri">The API root URI.</param>
         /// <returns>The Root entrypoint.</returns>
-        Root GetRoot(ApiRootUri apiRootUri);
+        Task<Root> GetRoot(ApiRootUri apiRootUri);
 
         /// <summary>
         /// Fetches the sender information.
         /// </summary>
         /// <param name="sender">The sender is optional. If not specified, the broker will be used.</param>
         /// <returns>The sender information.</returns>
-        SenderInformation GetSenderInformation(Sender sender = null);
+        Task<SenderInformation> GetSenderInformation(Sender sender = null);
 
         /// <summary>
         /// Retrieves the sender information for the specified sender organisation.
         /// </summary>
         /// <param name="senderOrganisation">The sender organisation.</param>
         /// <returns>The sender information.</returns>
-        SenderInformation GetSenderInformation(SenderOrganisation senderOrganisation);
+        Task<SenderInformation> GetSenderInformation(SenderOrganisation senderOrganisation);
 
         /// <summary>
         /// Retrieves the inbox for the specified sender.
         /// </summary>
         /// <param name="senderId">The sender ID.</param>
         /// <returns>The inbox for the specified sender.</returns>
-        Inbox.Inbox GetInbox(Sender senderId);
+        Task<Inbox.Inbox> GetInbox(Sender senderId);
 
         /// <summary>
         /// Get the archive API for a specific sender or all senders.
         /// </summary>
         /// <param name="senderId">The specific sender ID. Default is null to get archive API for all senders.</param>
         /// <returns>The archive API for the specific sender or all senders.</returns>
-        Archive.IArchiveApi GetArchive(Sender senderId = null);
+        Task<IArchiveApi> GetArchive(Sender senderId = null);
 
         /// <summary>
         /// Get access to the document api.
         /// </summary>
         /// <param name="sender">Optional parameter for sender if you are a broker. If you don't specify a sender, your broker ident will be used</param>
         /// <returns></returns>
-        IDocumentsApi DocumentsApi(Sender sender = null);
+        Task<IDocumentsApi> DocumentsApi(Sender sender = null);
 
         /// <summary>
         /// Retrieves the API for managing documents in Digipost.
         /// </summary>
         /// <param name="sender">The sender of the message. If not specified, the default sender will be used.</param>
         /// <returns>The Documents API.</returns>
-        IDocumentsApi GetDocumentApi(Sender sender = null);
+        Task<IDocumentsApi> GetDocumentApi(Sender sender = null);
 
         /// <summary>
         /// Retrieves the instance of <see cref="IShareDocumentsApi"/> for sharing documents.
         /// </summary>
         /// <param name="sender">The sender of the message. Default is null.</param>
         /// <returns>The instance of <see cref="IShareDocumentsApi"/>.</returns>
-        IShareDocumentsApi GetDocumentSharing(Sender sender = null);
+        Task<IShareDocumentsApi> GetDocumentSharing(Sender sender = null);
         
         /// <summary>
         /// Identifies the specified recipient.
@@ -139,9 +140,9 @@ namespace Digipost.Api.Client
             _requestHelper = new RequestHelper(httpClient, _loggerFactory);
         }
 
-        private SendMessageApi _sendMessageApi()
+        private async Task<SendMessageApi> _sendMessageApi()
         {
-            return new SendMessageApi(new SendRequestHelper(_requestHelper), _loggerFactory, GetRoot(new ApiRootUri()));
+            return new SendMessageApi(new SendRequestHelper(_requestHelper), _loggerFactory, await GetRoot(new ApiRootUri()));
         }
 
         private HttpClient GetHttpClient(X509Certificate2 enterpriseCertificate, WebProxy proxy = null, NetworkCredential credential = null)
@@ -170,7 +171,7 @@ namespace Digipost.Api.Client
             return httpClient;
         }
 
-        public Root GetRoot(ApiRootUri apiRootUri)
+        public async Task<Root> GetRoot(ApiRootUri apiRootUri)
         {
             var cacheKey = "root" + apiRootUri;
 
@@ -179,8 +180,7 @@ namespace Digipost.Api.Client
                 return root;
             }
 
-            var result = _requestHelper.Get<V8.Entrypoint>(apiRootUri).ConfigureAwait(false);
-            var entrypoint = result.GetAwaiter().GetResult();
+            var entrypoint = await _requestHelper.Get<V8.Entrypoint>(apiRootUri).ConfigureAwait(false);
 
             root = entrypoint.FromDataTransferObject();
 
@@ -197,29 +197,33 @@ namespace Digipost.Api.Client
         /// </summary>
         /// <param name="sender">The sender is optional. If not specified, the broker will be used.</param>
         /// <returns></returns>
-        public SenderInformation GetSenderInformation(Sender sender = null)
+        public async Task<SenderInformation> GetSenderInformation(Sender sender = null)
         {
             var senderToUse = sender ?? new Sender(_clientConfig.Broker.Id);
-            var senderInformationUri = GetRoot(new ApiRootUri()).GetSenderInformationUri(senderToUse);
+            var root = await GetRoot(new ApiRootUri());
+            var senderInformationUri = root.GetSenderInformationUri(senderToUse);
 
             return new SenderInformationApi(_entrypointCache, _requestHelper).GetSenderInformation(senderInformationUri);
         }
 
-        public SenderInformation GetSenderInformation(SenderOrganisation senderOrganisation)
+        public async Task<SenderInformation> GetSenderInformation(SenderOrganisation senderOrganisation)
         {
-            var senderInformationUri = GetRoot(new ApiRootUri()).GetSenderInformationUri(senderOrganisation.OrganisationNumber, senderOrganisation.PartId);
+            var root = await GetRoot(new ApiRootUri());
+            var senderInformationUri = root.GetSenderInformationUri(senderOrganisation.OrganisationNumber, senderOrganisation.PartId);
 
             return new SenderInformationApi(_entrypointCache, _requestHelper).GetSenderInformation(senderInformationUri);
         }
 
-        public Inbox.Inbox GetInbox(Sender senderId)
+        public async Task<Inbox.Inbox> GetInbox(Sender senderId)
         {
-            return new Inbox.Inbox(_requestHelper, GetRoot(new ApiRootUri(senderId)));
+            var root = await GetRoot(new ApiRootUri(senderId));
+            return new Inbox.Inbox(_requestHelper, root);
         }
 
-        public Archive.IArchiveApi GetArchive(Sender senderId = null)
+        public async Task<IArchiveApi> GetArchive(Sender senderId = null)
         {
-            return new Archive.ArchiveApi(_requestHelper, _loggerFactory, GetRoot(new ApiRootUri(senderId)));
+            var root = await GetRoot(new ApiRootUri(senderId));
+            return new Archive.ArchiveApi(_requestHelper, _loggerFactory, root);
         }
 
         /// <summary>
@@ -227,55 +231,47 @@ namespace Digipost.Api.Client
         /// </summary>
         /// <param name="sender">Optional parameter for sender if you are a broker. If you don't specify a sender, your broker ident will be used</param>
         /// <returns></returns>
-        public IDocumentsApi DocumentsApi(Sender sender = null)
+        public async Task<IDocumentsApi> DocumentsApi(Sender sender = null)
         {
             var senderToUse = sender ?? new Sender(_clientConfig.Broker.Id);
-            return new DocumentsApi(_requestHelper, _loggerFactory, GetRoot(new ApiRootUri(sender)), senderToUse);
+            var root = await GetRoot(new ApiRootUri(sender));
+            return new DocumentsApi(_requestHelper, _loggerFactory, root, senderToUse);
         }
 
-        public IDocumentsApi GetDocumentApi(Sender sender = null)
+        public async Task<IDocumentsApi> GetDocumentApi(Sender sender = null)
         {
-            return new DocumentsApi(_requestHelper, _loggerFactory, GetRoot(new ApiRootUri(sender)), sender);
+            var root = await GetRoot(new ApiRootUri(sender));
+            return new DocumentsApi(_requestHelper, _loggerFactory, root, sender);
         }
         
-        public IShareDocumentsApi GetDocumentSharing(Sender sender = null)
+        public async Task<IShareDocumentsApi> GetDocumentSharing(Sender sender = null)
         {
-            return new DocumentsApi(_requestHelper, _loggerFactory, GetRoot(new ApiRootUri(sender)), sender);
+            var root = await GetRoot(new ApiRootUri(sender));
+            return new DocumentsApi(_requestHelper, _loggerFactory, root, sender);
         }
 
-        public IIdentificationResult Identify(IIdentification identification)
+        public async Task<IIdentificationResult> IdentifyAsync(IIdentification identification)
         {
-            return _sendMessageApi().Identify(identification);
+            var sendMessageApi = await _sendMessageApi();
+            return await sendMessageApi.IdentifyAsync(identification);
+        }
+        
+        public async Task<IMessageDeliveryResult> SendMessageAsync(IMessage message)
+        {
+            var sendMessageApi = await _sendMessageApi();
+            return await sendMessageApi.SendMessageAsync(message, _clientConfig.SkipMetaDataValidation);
         }
 
-        public Task<IIdentificationResult> IdentifyAsync(IIdentification identification)
+        public async Task AddAdditionalData(AdditionalData additionalData, AddAdditionalDataUri uri)
         {
-            return _sendMessageApi().IdentifyAsync(identification);
+            var sendMessageApi = await _sendMessageApi();
+            await sendMessageApi.SendAdditionalDataAsync(additionalData, uri);
         }
 
-        public IMessageDeliveryResult SendMessage(IMessage message)
+        public async Task<ISearchDetailsResult> SearchAsync(string query)
         {
-            return _sendMessageApi().SendMessage(message, _clientConfig.SkipMetaDataValidation);
-        }
-
-        public Task<IMessageDeliveryResult> SendMessageAsync(IMessage message)
-        {
-            return _sendMessageApi().SendMessageAsync(message, _clientConfig.SkipMetaDataValidation);
-        }
-
-        public Task AddAdditionalData(AdditionalData additionalData, AddAdditionalDataUri uri)
-        {
-            return _sendMessageApi().SendAdditionalDataAsync(additionalData, uri);
-        }
-
-        public ISearchDetailsResult Search(string query)
-        {
-            return _sendMessageApi().Search(query);
-        }
-
-        public Task<ISearchDetailsResult> SearchAsync(string query)
-        {
-            return _sendMessageApi().SearchAsync(query);
+            var sendMessageApi = await _sendMessageApi();
+            return await sendMessageApi.SearchAsync(query);
         }
     }
 }

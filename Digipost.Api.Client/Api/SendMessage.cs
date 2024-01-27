@@ -27,54 +27,24 @@ namespace Digipost.Api.Client.Api
 
         public SendRequestHelper RequestHelper { get; }
 
-        public IMessageDeliveryResult SendMessage(IMessage message, bool skipMetaDataValidation = false)
-        {
-            var messageDelivery = SendMessageAsync(message, skipMetaDataValidation);
-
-            if (messageDelivery.IsFaulted && messageDelivery.Exception != null)
-                throw messageDelivery.Exception.InnerException;
-
-            return messageDelivery.Result;
-        }
-
         public async Task<IMessageDeliveryResult> SendMessageAsync(IMessage message, bool skipMetaDataValidation = false)
         {
             _logger.LogDebug("Outgoing Digipost message to Recipient: {message}", message);
 
-            var messageDeliveryResultTask = RequestHelper.PostMessage<Message_Delivery>(message, _root.GetSendMessageUri(), skipMetaDataValidation);
+            var messageDelivery = await RequestHelper.PostMessage<Message_Delivery>(message, _root.GetSendMessageUri(), skipMetaDataValidation);
 
-            if (messageDeliveryResultTask.IsFaulted && messageDeliveryResultTask.Exception != null)
-                throw messageDeliveryResultTask.Exception?.InnerException;
-
-            var messageDeliveryResult = (await messageDeliveryResultTask.ConfigureAwait(false)).FromDataTransferObject();
+            var messageDeliveryResult = messageDelivery.FromDataTransferObject();
 
             _logger.LogDebug("Response received for message to recipient, {message}: '{status}'. Will be available to Recipient at {deliverytime}.", message, messageDeliveryResult.Status, messageDeliveryResult.DeliveryTime);
 
             return messageDeliveryResult;
         }
-
-        public IIdentificationResult Identify(IIdentification identification)
-        {
-            return IdentifyAsync(identification).Result;
-        }
-
+        
         public async Task<IIdentificationResult> IdentifyAsync(IIdentification identification)
         {
             _logger.LogDebug("Outgoing identification request: {identification}", identification);
 
-            var identifyResponse = RequestHelper.PostIdentification<Identification_Result>(identification, _root.GetIdentifyRecipientUri());
-
-            if (identifyResponse.IsFaulted)
-            {
-                var exception = identifyResponse.Exception?.InnerException;
-
-                _logger.LogWarning("Identification failed, {exception}", exception);
-
-                if (identifyResponse.Exception != null)
-                    throw identifyResponse.Exception.InnerException;
-            }
-
-            var identificationResultDataTransferObject = await identifyResponse.ConfigureAwait(false);
+            var identificationResultDataTransferObject = await RequestHelper.PostIdentification<Identification_Result>(identification, _root.GetIdentifyRecipientUri());
             var identificationResult = identificationResultDataTransferObject.FromDataTransferObject();
 
             _logger.LogDebug("Response received for identification to recipient, ResultType '{resultType}', Data '{data}'.", identificationResult.ResultType, identificationResult.Data);

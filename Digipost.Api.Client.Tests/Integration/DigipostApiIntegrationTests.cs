@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using Digipost.Api.Client.Api;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Entrypoint;
@@ -83,94 +84,65 @@ namespace Digipost.Api.Client.Tests.Integration
 
         public class SendMessageMethod : DigipostApiIntegrationTests
         {
-            private void SendMessage(IMessage message, FakeResponseHandler fakeResponseHandler)
+            private async Task SendMessageAsync(IMessage message, FakeResponseHandler fakeResponseHandler)
             {
                 var digipostApi = GetDigipostApi(fakeResponseHandler);
 
-                digipostApi.SendMessage(message);
+                await digipostApi.SendMessageAsync(message);
             }
 
             [Fact]
-            public void InternalServerErrorShouldCauseDigipostResponseException()
-            {
-                Exception exception = null;
-
-                try
-                {
-                    var message = DomainUtility.GetSimpleMessageWithRecipientById();
-                    const HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
-                    var messageContent = new StringContent(string.Empty);
-
-                    SendMessage(message, new FakeResponseHandler {ResultCode = statusCode, HttpContent = messageContent});
-                }
-                catch (AggregateException e)
-                {
-                    exception = e.InnerExceptions.ElementAt(0);
-                }
-                catch (ClientResponseException e)
-                {
-                    exception = e;
-                }
-
-                Assert.True(exception is ClientResponseException);
-            }
-
-            [Fact]
-            public void ProperRequestSentRecipientById()
+            public async Task InternalServerErrorShouldCauseDigipostResponseException()
             {
                 var message = DomainUtility.GetSimpleMessageWithRecipientById();
-                SendMessage(message, new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery()});
+                const HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
+                var messageContent = new StringContent(string.Empty);
+
+                await Assert.ThrowsAsync<ClientResponseException>(() =>
+                    SendMessageAsync(message, new FakeResponseHandler { ResultCode = statusCode, HttpContent = messageContent }));
             }
 
             [Fact]
-            public void ProperRequestSentRecipientByNameAndAddress()
+            public async Task ProperRequestSentRecipientById()
+            {
+                var message = DomainUtility.GetSimpleMessageWithRecipientById();
+                await SendMessageAsync(message, new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery()});
+            }
+
+            [Fact]
+            public async Task ProperRequestSentRecipientByNameAndAddress()
             {
                 var message = DomainUtility.GetSimpleMessageWithRecipientByNameAndAddress();
 
-                SendMessage(message, new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery()});
+                await SendMessageAsync(message, new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery()});
             }
 
             [Fact]
-            public void ShouldSerializeErrorMessage()
+            public async Task ShouldSerializeErrorMessage()
             {
-                Exception exception = null;
+                var message = DomainUtility.GetSimpleMessageWithRecipientById();
+                const HttpStatusCode statusCode = HttpStatusCode.NotFound;
+                var messageContent = XmlResource.SendMessage.GetError();
 
-                try
-                {
-                    var message = DomainUtility.GetSimpleMessageWithRecipientById();
-                    const HttpStatusCode statusCode = HttpStatusCode.NotFound;
-                    var messageContent = XmlResource.SendMessage.GetError();
-
-                    SendMessage(message, new FakeResponseHandler {ResultCode = statusCode, HttpContent = messageContent});
-                }
-                catch (AggregateException e)
-                {
-                    exception = e.InnerExceptions.ElementAt(0);
-                }
-                catch (ClientResponseException e)
-                {
-                    exception = e;
-                }
-
-                Assert.True(exception is ClientResponseException);
+                await Assert.ThrowsAsync<ClientResponseException>(() => SendMessageAsync(message, new FakeResponseHandler { ResultCode = statusCode, HttpContent = messageContent }));
             }
         }
 
         public class SendIdentifyMethod : DigipostApiIntegrationTests
         {
-            private void Identify(IIdentification identification)
+            private async Task IdentifyAsync(IIdentification identification)
             {
                 var fakeResponseHandler = new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.Identification.GetResult()};
                 var digipostApi = GetDigipostApi(fakeResponseHandler);
 
-                digipostApi.Identify(identification);
+                await digipostApi.IdentifyAsync(identification);
             }
 
             [Fact]
-            public void ProperRequestSent()
+            public async Task ProperRequestSent()
             {
                 var identification = DomainUtility.GetPersonalIdentification();
-                Identify(identification);
+                await IdentifyAsync(identification);
             }
         }
     }

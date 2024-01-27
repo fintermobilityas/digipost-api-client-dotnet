@@ -42,22 +42,22 @@ namespace Digipost.Api.Client.ConcurrencyTest
 
             for (var i = 0; i < _numberOfRequests; i++)
             {
-                Task.Run(() => { ProcessUrlAsync(httpClient); });
+                Task.Run(async () => { await ProcessUrlAsync(httpClient); });
             }
         }
 
-        public void TestAsync()
+        public async Task TestAsync()
         {
             ServicePointManager.DefaultConnectionLimit = _defaultConnectionLimit;
             var httpClient = new HttpClient();
 
             for (var i = 0; i < _numberOfRequests; i++)
             {
-                ProcessUrlAsync(httpClient);
+                await ProcessUrlAsync(httpClient);
             }
         }
 
-        private async void ProcessUrlAsync(HttpClient httpClient)
+        private async Task ProcessUrlAsync(HttpClient httpClient)
         {
             HttpResponseMessage httpResponse = null;
 

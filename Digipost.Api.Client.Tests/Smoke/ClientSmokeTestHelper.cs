@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Entrypoint;
 using Digipost.Api.Client.Common.Enums;
@@ -67,7 +68,8 @@ namespace Digipost.Api.Client.Tests.Smoke
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             _digipostClient = new DigipostClient(new ClientConfig(broker, testSender.Environment) {TimeoutMilliseconds = 900000000, LogRequestAndResponse = true, SkipMetaDataValidation = withoutDataTypesProject}, testSender.Certificate, loggerFactory);
 
-            _root = _digipostClient.GetRoot(new ApiRootUri());
+            // TODO: Fix me
+            _root = _digipostClient.GetRoot(new ApiRootUri()).GetAwaiter().GetResult();
 
             _testLogger = loggerFactory.CreateLogger<ClientSmokeTestHelper>();
         }
@@ -115,11 +117,11 @@ namespace Digipost.Api.Client.Tests.Smoke
             return this;
         }
 
-        public ClientSmokeTestHelper SendMessage()
+        public async Task<ClientSmokeTestHelper> SendMessage()
         {
             Assert_state(_recipient);
 
-            _messageDeliveryResult = _digipostClient.SendMessage(
+            _messageDeliveryResult = await _digipostClient.SendMessageAsync(
                 new Message(new Sender(_testSender.Id), _recipient, _primary)
                 {
                     Attachments = _attachments
@@ -128,11 +130,11 @@ namespace Digipost.Api.Client.Tests.Smoke
             return this;
         }
 
-        public ClientSmokeTestHelper SendPrintMessage()
+        public async Task<ClientSmokeTestHelper> SendPrintMessage()
         {
             Assert_state(_printDetails);
 
-            _messageDeliveryResult = _digipostClient.SendMessage(
+            _messageDeliveryResult = await _digipostClient.SendMessageAsync(
                 new PrintMessage(new Sender(_testSender.Id), _printDetails, _primary)
                 {
                     Attachments = _attachments
@@ -140,11 +142,11 @@ namespace Digipost.Api.Client.Tests.Smoke
 
             return this;
         }
-        public ClientSmokeTestHelper SendRequestForRegistration(String personalIdentificationNumber)
+        public async Task<ClientSmokeTestHelper> SendRequestForRegistration(String personalIdentificationNumber)
         {
             Assert_state(_requestForRegistration);
 
-            _messageDeliveryResult = _digipostClient.SendMessage(
+            _messageDeliveryResult = await _digipostClient.SendMessageAsync(
                 new Message(new Sender(_testSender.Id),
                     new RecipientById(IdentificationType.PersonalIdentificationNumber, personalIdentificationNumber),
                     _primary
@@ -186,11 +188,11 @@ namespace Digipost.Api.Client.Tests.Smoke
             return this;
         }
 
-        public ClientSmokeTestHelper SendIdentification()
+        public async Task<ClientSmokeTestHelper> SendIdentification()
         {
             Assert_state(_identification);
 
-            _identificationResult = _digipostClient.Identify(_identification);
+            _identificationResult = await _digipostClient.IdentifyAsync(_identification);
 
             return this;
         }
@@ -199,12 +201,12 @@ namespace Digipost.Api.Client.Tests.Smoke
         {
             Assert_state(_identificationResult);
 
-            Assert.Equal(identificationResultType, _identificationResult.ResultType);
+            Assert.Equal( identificationResultType, _identificationResult.ResultType);
         }
 
-        public ClientSmokeTestHelper Create_search_request()
+        public async Task<ClientSmokeTestHelper> Create_search_request()
         {
-            _searchResult = _digipostClient.Search("Børre");
+            _searchResult = await _digipostClient.SearchAsync("Børre");
 
             return this;
         }
@@ -236,43 +238,47 @@ namespace Digipost.Api.Client.Tests.Smoke
             Assert.InRange(_searchResult.PersonDetails.ToList().Count, 1, 11);
         }
 
-        public ClientSmokeTestHelper FetchShareDocumentRequestState()
+        public async Task<ClientSmokeTestHelper> FetchShareDocumentRequestState()
         {
             Assert_state(_messageDeliveryResult);
             Assert_state(_primary);
 
-            _shareDocumentsRequestState = _digipostClient.GetDocumentSharing(new Sender(_testSender.Id)).GetShareDocumentsRequestState(Guid.Parse(_primary.Guid)).Result;
+            var documentSharing = await _digipostClient.GetDocumentSharing(new Sender(_testSender.Id));
+            _shareDocumentsRequestState = documentSharing.GetShareDocumentsRequestState(Guid.Parse(_primary.Guid)).Result;
             return this;
         }
 
-        public void ExpectShareDocumentsRequestState()
+        public async Task ExpectShareDocumentsRequestState()
         {
             Assert_state(_shareDocumentsRequestState);
             if (_shareDocumentsRequestState.SharedDocuments.Any())
             {
                 var sharedDocument = _shareDocumentsRequestState.SharedDocuments.First();
-                var sharedDocumentContent = _digipostClient.GetDocumentSharing(new Sender(_testSender.Id))
+                var documentSharing = await _digipostClient.GetDocumentSharing(new Sender(_testSender.Id));
+                var sharedDocumentContent = documentSharing
                     .GetShareDocumentContent(sharedDocument.GetSharedDocumentContentUri()).Result;
 
                 _testLogger.LogInformation($"Uri til dokument (pressthelink): '{sharedDocumentContent.Uri}'");
 
-                var documentStream = _digipostClient.GetDocumentSharing(new Sender(_testSender.Id)).FetchSharedDocument(sharedDocument.GetSharedDocumentContentStreamUri()).Result;
+                var documentStream = await documentSharing.FetchSharedDocument(sharedDocument.GetSharedDocumentContentStreamUri());
                 Assert.True(documentStream.CanRead);
                 Assert.True(documentStream.Length > 500);
             }
         }
 
-        public ClientSmokeTestHelper FetchDocumentStatus()
+        public async Task<ClientSmokeTestHelper> FetchDocumentStatus()
         {
             Assert_state(_messageDeliveryResult);
             Assert_state(_primary);
 
-            _documentStatus = _digipostClient.DocumentsApi(new Sender(_testSender.Id)).GetDocumentStatus(Guid.Parse(_primary.Guid)).Result;
+            var documentsApi = await _digipostClient.DocumentsApi(new Sender(_testSender.Id));
+            _documentStatus = await documentsApi.GetDocumentStatus(Guid.Parse(_primary.Guid));
             return this;
         }
-        public ClientSmokeTestHelper FetchDocumentStatus(Guid guid)
+        public async Task<ClientSmokeTestHelper> FetchDocumentStatus(Guid guid)
         {
-            _documentStatus = _digipostClient.DocumentsApi(new Sender(_testSender.Id)).GetDocumentStatus(guid).Result;
+            var documentsApi = await _digipostClient.DocumentsApi(new Sender(_testSender.Id));
+            _documentStatus = await documentsApi.GetDocumentStatus(guid);
             return this;
         }
 
@@ -283,12 +289,13 @@ namespace Digipost.Api.Client.Tests.Smoke
             Assert.Equal(_documentStatus.DeliveryStatus, deliveryStatus);
         }
 
-        public ClientSmokeTestHelper GetDocumentEvents()
+        public async Task<ClientSmokeTestHelper> GetDocumentEvents()
         {
-            _documentEvents = _digipostClient.DocumentsApi(new Sender(_testSender.Id)).GetDocumentEvents(
+            var documentsApi = await _digipostClient.DocumentsApi(new Sender(_testSender.Id));
+            _documentEvents = await documentsApi.GetDocumentEvents(
                 DateTime.Now.Subtract(TimeSpan.FromDays(1)),
                 DateTime.Now, 0, 100
-            ).Result;
+            );
             return this;
         }
 
@@ -297,10 +304,10 @@ namespace Digipost.Api.Client.Tests.Smoke
             Assert_state(_documentEvents);
         }
 
-        public ClientSmokeTestHelper GetSenderInformation()
+        public async Task<ClientSmokeTestHelper> SetSenderInformation()
         {
             //_senderInformation = _digipostClient.GetSenderInformation(new Sender(_testSender.Id));
-            _senderInformation = _digipostClient.GetSenderInformation(new SenderOrganisation("984661185", "signering"));
+            _senderInformation = await _digipostClient.GetSenderInformation(new SenderOrganisation("984661185", "signering"));
             return this;
         }
 
@@ -310,13 +317,13 @@ namespace Digipost.Api.Client.Tests.Smoke
             Assert.True(_senderInformation.IsValidSender);
         }
 
-        public void PerformStopSharing()
+        public async Task PerformStopSharing()
         {
             Assert_state(_shareDocumentsRequestState);
 
             var additionalData = new AdditionalData(new Sender(_testSender.Id), new ShareDocumentsRequestSharingStopped());
 
-            _digipostClient.AddAdditionalData(additionalData, _shareDocumentsRequestState.GetStopSharingUri());
+            await _digipostClient.AddAdditionalData(additionalData, _shareDocumentsRequestState.GetStopSharingUri());
         }
     }
 }

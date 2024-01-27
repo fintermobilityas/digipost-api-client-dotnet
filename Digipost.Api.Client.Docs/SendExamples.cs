@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Enums;
 using Digipost.Api.Client.Common.Identify;
@@ -47,7 +48,7 @@ namespace Digipost.Api.Client.Docs
             var client = new DigipostClient(clientConfig, CertificateReader.ReadCertificate());
         }
 
-        public void SendOneLetterToRecipientViaPersonalIdentificationNumber()
+        public async Task SendOneLetterToRecipientViaPersonalIdentificationNumber()
         {
             var message = new Message(
                 sender,
@@ -55,10 +56,10 @@ namespace Digipost.Api.Client.Docs
                 new Document(subject: "Attachment", fileType: "txt", path: @"c:\...\document.txt")
             );
 
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
 
-        public void SendOneLetterViaNameAndAddress()
+        public async Task SendOneLetterViaNameAndAddress()
         {
             var recipient = new RecipientByNameAndAddress(
                 fullName: "Ola Nordmann",
@@ -70,10 +71,10 @@ namespace Digipost.Api.Client.Docs
             var primaryDocument = new Document(subject: "document subject", fileType: "pdf", path: @"c:\...\document.pdf");
 
             var message = new Message(sender, recipient, primaryDocument);
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
 
-        public void WithMultipleAttachments()
+        public async Task WithMultipleAttachments()
         {
             var primaryDocument = new Document(subject: "Primary document", fileType: "pdf", path: @"c:\...\document.pdf");
             var attachment1 = new Document(subject: "Attachment 1", fileType: "txt", path: @"c:\...\attachment_01.txt");
@@ -85,10 +86,10 @@ namespace Digipost.Api.Client.Docs
                 primaryDocument
             ) {Attachments = {attachment1, attachment2}};
 
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
 
-        public void SendLetterWithSmsNotification()
+        public async Task SendLetterWithSmsNotification()
         {
             var primaryDocument = new Document(subject: "Primary document", fileType: "pdf", path: @"c:\...\document.pdf");
 
@@ -101,10 +102,10 @@ namespace Digipost.Api.Client.Docs
                 primaryDocument
             );
 
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
 
-        public void SendLetterWithFallbackToPrint()
+        public async Task SendLetterWithFallbackToPrint()
         {
             var recipient = new RecipientByNameAndAddress(
                 fullName: "Ola Nordmann",
@@ -130,10 +131,10 @@ namespace Digipost.Api.Client.Docs
                 PrintDetails = printDetails
             };
 
-            var result = client.SendMessage(messageWithFallbackToPrint);
+            var result = await client.SendMessageAsync(messageWithFallbackToPrint);
         }
 
-        public void SendLetterWithDirectToPrint()
+        public async Task SendLetterWithDirectToPrint()
         {
             var printDetails =
                 new PrintDetails(
@@ -149,10 +150,10 @@ namespace Digipost.Api.Client.Docs
 
             var messageToPrint = new PrintMessage(sender, printDetails, primaryDocument);
 
-            var result = client.SendMessage(messageToPrint);
+            var result = await client.SendMessageAsync(messageToPrint);
         }
 
-        public void SendLetterWithPrintIfUnread()
+        public async Task SendLetterWithPrintIfUnread()
         {
             var recipient = new RecipientByNameAndAddress(
                 fullName: "Ola Nordmann",
@@ -180,10 +181,10 @@ namespace Digipost.Api.Client.Docs
                 PrintIfUnread = new PrintIfUnread(DateTime.Now.AddDays(6), printDetails)
             };
 
-            var result = client.SendMessage(messageWithPrintIfUnread);
+            var result = await client.SendMessageAsync(messageWithPrintIfUnread);
         }
 
-        public void SendLetterWithRequestForRegistration()
+        public async Task SendLetterWithRequestForRegistration()
         {
             var recipient = new RecipientById(identificationType: IdentificationType.PersonalIdentificationNumber, id: "311084xxxx");
 
@@ -209,10 +210,10 @@ namespace Digipost.Api.Client.Docs
                 RequestForRegistration = requestForRegistration
             };
 
-            var result = client.SendMessage(messageWithPrintIfUnread);
+            var result = await client.SendMessageAsync(messageWithPrintIfUnread);
         }
 
-        public void SendLetterWithHigherSecurityLevel()
+        public async Task SendLetterWithHigherSecurityLevel()
         {
             var primaryDocument = new Document(subject: "Primary document", fileType: "pdf", path: @"c:\...\document.pdf")
             {
@@ -226,13 +227,13 @@ namespace Digipost.Api.Client.Docs
                 primaryDocument
             );
 
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
 
-        public void IdentifyRecipient()
+        public async Task IdentifyRecipient()
         {
             var identification = new Identification(new RecipientById(IdentificationType.PersonalIdentificationNumber, "211084xxxxx"));
-            var identificationResponse = client.Identify(identification);
+            var identificationResponse = await client.IdentifyAsync(identification);
 
             if (identificationResponse.ResultType == IdentificationResultType.DigipostAddress)
             {
@@ -252,7 +253,7 @@ namespace Digipost.Api.Client.Docs
             }
         }
 
-        public void SendLetterThroughNorskHelsenett()
+        public async Task SendLetterThroughNorskHelsenett()
         {
             // API URL is different when request is sent from NHN
             var config = new ClientConfig(new Broker(12345), Environment.NorskHelsenett);
@@ -264,10 +265,10 @@ namespace Digipost.Api.Client.Docs
                 new Document(subject: "Attachment", fileType: "txt", path: @"c:\...\document.txt")
             );
 
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
 
-        public void SendInvoice()
+        public async Task SendInvoice()
         {
             var invoice = new Invoice(dueDate: DateTime.Parse("2022-12-03T10:15:30+01:00 Europe/Paris"), sum: new decimal(100.21), creditorAccount: "2593143xxxx")
             {
@@ -284,10 +285,10 @@ namespace Digipost.Api.Client.Docs
                     dataType: invoice)
             );
 
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
 
-        public void SendInkasso()
+        public async Task SendInkasso()
         {
             var inkasso = new Inkasso(dueDate: DateTime.Parse("2022-12-03T10:15:30+01:00 Europe/Paris"))
             {
@@ -306,12 +307,12 @@ namespace Digipost.Api.Client.Docs
                     dataType: inkasso)
             );
 
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
 
-        public void SearchForReceivers()
+        public async Task SearchForReceivers()
         {
-            var response = client.Search("Ola Nordmann Bellsund Longyearbyen");
+            var response = await client.SearchAsync("Ola Nordmann Bellsund Longyearbyen");
 
             foreach (var person in response.PersonDetails)
             {
@@ -320,7 +321,7 @@ namespace Digipost.Api.Client.Docs
             }
         }
 
-        public void SendOnBehalfOfOrganization()
+        public async Task SendOnBehalfOfOrganization()
         {
             var broker = new Broker(12345);
             var sender = new Sender(67890);
@@ -332,10 +333,10 @@ namespace Digipost.Api.Client.Docs
 
             var message = new Message(sender, digitalRecipient, primaryDocument);
 
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
 
-        public void SendMessageWithDeliveryTime()
+        public async Task SendMessageWithDeliveryTime()
         {
             var message = new Message(
                 sender,
@@ -346,7 +347,7 @@ namespace Digipost.Api.Client.Docs
                 DeliveryTime = DateTime.Now.AddDays(1).AddHours(4)
             };
 
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
 
         public void SendMessageWithAppointmentMetadata()
@@ -389,7 +390,7 @@ namespace Digipost.Api.Client.Docs
             // Create Message and send using the client as specified in other examples.
         }
 
-        public async void SendShareDocumentRequestMessage()
+        public async Task SendShareDocumentRequestMessage()
         {
             var shareDocReq = new ShareDocumentsRequest(
                 maxShareDurationSeconds: 60 * 60 * 24 * 5,  // Five calendar days
@@ -410,22 +411,24 @@ namespace Digipost.Api.Client.Docs
             // Create Message and send using the client as specified in other examples.
 
             // when you the user has shared a document:
-            var shareDocumentsRequestState = await client.GetDocumentSharing(sender)
+            var documentSharing = await client.GetDocumentSharing(sender);
+            
+            var shareDocumentsRequestState = await documentSharing
                 .GetShareDocumentsRequestState(requestGuid);
 
-            SharedDocumentContent sharedDocumentContent = await client.GetDocumentSharing(sender).GetShareDocumentContent(shareDocumentsRequestState.SharedDocuments.First().GetSharedDocumentContentUri());
+            SharedDocumentContent sharedDocumentContent = await documentSharing.GetShareDocumentContent(shareDocumentsRequestState.SharedDocuments.First().GetSharedDocumentContentUri());
 
-            Stream stream = await client.GetDocumentSharing(sender).FetchSharedDocument(shareDocumentsRequestState.SharedDocuments.First().GetSharedDocumentContentStreamUri());
+            Stream stream = await documentSharing.FetchSharedDocument(shareDocumentsRequestState.SharedDocuments.First().GetSharedDocumentContentStreamUri());
             Uri uri = sharedDocumentContent.Uri;
             // sharedDocumentContent.Uri is a url to a document that can be shown in an internet browser.
 
             var additionalData = new AdditionalData(sender, new ShareDocumentsRequestSharingStopped());
-            client.AddAdditionalData(additionalData, shareDocumentsRequestState.GetStopSharingUri());
+            await client.AddAdditionalData(additionalData, shareDocumentsRequestState.GetStopSharingUri());
         }
 
-        public void SendMessageWithSenderInformation()
+        public async Task SendMessageWithSenderInformation()
         {
-            var senderInformation = client.GetSenderInformation(new SenderOrganisation("9876543210", "thePartId"));
+            var senderInformation = await client.GetSenderInformation(new SenderOrganisation("9876543210", "thePartId"));
 
             var message = new Message(
                 senderInformation.Sender,
@@ -433,7 +436,7 @@ namespace Digipost.Api.Client.Docs
                 new Document(subject: "Attachment", fileType: "txt", path: @"c:\...\document.txt")
             );
 
-            var result = client.SendMessage(message);
+            var result = await client.SendMessageAsync(message);
         }
     }
 }

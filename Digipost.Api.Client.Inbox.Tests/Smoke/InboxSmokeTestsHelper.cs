@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Utilities;
 using Digipost.Api.Client.Shared.Tests;
@@ -33,10 +34,10 @@ namespace Digipost.Api.Client.Inbox.Tests.Smoke
             );
         }
 
-        public InboxSmokeTestsHelper Get_inbox()
+        public async Task<InboxSmokeTestsHelper> Get_inbox()
         {
-            _inbox = _client.GetInbox(new Sender(_testSender.Id));
-            _inboxDocuments = _inbox.Fetch().Result;
+            _inbox = await _client.GetInbox(new Sender(_testSender.Id));
+            _inboxDocuments = await _inbox.Fetch();
 
             return this;
         }
@@ -52,11 +53,11 @@ namespace Digipost.Api.Client.Inbox.Tests.Smoke
             return this;
         }
 
-        public InboxSmokeTestsHelper Fetch_document_data()
+        public async Task<InboxSmokeTestsHelper> Fetch_document_data()
         {
             Assert_state(_inboxDocument);
 
-            var documentStream = _inbox.FetchDocument(_inboxDocument.GetGetDocumentContentUri()).Result;
+            var documentStream = await _inbox.FetchDocument(_inboxDocument.GetGetDocumentContentUri());
 
             Assert.True(documentStream.CanRead);
             Assert.True(documentStream.Length > 500);
@@ -64,11 +65,11 @@ namespace Digipost.Api.Client.Inbox.Tests.Smoke
             return this;
         }
 
-        public InboxSmokeTestsHelper Delete_document()
+        public async Task<InboxSmokeTestsHelper> Delete_document()
         {
             Assert_state(_inboxDocument);
 
-            _inbox.DeleteDocument(_inboxDocument.GetDeleteUri()).Wait();
+            await _inbox.DeleteDocument(_inboxDocument.GetDeleteUri());
 
             return this;
         }

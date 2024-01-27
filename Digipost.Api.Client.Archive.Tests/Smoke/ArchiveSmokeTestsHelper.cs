@@ -45,7 +45,8 @@ ___/ / /  / / /_/ / /| |/ /___  / / / /___ ___/ // /
                 serviceProvider.GetService<ILoggerFactory>()
             );
 
-            _archiveApi = client.GetArchive(new Sender(_testSender.Id));
+            // TODO: FIX ME
+            _archiveApi = client.GetArchive(new Sender(_testSender.Id)).GetAwaiter().GetResult();
         }
 
         public ArchiveSmokeTestsHelper Get_Archive(string archiveName)
