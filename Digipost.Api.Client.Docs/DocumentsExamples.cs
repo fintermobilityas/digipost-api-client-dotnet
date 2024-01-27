@@ -17,7 +17,7 @@ namespace Digipost.Api.Client.Docs
 
         public async Task Hent_document_status()
         {
-            var documentsApi = await Client.DocumentsApi();
+            var documentsApi = await Client.DocumentsApiAsync();
             DocumentStatus documentStatus = await documentsApi
                 .GetDocumentStatus(Guid.Parse("10ff4c99-8560-4741-83f0-1093dc4deb1c"));
 
@@ -32,7 +32,7 @@ namespace Digipost.Api.Client.Docs
             // Beware that there might be more events. So you must fetch more events by adding to the offset
             // until you get 0 or less than 100 events.
             // Then you can start again from the previous `to` datetime as `from`
-            var documentsApi = await Client.DocumentsApi(Sender);
+            var documentsApi = await Client.DocumentsApiAsync(Sender);
             DocumentEvents events = await documentsApi
                 .GetDocumentEvents(from: DateTime.Now.Subtract(TimeSpan.FromMinutes(5)), to: DateTime.Now, offset: 0, maxResults: 100);
 

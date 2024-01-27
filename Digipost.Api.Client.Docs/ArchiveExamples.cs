@@ -26,7 +26,7 @@ namespace Digipost.Api.Client.Docs
                 new ArchiveDocument(Guid.NewGuid(), "attachment_123123.pdf", "pdf", "application/psd", readFileFromDisk("attachment_123123.pdf"))
             });
 
-            var archiveApi = await Client.GetArchive();
+            var archiveApi = await Client.GetArchiveAsync();
             var savedArchive = archiveApi.ArchiveDocuments(archive);
         }
 
@@ -38,7 +38,7 @@ namespace Digipost.Api.Client.Docs
                     .WithDeletionTime(DateTime.Today.AddYears(5))
             });
 
-            var archiveApi = await Client.GetArchive();
+            var archiveApi = await Client.GetArchiveAsync();
             var savedArchive = await archiveApi.ArchiveDocuments(archive);
         }
 
@@ -46,13 +46,13 @@ namespace Digipost.Api.Client.Docs
         {
             var archive = new Archive.Archive(Sender, new List<ArchiveDocument>(), "MyArchiveName");
 
-            var archiveApi = await Client.GetArchive();
+            var archiveApi = await Client.GetArchiveAsync();
             var savedArchive = await archiveApi.ArchiveDocuments(archive);
         }
 
         private async Task<IEnumerable<Archive.Archive>> FetchArchives()
         {
-            var archiveApi = await Client.GetArchive();
+            var archiveApi = await Client.GetArchiveAsync();
 
             IEnumerable<Archive.Archive> fetchedArchives = await archiveApi.FetchArchives();
             return fetchedArchives;
@@ -60,7 +60,7 @@ namespace Digipost.Api.Client.Docs
 
         private async Task FetchAllArchiveDocuments()
         {
-            var archiveApi = await Client.GetArchive();
+            var archiveApi = await Client.GetArchiveAsync();
             var current = (await archiveApi.FetchArchives()).First();
             var documents = new List<ArchiveDocument>();
 
@@ -76,7 +76,7 @@ namespace Digipost.Api.Client.Docs
 
         private async Task FetchArchiveDocumentsWithAttribute()
         {
-            var archiveApi = await Client.GetArchive();
+            var archiveApi = await Client.GetArchiveAsync();
             var archive = (await archiveApi.FetchArchives()).First();
             var searchBy = new Dictionary<string, string>
             {
@@ -90,7 +90,7 @@ namespace Digipost.Api.Client.Docs
         }
         private async Task FetchAllArchiveDocumentsWithAttribute()
         {
-            var archiveApi = await Client.GetArchive();
+            var archiveApi = await Client.GetArchiveAsync();
             var current = (await archiveApi.FetchArchives()).First();
             var documents = new List<ArchiveDocument>();
 
@@ -111,8 +111,8 @@ namespace Digipost.Api.Client.Docs
 
         private async Task FetchArchiveDocumentByGuid()
         {
-            var archiveApi = await Client.GetArchive(Sender);
-            var root = await Client.GetRoot(new ApiRootUri());
+            var archiveApi = await Client.GetArchiveAsync(Sender);
+            var root = await Client.GetRootAsync(new ApiRootUri());
             ArchiveDocument archiveDocument = await archiveApi.FetchArchiveDocument(root.GetGetArchiveDocumentsByUuidUri(Guid.Parse("10ff4c99-8560-4741-83f0-1093dc4deb1c")));
             
             ArchiveDocumentContent archiveDocumentContent = await archiveApi.GetDocumentContent(archiveDocument.DocumentContentUri());
@@ -131,13 +131,13 @@ namespace Digipost.Api.Client.Docs
 
         private async Task FetchArchiveDocumentsByReferenceId()
         {
-            var archiveApi = await Client.GetArchive();
+            var archiveApi = await Client.GetArchiveAsync();
             IEnumerable<Archive.Archive> fetchArchiveDocumentsByReferenceId = await archiveApi.FetchArchiveDocumentsByReferenceId("MyProcessId[No12341234]");
         }
 
         private async Task ChangeAttributesReferenceIdOnArchiveDocument()
         {
-            var archiveApi = await Client.GetArchive(Sender);
+            var archiveApi = await Client.GetArchiveAsync(Sender);
             ArchiveDocument archiveDocument = (await archiveApi.FetchDocumentFromExternalId(Guid.Parse("10ff4c99-8560-4741-83f0-1093dc4deb1c"))).One();
             archiveDocument.WithAttribute("newKey", "foobar")
                 .WithReferenceId("MyProcessId[No12341234]Done");
@@ -147,7 +147,7 @@ namespace Digipost.Api.Client.Docs
 
         private async Task<IEnumerable<Archive.Archive>> AsBroker()
         {
-            var archive = await Client.GetArchive(new Sender(111111));
+            var archive = await Client.GetArchiveAsync(new Sender(111111));
             return await archive.FetchArchives();
         }
 

@@ -15,12 +15,12 @@ namespace Digipost.Api.Client.Docs
 
         private void FetchDefaultRoot()
         {
-            var root = client.GetRoot(new ApiRootUri());
+            var root = client.GetRootAsync(new ApiRootUri());
         }
 
         private void FetchSenderRoot()
         {
-            var root = client.GetRoot(new ApiRootUri(new Sender(1234)));
+            var root = client.GetRootAsync(new ApiRootUri(new Sender(1234)));
         }
     }
 }

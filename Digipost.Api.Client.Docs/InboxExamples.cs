@@ -27,7 +27,7 @@ namespace Digipost.Api.Client.Docs
 
         private async Task Hent_dokumenter()
         {
-            var inbox = await client.GetInbox(sender);
+            var inbox = await client.GetInboxAsync(sender);
 
             var first100 = inbox.Fetch(); //Default offset is 0 and default limit is 100
 
@@ -36,7 +36,7 @@ namespace Digipost.Api.Client.Docs
 
         private async Task Hent_dokumentinnhold()
         {
-            var inbox = await client.GetInbox(sender);
+            var inbox = await client.GetInboxAsync(sender);
 
             var documentMetadata = (await inbox.Fetch()).First();
 
@@ -45,7 +45,7 @@ namespace Digipost.Api.Client.Docs
 
         private async Task Slett_dokument()
         {
-            var inbox = await client.GetInbox(sender);
+            var inbox = await client.GetInboxAsync(sender);
 
             var documentMetadata = (await inbox.Fetch()).First();
 
