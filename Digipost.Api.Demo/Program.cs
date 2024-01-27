@@ -32,12 +32,15 @@ var serviceProvider = serviceCollection.BuildServiceProvider();
 var digipostClient = serviceProvider.GetRequiredService<IDigipostClient>();
 
 var recipientById = new RecipientById(IdentificationType.DigipostAddress, digipostAddress);
-using var primaryDocument = new Document("Hoveddokument", "pdf",  File.OpenRead("Hoveddokument.pdf"));
+using var primaryDocument = new Document("Hoveddokument", "pdf",  File.OpenRead("Hoveddokument.pdf"))
+{
+    DataType = new ExternalLink(new Uri("https://www.youpark.no"))
+};
 using var attachmentDocument = new Document("Vedlegg", "pdf",  File.OpenRead("Vedlegg.pdf"));
 
 var result = await digipostClient.SendMessageAsync(new Message(clientConfig.Sender, recipientById, primaryDocument)
 {
-    Attachments = [attachmentDocument]
+    Attachments = [attachmentDocument],
 });
 
 Console.WriteLine($"Message id: {result.MessageId}. Delivery status: {result.Status}.");
