@@ -1,6 +1,8 @@
 <Project>
     <PropertyGroup>
 
+        <LangVersion>12.0</LangVersion>
+
         <Authors>Digipost AS</Authors>
         <Company>Posten Norge AS</Company>
         <Copyright>Copyright © 2022 Posten Norge AS</Copyright>
