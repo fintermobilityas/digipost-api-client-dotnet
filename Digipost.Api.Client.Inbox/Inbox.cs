@@ -31,18 +31,18 @@ public class Inbox : IInbox
     {
         var inboxPath = _inboxRoot.GetGetInboxUri(offset, limit);
 
-        var result = await _requestHelper.Get<V8.Inbox>(inboxPath).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<V8.Inbox>(inboxPath).ConfigureAwait(false);
 
         return result.FromDataTransferObject();
     }
 
     public async Task<Stream> FetchDocument(GetInboxDocumentContentUri getInboxDocumentContentUri)
     {
-        return await _requestHelper.GetStream(getInboxDocumentContentUri).ConfigureAwait(false);
+        return await _requestHelper.GetStreamAsync(getInboxDocumentContentUri).ConfigureAwait(false);
     }
 
     public async Task DeleteDocument(InboxDocumentDeleteUri deleteUri)
     {
-        await _requestHelper.Delete(deleteUri).ConfigureAwait(false);
+        await _requestHelper.DeleteAsync(deleteUri).ConfigureAwait(false);
     }
 }

@@ -68,14 +68,14 @@ internal class ArchiveApi : IArchiveApi
     public async Task<IEnumerable<Archive>> FetchArchives()
     {
         var archivesUri = _root.GetGetArchivesUri();
-        var archives = await _requestHelper.Get<Archives>(archivesUri).ConfigureAwait(false);
+        var archives = await _requestHelper.GetAsync<Archives>(archivesUri).ConfigureAwait(false);
 
         return archives.Archive.Select(ArchiveDataTransferObjectConverter.FromDataTransferObject);
     }
 
     public async Task<IEnumerable<Archive>> FetchArchiveDocumentsByReferenceId(string referenceId)
     {
-        var archives = await _requestHelper.Get<Archives>(_root.GetGetArchiveDocumentsReferenceIdUri(referenceId)).ConfigureAwait(false);
+        var archives = await _requestHelper.GetAsync<Archives>(_root.GetGetArchiveDocumentsReferenceIdUri(referenceId)).ConfigureAwait(false);
 
         return archives.Archive.Select(ArchiveDataTransferObjectConverter.FromDataTransferObject);
     }
@@ -88,14 +88,14 @@ internal class ArchiveApi : IArchiveApi
 
     public async Task<Archive> FetchArchiveDocuments(ArchiveNextDocumentsUri nextDocumentsUri)
     {
-        var result = await _requestHelper.Get<V8.Archive>(nextDocumentsUri).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<V8.Archive>(nextDocumentsUri).ConfigureAwait(false);
 
         return result.FromDataTransferObject();
     }
 
     public async Task<Archive> GetArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentUri)
     {
-        var result = await _requestHelper.Get<V8.Archive>(getArchiveDocumentUri).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<V8.Archive>(getArchiveDocumentUri).ConfigureAwait(false);
         return result.FromDataTransferObject();
     }
 
@@ -104,7 +104,7 @@ internal class ArchiveApi : IArchiveApi
         var messageAction = new ArchiveDocumentAction(archiveDocument);
         var httpContent = messageAction.Content(archiveDocument);
 
-        var updatedArchiveDocument = _requestHelper.Put<Archive_Document>(httpContent, messageAction.RequestContent, updateUri);
+        var updatedArchiveDocument = _requestHelper.PutAsync<Archive_Document>(httpContent, messageAction.RequestContent, updateUri);
 
         if (updatedArchiveDocument.IsFaulted && updatedArchiveDocument.Exception != null)
             throw updatedArchiveDocument.Exception?.InnerException;
@@ -114,7 +114,7 @@ internal class ArchiveApi : IArchiveApi
 
     public async Task DeleteDocument(ArchiveDocumentDeleteUri deleteUri)
     {
-        await _requestHelper.Delete(deleteUri);
+        await _requestHelper.DeleteAsync(deleteUri);
     }
 
     public Task<Archive> ArchiveDocuments(Archive archiveWithDocuments)
@@ -136,7 +136,7 @@ internal class ArchiveApi : IArchiveApi
         var archiveAction = new ArchiveAction(archiveWithDocuments);
         var httpContent = archiveAction.Content(archiveWithDocuments);
 
-        var task = _requestHelper.Post<V8.Archive>(httpContent, archiveAction.RequestContent, archiveUri);
+        var task = _requestHelper.PostAsync<V8.Archive>(httpContent, archiveAction.RequestContent, archiveUri);
 
         if (task.IsFaulted && task.Exception != null)
             throw task.Exception?.InnerException;
@@ -150,13 +150,13 @@ internal class ArchiveApi : IArchiveApi
 
     public async Task<Archive> FetchDocumentFromExternalId(string externalId)
     {
-        var result = await _requestHelper.Get<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalId)).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalId)).ConfigureAwait(false);
         return result.FromDataTransferObject();
     }
 
     public async Task<Archive> FetchDocumentFromExternalId(Guid externalIdGuid)
     {
-        var result = await _requestHelper.Get<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalIdGuid)).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalIdGuid)).ConfigureAwait(false);
         return result.FromDataTransferObject();
     }
 
@@ -178,12 +178,12 @@ internal class ArchiveApi : IArchiveApi
 
     public async Task<Stream> StreamDocument(ArchiveDocumentContentStreamUri documentContentStreamUri)
     {
-        return await _requestHelper.GetStream(documentContentStreamUri).ConfigureAwait(false);
+        return await _requestHelper.GetStreamAsync(documentContentStreamUri).ConfigureAwait(false);
     }
 
     public async Task<ArchiveDocumentContent> GetDocumentContent(ArchiveDocumentContentUri archiveDocumentContentUri)
     {
-        var result = await _requestHelper.Get<Archive_Document_Content>(archiveDocumentContentUri).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<Archive_Document_Content>(archiveDocumentContentUri).ConfigureAwait(false);
 
         return result.FromDataTransferObject();
     }

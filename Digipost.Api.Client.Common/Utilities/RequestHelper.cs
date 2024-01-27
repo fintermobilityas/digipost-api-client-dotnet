@@ -22,35 +22,35 @@ internal class RequestHelper
 
     internal HttpClient HttpClient { get; set; }
 
-    internal Task<T> Post<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false)
+    internal Task<T> PostAsync<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false)
     {
         ValidateXml(messageActionRequestContent, skipMetaDataValidation);
 
         var postAsync = HttpClient.PostAsync(uri, httpContent);
 
-        return Send<T>(postAsync);
+        return SendAsync<T>(postAsync);
     }
 
-    internal Task<T> Get<T>(Uri uri)
+    internal Task<T> GetAsync<T>(Uri uri)
     {
-        return Send<T>(HttpClient.GetAsync(uri));
+        return SendAsync<T>(HttpClient.GetAsync(uri));
     }
 
-    internal Task<T> Put<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false)
+    internal Task<T> PutAsync<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false)
     {
         ValidateXml(messageActionRequestContent, skipMetaDataValidation);
 
         var postAsync = HttpClient.PutAsync(uri, httpContent);
 
-        return Send<T>(postAsync);
+        return SendAsync<T>(postAsync);
     }
 
-    internal Task<string> Delete(Uri uri)
+    internal Task<string> DeleteAsync(Uri uri)
     {
-        return Send<string>(HttpClient.DeleteAsync(uri));
+        return SendAsync<string>(HttpClient.DeleteAsync(uri));
     }
 
-    internal async Task<Stream> GetStream(Uri uri)
+    internal async Task<Stream> GetStreamAsync(Uri uri)
     {
         var responseTask = HttpClient.GetAsync(uri);
         var httpResponseMessage = await responseTask.ConfigureAwait(false);
@@ -64,7 +64,7 @@ internal class RequestHelper
         return await httpResponseMessage.Content.ReadAsStreamAsync();
     }
 
-    async Task<T> Send<T>(Task<HttpResponseMessage> responseTask)
+    async Task<T> SendAsync<T>(Task<HttpResponseMessage> responseTask)
     {
         var httpResponseMessage = await responseTask.ConfigureAwait(false);
 
@@ -115,7 +115,7 @@ internal class RequestHelper
         }
     }
 
-    string GetDocumentXmlWithoutMetaData(XmlDocument document)
+    static string GetDocumentXmlWithoutMetaData(XmlNode document)
     {
         return Regex.Replace(document.InnerXml, @"<data-type[^>]*>(.*?)</data-type>", "").Trim();
     }
@@ -131,7 +131,7 @@ internal class RequestHelper
         var errorDataTransferObject = SerializeUtil.Deserialize<V8.Error>(responseContent);
         var error = errorDataTransferObject.FromDataTransferObject();
 
-        _logger.LogError("Error occured, check inner Error object for more information.", error);
+        _logger.LogError("Error occured. Message: {message}. Type: {type}. Code: {code}", error.Errormessage, error.Errortype, error.Errorcode);
         throw new ClientResponseException("Error occured, check inner Error object for more information.", error);
     }
 

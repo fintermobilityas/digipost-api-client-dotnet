@@ -180,7 +180,7 @@ public sealed class DigipostClient : IDigipostClient
             return root;
         }
 
-        var entrypoint = await _requestHelper.Get<V8.Entrypoint>(apiRootUri).ConfigureAwait(false);
+        var entrypoint = await _requestHelper.GetAsync<V8.Entrypoint>(apiRootUri).ConfigureAwait(false);
 
         root = entrypoint.FromDataTransferObject();
 

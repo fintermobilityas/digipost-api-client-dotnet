@@ -26,7 +26,7 @@ internal class SenderInformationApi
 
         if (_entrypointCache.TryGetValue(cacheKey, out SenderInformation information)) return information;
 
-        var result = await _requestHelper.Get<V8.Sender_Information>(senderInformationUri).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<V8.Sender_Information>(senderInformationUri).ConfigureAwait(false);
         var senderInformation = result.FromDataTransferObject();
 
         if (!senderInformation.IsValidSender)

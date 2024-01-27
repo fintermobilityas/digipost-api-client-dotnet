@@ -61,7 +61,7 @@ internal class DocumentsApi : IDocumentsApi, IShareDocumentsApi
     public async Task<DocumentStatus> GetDocumentStatusAsync(Guid guid)
     {
         var documentStatusUri = _root.GetDocumentStatusUri(guid);
-        var result = await _requestHelper.Get<Document_Status>(documentStatusUri).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<Document_Status>(documentStatusUri).ConfigureAwait(false);
 
         return result.FromDataTransferObject();
     }
@@ -79,7 +79,7 @@ internal class DocumentsApi : IDocumentsApi, IShareDocumentsApi
     public async Task<DocumentEvents> GetDocumentEventsAsync(DateTime from, DateTime to, int offset, int maxResults)
     {
         var documentEventsUri = _root.GetDocumentEventsUri(_sender, from, to, offset, maxResults);
-        var result = await _requestHelper.Get<Document_Events>(documentEventsUri).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<Document_Events>(documentEventsUri).ConfigureAwait(false);
 
         return result.FromDataTransferObject();
     }
@@ -97,7 +97,7 @@ internal class DocumentsApi : IDocumentsApi, IShareDocumentsApi
     public async Task<ShareDocumentsRequestState> GetShareDocumentsRequestStateAsync(Guid guid)
     {
         var shareDocumentsRequestStateUri = _root.GetShareDocumentsRequestStateUri(guid);
-        var result = await _requestHelper.Get<Share_Documents_Request_State>(shareDocumentsRequestStateUri).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<Share_Documents_Request_State>(shareDocumentsRequestStateUri).ConfigureAwait(false);
 
         return result.FromDataTransferObject();
     }
@@ -113,13 +113,13 @@ internal class DocumentsApi : IDocumentsApi, IShareDocumentsApi
 
     public async Task<SharedDocumentContent> GetShareDocumentContentAsync(GetSharedDocumentContentUri uri)
     {
-        var result = await _requestHelper.Get<Shared_Document_Content>(uri).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<Shared_Document_Content>(uri).ConfigureAwait(false);
 
         return result.FromDataTransferObject();
     }
 
     public async Task<Stream> FetchSharedDocument(GetSharedDocumentContentStreamUri uri)
     {
-        return await _requestHelper.GetStream(uri).ConfigureAwait(false);
+        return await _requestHelper.GetStreamAsync(uri).ConfigureAwait(false);
     }
 }

@@ -19,7 +19,7 @@ internal class SendRequestHelper
 
     internal Task<T> Get<T>(Uri uri)
     {
-        return _requestHelper.Get<T>(uri);
+        return _requestHelper.GetAsync<T>(uri);
     }
 
     internal Task<T> PostMessage<T>(IMessage message, Uri uri, bool skipMetaDataValidation = false)
@@ -27,7 +27,7 @@ internal class SendRequestHelper
         var messageAction = new MessageAction(message);
         var httpContent = messageAction.Content(message);
 
-        return _requestHelper.Post<T>(httpContent, messageAction.RequestContent, uri, skipMetaDataValidation);
+        return _requestHelper.PostAsync<T>(httpContent, messageAction.RequestContent, uri, skipMetaDataValidation);
     }
 
     internal Task PostAdditionalData<T>(IAdditionalData additionalData, AddAdditionalDataUri uri)
@@ -35,7 +35,7 @@ internal class SendRequestHelper
         var action = new AddAdditionalDataAction(additionalData);
         var httpContent = action.Content(additionalData);
 
-        return _requestHelper.Post<T>(httpContent, action.RequestContent, uri);
+        return _requestHelper.PostAsync<T>(httpContent, action.RequestContent, uri);
     }
 
     internal Task<T> PostIdentification<T>(IIdentification identification, Uri uri)
@@ -43,6 +43,6 @@ internal class SendRequestHelper
         var messageAction = new IdentificationAction(identification);
         var httpContent = messageAction.Content(identification);
 
-        return _requestHelper.Post<T>(httpContent, messageAction.RequestContent, uri);
+        return _requestHelper.PostAsync<T>(httpContent, messageAction.RequestContent, uri);
     }
 }
