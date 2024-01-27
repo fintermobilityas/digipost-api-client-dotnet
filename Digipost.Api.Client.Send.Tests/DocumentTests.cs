@@ -71,15 +71,12 @@ public class DocumentTests
         static string CreateTempFile()
         {
             var tempFile = Path.GetTempFileName();
-            using (var fileStream = new FileStream(tempFile, FileMode.Append))
-            {
-                using (var writer = new StreamWriter(fileStream))
-                {
-                    writer.WriteLine("testulf testesen");
-                    writer.Flush();
-                    writer.Close();
-                }
-            }
+            using var fileStream = new FileStream(tempFile, FileMode.Append);
+            using var writer = new StreamWriter(fileStream);
+            writer.WriteLine("testulf testesen");
+            writer.Flush();
+            writer.Close();
+
             return tempFile;
         }
 

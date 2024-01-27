@@ -7,7 +7,7 @@ namespace Digipost.Api.Client.Resources.Xsd;
 
 internal static class XsdResource
 {
-    static readonly ResourceUtility ApiResourceUtility = new ResourceUtility(typeof(XsdResource).Assembly, "Digipost.Api.Client.Resources.Xsd.Data");
+    static readonly ResourceUtility ApiResourceUtility = new(typeof(XsdResource).Assembly, "Digipost.Api.Client.Resources.Xsd.Data");
 
     public static XmlReader GetApiV8Xsd()
     {

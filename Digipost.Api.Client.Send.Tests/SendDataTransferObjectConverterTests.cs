@@ -84,7 +84,7 @@ public class SendDataTransferObjectConverterTests
                 },
                 Attachments = new List<Document>
                     {
-                        new Document(source.Attachment[0].Subject, source.Attachment[0].File_Type, AuthenticationLevel.TwoFactor, SensitivityLevel.Sensitive)
+                        new(source.Attachment[0].Subject, source.Attachment[0].File_Type, AuthenticationLevel.TwoFactor, SensitivityLevel.Sensitive)
                         {
                             Guid = source.Attachment[0].Uuid,
                             ContentHash = new ContentHash {HashAlgoritm = source.Attachment[0].Content_Hash.Hash_Algorithm, Value = source.Attachment[0].Content_Hash.Value}

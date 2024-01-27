@@ -10,10 +10,29 @@ namespace Digipost.Api.Client.Inbox;
 
 internal interface IInbox
 {
+    /// <summary>
+    /// Fetches a collection of InboxDocuments asynchronously.
+    /// </summary>
+    /// <param name="offset">The offset of documents to fetch (optional, default is 0).</param>
+    /// <param name="limit">The maximum number of documents to fetch (optional, default is 100).</param>
+    /// <param name="cancellationToken">The cancellation token to cancel operation (optional, default is CancellationToken.None).</param>
+    /// <returns>Returns a task representing the asynchronous operation that returns a collection of InboxDocuments.</returns>
     Task<IEnumerable<InboxDocument>> FetchAsync(int offset = 0, int limit = 100, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Fetches a document from the inbox asynchronously.
+    /// </summary>
+    /// <param name="document">The document to fetch.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel operation (optional, default is CancellationToken.None).</param>
+    /// <returns>Returns a task representing the asynchronous operation that returns a stream containing the document content.</returns>
     Task<Stream> FetchDocumentAsync(GetInboxDocumentContentUri document, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Deletes a document from the inbox asynchronously.
+    /// </summary>
+    /// <param name="document">The document to delete.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation (optional, default is CancellationToken.None).</param>
+    /// <returns>Returns a task representing the asynchronous operation.</returns>
     Task DeleteDocumentAsync(InboxDocumentDeleteUri document, CancellationToken cancellationToken);
 }
 

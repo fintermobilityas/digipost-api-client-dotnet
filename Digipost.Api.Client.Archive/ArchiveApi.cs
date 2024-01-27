@@ -41,11 +41,11 @@ public interface IArchiveApi
      */
     Task<Archive> GetArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentUri, CancellationToken cancellationToken);
 
-    Task<Archive> FetchDocumentFromExternalId(String externalId, CancellationToken cancellationToken);
+    Task<Archive> FetchDocumentFromExternalId(string externalId, CancellationToken cancellationToken);
 
     Task<Archive> FetchDocumentFromExternalId(Guid externalIdGuid, CancellationToken cancellationToken);
 
-    Task<Stream> StreamDocumentFromExternalId(String externalId, CancellationToken cancellationToken);
+    Task<Stream> StreamDocumentFromExternalId(string externalId, CancellationToken cancellationToken);
 
     Task<Stream> StreamDocumentFromExternalId(Guid externalIdGuid, CancellationToken cancellationToken);
 

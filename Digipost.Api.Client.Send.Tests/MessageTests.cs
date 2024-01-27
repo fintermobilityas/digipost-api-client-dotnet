@@ -7,7 +7,7 @@ namespace Digipost.Api.Client.Send.Tests;
 
 public class MessageTests
 {
-    internal readonly Sender Sender = new Sender(1010);
+    internal readonly Sender Sender = new(1010);
 
     public class ConstructorMethod : MessageTests
     {

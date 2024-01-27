@@ -60,9 +60,9 @@ public class DigipostApiIntegrationTests
 
         var links = new Dictionary<string, Link>
         {
-            ["SEARCH"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/recipient/search") { Rel = httpClient.BaseAddress + "relations/search" },
-            ["IDENTIFY_RECIPIENT"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/identification") { Rel = httpClient.BaseAddress + "relations/identify_recipient" },
-            ["CREATE_MESSAGE"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/message") { Rel = httpClient.BaseAddress + "relations/create_message" }
+            ["SEARCH"] = new(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/recipient/search") { Rel = httpClient.BaseAddress + "relations/search" },
+            ["IDENTIFY_RECIPIENT"] = new(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/identification") { Rel = httpClient.BaseAddress + "relations/identify_recipient" },
+            ["CREATE_MESSAGE"] = new(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/message") { Rel = httpClient.BaseAddress + "relations/create_message" }
         };
         var root = new Root("")
         {

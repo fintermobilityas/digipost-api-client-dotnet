@@ -19,8 +19,8 @@ public class SharedDocument : RestLinkable
 
     public SharedDocument(
         DateTime deliveryTime,
-        String subject,
-        String fileType,
+        string subject,
+        string fileType,
         int fileSizeBytes,
         IOrigin origin,
         Dictionary<string, Link> links)

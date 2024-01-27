@@ -4,59 +4,44 @@ using Digipost.Api.Client.Common.Enums;
 
 namespace Digipost.Api.Client.Send;
 
-public class DocumentStatus
+public class DocumentStatus(
+    string guid,
+    long senderId,
+    DateTime created,
+    DocumentStatus.DocumentDeliveryStatus documentDeliveryStatus,
+    DocumentStatus.Read? read,
+    DeliveryMethod deliveryMethod,
+    string contentHash,
+    DateTime? delivered,
+    bool? isPrimaryDocument,
+    HashAlgoritm? contentHashAlgoritm)
 {
-    public DocumentStatus(
-        string guid,
-        long senderId,
-        DateTime created,
-        DocumentDeliveryStatus documentDeliveryStatus,
-        Read? read,
-        DeliveryMethod deliveryMethod,
-        string contentHash,
-        DateTime? delivered,
-        Boolean? isPrimaryDocument,
-        HashAlgoritm? contentHashAlgoritm
-    )
-    {
-        Guid = guid;
-        Sender = new Sender(senderId);
-        Created = created;
-        DeliveryStatus = documentDeliveryStatus;
-        DocumentRead = read;
-        DeliveryMethod = deliveryMethod;
-        ContentHash = contentHash;
-        Delivered = delivered;
-        IsPrimaryDocument = isPrimaryDocument;
-        ContentHashAlgoritm = contentHashAlgoritm;
-    }
+    public string Guid { get; } = guid;
 
-    public string Guid { get; }
+    public Sender Sender { get; } = new(senderId);
 
-    public Sender Sender { get; }
-
-    public DateTime Created { get; }
+    public DateTime Created { get; } = created;
 
     /**
      * If DeliveryStatus is NOT_DELIVERED, Delivered will not have a value
      */
-    public DateTime? Delivered { get; }
+    public DateTime? Delivered { get; } = delivered;
 
-    public DocumentDeliveryStatus DeliveryStatus { get; }
+    public DocumentDeliveryStatus DeliveryStatus { get; } = documentDeliveryStatus;
 
-    public Read? DocumentRead { get; }
+    public Read? DocumentRead { get; } = read;
 
-    public DeliveryMethod DeliveryMethod { get; }
+    public DeliveryMethod DeliveryMethod { get; } = deliveryMethod;
 
-    public String ContentHash { get; }
+    public string ContentHash { get; } = contentHash;
 
-    public HashAlgoritm? ContentHashAlgoritm { get; }
+    public HashAlgoritm? ContentHashAlgoritm { get; } = contentHashAlgoritm;
 
     /**
      * isPrimaryDocument has value only if you ask api are the actual sender asking for DocumentStatus.
      * If you are, then this will be true for the primary document else false.
      */
-    public Boolean? IsPrimaryDocument { get; }
+    public bool? IsPrimaryDocument { get; } = isPrimaryDocument;
 
     public enum DocumentDeliveryStatus
     {

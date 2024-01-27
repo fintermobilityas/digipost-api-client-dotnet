@@ -87,11 +87,9 @@ internal class AuthenticationHandler : DelegatingHandler
 
     internal static string ComputeHash(byte[] inputBytes)
     {
-        using (var sha256 = SHA256.Create())
-        {
-            var hashBytes = sha256.ComputeHash(inputBytes);
-            return Convert.ToBase64String(hashBytes);
-        }
+        using var sha256 = SHA256.Create();
+        var hashBytes = sha256.ComputeHash(inputBytes);
+        return Convert.ToBase64String(hashBytes);
     }
 
     internal static string ComputeSignature(string method, Uri uri, string date, string contentSha256Hash,
@@ -133,14 +131,12 @@ internal class AuthenticationHandler : DelegatingHandler
 
         var messageBytes = Encoding.UTF8.GetBytes(messageHeader);
 
-        using (var rsa = businessCertificate.GetRSAPrivateKey())
-        using (var sha256 = SHA256.Create())
-        {
-            var hash = sha256.ComputeHash(messageBytes);
-            var signature = rsa.SignHash(hash, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        using var rsa = businessCertificate.GetRSAPrivateKey();
+        using var sha256 = SHA256.Create();
+        var hash = sha256.ComputeHash(messageBytes);
+        var signature = rsa.SignHash(hash, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
-            return Convert.ToBase64String(signature);
-        }
+        return Convert.ToBase64String(signature);
     }
 
     class UriParts

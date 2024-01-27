@@ -6,7 +6,7 @@ namespace Digipost.Api.Client.Resources.Content;
 
 internal class ContentResource
 {
-    static readonly ResourceUtility ResourceUtility = new ResourceUtility(typeof(XsdResource).GetTypeInfo().Assembly, "Digipost.Api.Client.Resources.Content.Data");
+    static readonly ResourceUtility ResourceUtility = new(typeof(XsdResource).GetTypeInfo().Assembly, "Digipost.Api.Client.Resources.Content.Data");
 
     static byte[] GetResource(params string[] path)
     {

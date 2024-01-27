@@ -755,7 +755,7 @@ public class DataTransferObjectConverterTests
             {
                 PersonDetails = new List<SearchDetails>
                     {
-                        new SearchDetails
+                        new()
                         {
                             FirstName = recipient0.Firstname,
                             MiddleName = recipient0.Middlename,
@@ -766,7 +766,7 @@ public class DataTransferObjectConverterTests
                             DigipostAddress = recipient0.Digipost_Address,
                             SearchDetailsAddress = new List<SearchDetailsAddress>
                             {
-                                new SearchDetailsAddress
+                                new()
                                 {
                                     Street = recipient0.Address[0].Street,
                                     HouseNumber = recipient0.Address[0].House_Number,
@@ -775,7 +775,7 @@ public class DataTransferObjectConverterTests
                                     PostalCode = recipient0.Address[0].Zip_Code,
                                     City = recipient0.Address[0].City
                                 },
-                                new SearchDetailsAddress
+                                new()
                                 {
                                     Street = recipient0.Address[1].Street,
                                     HouseNumber = recipient0.Address[1].House_Number,
@@ -786,7 +786,7 @@ public class DataTransferObjectConverterTests
                                 }
                             }
                         },
-                        new SearchDetails
+                        new()
                         {
                             FirstName = recipient1.Firstname,
                             MiddleName = recipient1.Middlename,
@@ -797,7 +797,7 @@ public class DataTransferObjectConverterTests
                             DigipostAddress = recipient1.Digipost_Address,
                             SearchDetailsAddress = new List<SearchDetailsAddress>
                             {
-                                new SearchDetailsAddress
+                                new()
                                 {
                                     Street = recipient1.Address[0].Street,
                                     HouseNumber = recipient1.Address[0].House_Number,

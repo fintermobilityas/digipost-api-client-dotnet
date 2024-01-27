@@ -50,7 +50,7 @@ public class Document : RestLinkable, IDocument
     /// <param name="dataType">Optional metadata for enriching the document when viewed in Digipost</param>
     public Document(string subject, string fileType, string path, AuthenticationLevel authenticationLevel = AuthenticationLevel.Password,
         SensitivityLevel sensitivityLevel = SensitivityLevel.Normal, ISmsNotification smsNotification = null, IDigipostDataType dataType = null)
-        : this(subject, fileType, new byte[] { }, authenticationLevel, sensitivityLevel, smsNotification, dataType)
+        : this(subject, fileType, System.Array.Empty<byte>(), authenticationLevel, sensitivityLevel, smsNotification, dataType)
     {
         ContentBytes = ExtractBytesFromPath(path);
     }
@@ -63,7 +63,7 @@ public class Document : RestLinkable, IDocument
     /// <param name="dataType">Optional metadata for enriching the document when viewed in Digipost</param>
     internal Document(string subject, string fileType, AuthenticationLevel authenticationLevel = AuthenticationLevel.Password,
         SensitivityLevel sensitivityLevel = SensitivityLevel.Normal, ISmsNotification smsNotification = null, IDigipostDataType dataType = null)
-        : this(subject, fileType, new byte[] { }, authenticationLevel, sensitivityLevel, smsNotification, dataType)
+        : this(subject, fileType, System.Array.Empty<byte>(), authenticationLevel, sensitivityLevel, smsNotification, dataType)
     {
     }
 
@@ -87,10 +87,8 @@ public class Document : RestLinkable, IDocument
 
     static byte[] ExtractBytesFromPath(string path)
     {
-        using (var fileStream = new FileStream(path, FileMode.Open))
-        {
-            return ExtractBytesFromStream(fileStream);
-        }
+        using var fileStream = new FileStream(path, FileMode.Open);
+        return ExtractBytesFromStream(fileStream);
     }
 
     static byte[] ExtractBytesFromStream(Stream fileStream)

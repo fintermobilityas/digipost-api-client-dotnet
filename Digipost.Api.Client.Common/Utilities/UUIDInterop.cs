@@ -5,7 +5,7 @@ namespace Digipost.Api.Client.Common.Utilities;
 
 public static class UuidInterop
 {
-    public static string NameUuidFromBytes(String input)
+    public static string NameUuidFromBytes(string input)
     {
         MD5 md5 = MD5.Create();
         byte[] hash = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));

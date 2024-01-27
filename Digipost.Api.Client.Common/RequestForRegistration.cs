@@ -7,8 +7,8 @@ public class RequestForRegistration
 {
     public RequestForRegistration(
         DateTime registrationDeadline,
-        String phoneNumber,
-        String emailAddress,
+        string phoneNumber,
+        string emailAddress,
         IPrintDetails printDetails
     )
     {

@@ -30,7 +30,7 @@ public class InboxApiIntegrationTests
 
         var links = new Dictionary<string, Link>
         {
-            ["GET_INBOX"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/inbox") { Rel = httpClient.BaseAddress + "relations/get_inbox" }
+            ["GET_INBOX"] = new(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/inbox") { Rel = httpClient.BaseAddress + "relations/get_inbox" }
         };
         var root = new Root("")
         {

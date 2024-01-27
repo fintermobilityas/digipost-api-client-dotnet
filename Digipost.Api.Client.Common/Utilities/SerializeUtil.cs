@@ -24,14 +24,12 @@ public static class SerializeUtil
             OmitXmlDeclaration = false
         };
 
-        using (var textWriter = new Utf8StringWriter())
+        using var textWriter = new Utf8StringWriter();
+        using (var xmlWriter = XmlWriter.Create(textWriter, settings))
         {
-            using (var xmlWriter = XmlWriter.Create(textWriter, settings))
-            {
-                serializer.Serialize(xmlWriter, value);
-            }
-            return textWriter.ToString();
+            serializer.Serialize(xmlWriter, value);
         }
+        return textWriter.ToString();
     }
 
     public static T Deserialize<T>(string xml)
@@ -45,13 +43,9 @@ public static class SerializeUtil
 
         var settings = new XmlReaderSettings();
 
-        using (var textReader = new StringReader(xml))
-        {
-            using (var xmlReader = XmlReader.Create(textReader, settings))
-            {
-                return (T)serializer.Deserialize(xmlReader);
-            }
-        }
+        using var textReader = new StringReader(xml);
+        using var xmlReader = XmlReader.Create(textReader, settings);
+        return (T)serializer.Deserialize(xmlReader);
     }
 
     sealed class Utf8StringWriter : StringWriter

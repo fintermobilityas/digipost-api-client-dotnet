@@ -14,7 +14,7 @@ public class ArchiveTest
         {
             Links = new Dictionary<string, Link>
             {
-                ["NEXT_DOCUMENTS"] = new Link("https://www.testing.no/1010/archive/1000/document?limit=100&offset=0")
+                ["NEXT_DOCUMENTS"] = new("https://www.testing.no/1010/archive/1000/document?limit=100&offset=0")
                 {
                     Rel = "https://www.testing.no/relation/next_document"
                 }
