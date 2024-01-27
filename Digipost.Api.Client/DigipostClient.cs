@@ -81,28 +81,14 @@ namespace Digipost.Api.Client
         /// <param name="sender">The sender of the message. Default is null.</param>
         /// <returns>The instance of <see cref="IShareDocumentsApi"/>.</returns>
         IShareDocumentsApi GetDocumentSharing(Sender sender = null);
-
-        /// <summary>
-        /// Identifies the recipient in Digipost.
-        /// </summary>
-        /// <param name="identification">The identification information of the recipient.</param>
-        /// <returns>The identification result.</returns>
-        IIdentificationResult Identify(IIdentification identification);
-
+        
         /// <summary>
         /// Identifies the specified recipient.
         /// </summary>
         /// <param name="identification">The identification information of the recipient.</param>
         /// <returns>A task representing the asynchronous operation and containing the identification result.</returns>
         Task<IIdentificationResult> IdentifyAsync(IIdentification identification);
-
-        /// <summary>
-        /// Sends a message using the Digipost API.
-        /// </summary>
-        /// <param name="message">The message to send.</param>
-        /// <returns>The result of message delivery.</returns>
-        IMessageDeliveryResult SendMessage(IMessage message);
-
+        
         /// <summary>
         /// Sends a message asynchronously.
         /// </summary>
@@ -115,14 +101,7 @@ namespace Digipost.Api.Client
         /// </summary>
         /// <param name="additionalData">The additional data to add to the message.</param>
         /// <param name="uri">The URI of the message to add the additional data to.</param>
-        void AddAdditionalData(AdditionalData additionalData, AddAdditionalDataUri uri);
-
-        /// <summary>
-        /// Searches for details matching a specified query string.
-        /// </summary>
-        /// <param name="query">The query string to search.</param>
-        /// <returns>An object that contains the search results.</returns>
-        ISearchDetailsResult Search(string query);
+        Task AddAdditionalData(AdditionalData additionalData, AddAdditionalDataUri uri);
 
         /// <summary>
         /// Searches for details using the given query.
@@ -197,7 +176,10 @@ namespace Digipost.Api.Client
         {
             var cacheKey = "root" + apiRootUri;
 
-            if (_entrypointCache.TryGetValue(cacheKey, out Root root)) return root;
+            if (_entrypointCache.TryGetValue(cacheKey, out Root root))
+            {
+                return root;
+            }
 
             var result = _requestHelper.Get<V8.Entrypoint>(apiRootUri).ConfigureAwait(false);
             var entrypoint = result.GetAwaiter().GetResult();
@@ -257,6 +239,7 @@ namespace Digipost.Api.Client
         {
             return new DocumentsApi(_requestHelper, _loggerFactory, GetRoot(new ApiRootUri(sender)), sender);
         }
+        
         public IShareDocumentsApi GetDocumentSharing(Sender sender = null)
         {
             return new DocumentsApi(_requestHelper, _loggerFactory, GetRoot(new ApiRootUri(sender)), sender);
@@ -282,9 +265,9 @@ namespace Digipost.Api.Client
             return _sendMessageApi().SendMessageAsync(message, _clientConfig.SkipMetaDataValidation);
         }
 
-        public void AddAdditionalData(AdditionalData additionalData, AddAdditionalDataUri uri)
+        public Task AddAdditionalData(AdditionalData additionalData, AddAdditionalDataUri uri)
         {
-            _sendMessageApi().SendAdditionalData(additionalData, uri);
+            return _sendMessageApi().SendAdditionalDataAsync(additionalData, uri);
         }
 
         public ISearchDetailsResult Search(string query)

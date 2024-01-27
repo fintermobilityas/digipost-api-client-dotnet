@@ -112,11 +112,6 @@ namespace Digipost.Api.Client.Api
             return searchDetailsResult;
         }
 
-        public void SendAdditionalData(IAdditionalData additionalData, AddAdditionalDataUri uri)
-        {
-            SendAdditionalDataAsync(additionalData, uri).GetAwaiter().GetResult();
-        }
-
         public async Task SendAdditionalDataAsync(IAdditionalData additionalData, AddAdditionalDataUri uri)
         {
             _logger.LogDebug("Sending additional data '{uri}'", uri);
