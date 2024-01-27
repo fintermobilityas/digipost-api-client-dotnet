@@ -117,7 +117,6 @@ namespace Digipost.Api.Client
         private readonly RequestHelper _requestHelper;
         private readonly IMemoryCache _entrypointCache;
 
-        private readonly ILogger<DigipostClient> _logger;
         private readonly ILoggerFactory _loggerFactory;
 
         public DigipostClient(ClientConfig clientConfig, string thumbprint)
@@ -132,7 +131,6 @@ namespace Digipost.Api.Client
 
         public DigipostClient(ClientConfig clientConfig, X509Certificate2 enterpriseCertificate, ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<DigipostClient>();
             _loggerFactory = loggerFactory;
             _entrypointCache = new MemoryCache(new MemoryCacheOptions());
 
