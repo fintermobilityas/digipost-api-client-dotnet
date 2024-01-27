@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using Digipost.Api.Client.Internal;
 using Digipost.Api.Client.Resources.Certificate;
@@ -22,9 +24,10 @@ public class AuthenticationHandlerTests
                 "HEZfhL+mu0Pb9Owvfs7pHLUXxZPthONK53nWTwXPFtFVjslr4AIxLqUSbAO7PerzBcRryYa84SellVabx8t16Ixg52afLQb02qyeDx1qF23YAIvvv01NmEJkVUUTV/oN7MgDAb4NGeujzVoUzXKTV+b5YC4W2c4M/RWSGYF1HxEEo+82SDyTlwGa3XxhcVem2Kg0LOgZvKaJnFWk0fsVDI7J9xWdOY0NWbtlm/xu77w2IlR+91lbr2G5A75lyzboXVEYvOj3UGzKwFTqGDpR7var+/PzWh00lQ/dKtILKzDGz3E80CxCOtlU/6kczk9MtYVQvLCy7QR0GMUI6ypTzg==";
             var certificate = CertificateResource.Certificate();
             var dateTime = new DateTime(2014, 07, 07, 12, 00, 02).ToString("R");
-
+            using var sha256 = SHA256.Create();
+            
             //Act
-            var computedSignature = AuthenticationHandler.ComputeSignature(method, new Uri(uri), dateTime, sha256Hash,
+            var computedSignature = AuthenticationHandler.ComputeSignature(sha256, method, new Uri(uri), dateTime, sha256Hash,
                 senderId,
                 certificate,
                 false);
@@ -41,9 +44,11 @@ public class AuthenticationHandlerTests
         {
             //Arrange
             var contentBytes = Encoding.UTF8.GetBytes("This is the content to hash.");
+            using var sha256 = SHA256.Create();
+            using var contentStream = new MemoryStream(contentBytes);
 
             //Act
-            var computedHash = AuthenticationHandler.ComputeHash(contentBytes);
+            var computedHash = AuthenticationHandler.ComputeHash(sha256, contentStream);
 
             //Assert
             var expectedHash = "gvXOB75lBGBY6LVTAVVpapZkBOv531VUE0EHrP2rryE=";
