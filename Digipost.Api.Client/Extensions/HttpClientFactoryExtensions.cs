@@ -12,27 +12,33 @@ namespace Digipost.Api.Client.Extensions
     public static class HttpClientFactoryExtensions
     {
         /// <summary>
-        /// Adds a Digipost client to the service collection using the specified client configuration and certificate.
+        /// Adds a single-tenant Digipost client to the service collection using the specified client configuration and certificate.
         /// </summary>
         /// <param name="serviceCollection">The IServiceCollection in which the Digipost client will be added.</param>
         /// <param name="clientConfig">The client configuration containing the necessary settings for the Digipost client.</param>
         /// <param name="certificate">The certificate used for authentication.</param>
         /// <returns>An IHttpClientBuilder instance that can be used to further configure the Digipost client.</returns>
-        public static IHttpClientBuilder AddDigipostClient(
-            this IServiceCollection serviceCollection, 
-            ClientConfig clientConfig, 
+        public static IHttpClientBuilder AddSingleTenantDigipostClient(
+            this IServiceCollection serviceCollection,
+            ClientConfig clientConfig,
             X509Certificate2 certificate)
         {
             if (serviceCollection == null) throw new ArgumentNullException(nameof(serviceCollection));
             if (clientConfig == null) throw new ArgumentNullException(nameof(clientConfig));
 
-            var httpClientName = $"Digipost:{clientConfig.Broker.Id}";
+            const string httpClientName = "Digipost";
+            
+            serviceCollection.AddTransient<IDigipostClient>(serviceProvider =>
+                new DigipostClient(
+                    clientConfig,
+                    serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(httpClientName),
+                    serviceProvider.GetRequiredService<ILoggerFactory>()));
 
-            serviceCollection.AddTransient(c => new AuthenticationHandler(clientConfig, certificate, c.GetRequiredService<ILoggerFactory>()));
-            serviceCollection.AddTransient<IDigipostClient>(c => new DigipostClient(clientConfig, 
-                c.GetRequiredService<IHttpClientFactory>().CreateClient(httpClientName), c.GetRequiredService<ILoggerFactory>()));
+            return AddHttpClient(serviceCollection, clientConfig, certificate, httpClientName);
+        }
 
-            return serviceCollection.AddHttpClient(
+        static IHttpClientBuilder AddHttpClient(IServiceCollection serviceCollection, ClientConfig clientConfig, X509Certificate2 certificate, string httpClientName) =>
+            serviceCollection.AddHttpClient(
                     httpClientName, client =>
                     {
                         client.Timeout = TimeSpan.FromMilliseconds(clientConfig.TimeoutMilliseconds);
@@ -54,7 +60,6 @@ namespace Digipost.Api.Client.Extensions
 
                     return httpMessageHandler;
                 })
-                .AddHttpMessageHandler<AuthenticationHandler>();
-        }
+                .AddHttpMessageHandler(serviceProvider => new AuthenticationHandler(clientConfig, certificate, serviceProvider.GetRequiredService<ILoggerFactory>()));
     }
 }

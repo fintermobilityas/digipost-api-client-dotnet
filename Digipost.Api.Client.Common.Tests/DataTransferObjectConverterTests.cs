@@ -410,7 +410,7 @@ public class DataTransferObjectConverterTests
                     "ReturnName",
                     new NorwegianAddress("0001", "OsloRet", "Addr1Ret", "Addr2Ret", "Addr3Ret")));
 
-            List<PrintInstruction> printinstruction = new List<PrintInstruction>();
+            var printinstruction = new List<PrintInstruction>();
             printinstruction.Add(new PrintInstruction("test", "testing"));
             source.PrintInstructions = new PrintInstructions(printinstruction);
 
@@ -460,8 +460,8 @@ public class DataTransferObjectConverterTests
         public void PrintIfUnread()
         {
             //Arrange
-            DateTime printifunreadafter = DateTime.Now.AddDays(3);
-            PrintDetails printDetails = new PrintDetails(
+            var printifunreadafter = DateTime.Now.AddDays(3);
+            var printDetails = new PrintDetails(
                 new PrintRecipient(
                     "Name",
                     new NorwegianAddress("0001", "Oslo", "Addr1", "Addr2", "Addr3")),

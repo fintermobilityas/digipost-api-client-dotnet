@@ -36,7 +36,7 @@ public static class SerializeUtil
     {
         if (string.IsNullOrEmpty(xml))
         {
-            return default(T);
+            return default;
         }
 
         var serializer = new XmlSerializer(typeof(T));

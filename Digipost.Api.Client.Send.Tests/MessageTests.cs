@@ -15,8 +15,8 @@ public class MessageTests
         public void ConstructWithRecipientAndPrimaryDocument()
         {
             //Arrange
-            var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
-            );
+            using var primaryDocument = DomainUtility.GetDocument();
+            var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), primaryDocument);
 
             //Act
 
@@ -29,7 +29,7 @@ public class MessageTests
         {
             //Arrange
             var recipient = DomainUtility.GetRecipientByDigipostId();
-            var document = DomainUtility.GetDocument();
+            using var document = DomainUtility.GetDocument();
             var printDetails = DomainUtility.GetPrintDetails();
 
             var message = new Message(Sender, recipient, document) { PrintDetails = printDetails };
@@ -49,8 +49,8 @@ public class MessageTests
         public void DeliveryTimeNotSpecifiedGivesFalse()
         {
             //Arrange
-            var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
-            );
+            using var primaryDocument = DomainUtility.GetDocument();
+            var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), primaryDocument);
 
             //Act
 
@@ -62,9 +62,11 @@ public class MessageTests
         public void DeliveryTimeSpecifiedGivesTrue()
         {
             //Arrange
-            var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
-            )
-            { DeliveryTime = DateTime.Today };
+            using var primaryDocument = DomainUtility.GetDocument();
+            var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), primaryDocument)
+            {
+                DeliveryTime = DateTime.Today
+            };
 
             //Act
 

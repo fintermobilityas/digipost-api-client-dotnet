@@ -18,7 +18,7 @@ public class PrintDetailsTests
             var printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
                 DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors);
 
-            List<PrintInstruction> printinstruction = new List<PrintInstruction>();
+            var printinstruction = new List<PrintInstruction>();
             printinstruction.Add(new PrintInstruction("test", "testing"));
             printDetails.PrintInstructions = new PrintInstructions(printinstruction);
 
@@ -38,7 +38,7 @@ public class PrintDetailsTests
         public void CanSetShreddedDeliverableHandling()
         {
             //Arrange
-            List<PrintInstruction> printinstruction = new List<PrintInstruction>();
+            var printinstruction = new List<PrintInstruction>();
             printinstruction.Add(new PrintInstruction("test", "testing"));
             var printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
                 DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors)

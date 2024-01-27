@@ -85,7 +85,8 @@ public class DigipostApiIntegrationTests
         [Fact]
         public async Task InternalServerErrorShouldCauseDigipostResponseException()
         {
-            var message = DomainUtility.GetSimpleMessageWithRecipientById();
+            using var document = DomainUtility.GetDocument();
+            var message = DomainUtility.GetSimpleMessageWithRecipientById(document);
             const HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
             var messageContent = new StringContent(string.Empty);
 
@@ -96,7 +97,8 @@ public class DigipostApiIntegrationTests
         [Fact]
         public async Task ProperRequestSentRecipientById()
         {
-            var message = DomainUtility.GetSimpleMessageWithRecipientById();
+            using var document = DomainUtility.GetDocument();
+            var message = DomainUtility.GetSimpleMessageWithRecipientById(document);
             await SendMessageAsync(message, new FakeResponseHandler { ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery() });
         }
 
@@ -111,7 +113,8 @@ public class DigipostApiIntegrationTests
         [Fact]
         public async Task ShouldSerializeErrorMessage()
         {
-            var message = DomainUtility.GetSimpleMessageWithRecipientById();
+            using var document = DomainUtility.GetDocument();
+            var message = DomainUtility.GetSimpleMessageWithRecipientById(document);
             const HttpStatusCode statusCode = HttpStatusCode.NotFound;
             var messageContent = XmlResource.SendMessage.GetError();
 

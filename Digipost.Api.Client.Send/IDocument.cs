@@ -1,9 +1,11 @@
-﻿using Digipost.Api.Client.Common.Enums;
+﻿using System;
+using System.IO;
+using Digipost.Api.Client.Common.Enums;
 using Digipost.Api.Client.DataTypes.Core;
 
 namespace Digipost.Api.Client.Send;
 
-public interface IDocument
+public interface IDocument : IDisposable
 {
     /// <summary>
     ///     Unique identification of document. Is set automatically using System.Guid.NewGuid(), and is
@@ -40,7 +42,7 @@ public interface IDocument
     /// <summary>
     ///     The document encoded as a byte array.
     /// </summary>
-    byte[] ContentBytes { get; set; }
+    Stream Stream { get; set; }
 
     /// <summary>
     ///     Optional metadata to enrich the document in Digipost. See https://github.com/digipost/digipost-data-types for valid data-types.

@@ -14,8 +14,8 @@ public class PrintIfUnreadAfterTests
         [Fact]
         public void SimpleConstructor()
         {
-            DateTime deadline = DateTime.Now.AddDays(3);
-            PrintDetails printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
+            var deadline = DateTime.Now.AddDays(3);
+            var printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
                     DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors);
 
             //Arrange

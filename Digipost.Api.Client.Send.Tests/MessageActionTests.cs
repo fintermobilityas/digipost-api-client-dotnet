@@ -15,7 +15,8 @@ public class MessageActionTests
         public void ReturnsCorrectDataForMessage()
         {
             //Arrange
-            var message = DomainUtility.GetSimpleMessageWithRecipientById();
+            using var document = DomainUtility.GetDocument();
+            var message = DomainUtility.GetSimpleMessageWithRecipientById(document);
 
             //Act
             var action = new MessageAction(message);
@@ -29,9 +30,10 @@ public class MessageActionTests
         [Fact]
         public void SerializedXmlContainsDataType()
         {
-            ExternalLink externalLink = new ExternalLink(new Uri("https://digipost.no"));
+            var externalLink = new ExternalLink(new Uri("https://digipost.no"));
 
-            var message = DomainUtility.GetSimpleMessageWithRecipientById(DomainUtility.GetDocument(externalLink));
+            using var document = DomainUtility.GetDocument(externalLink);
+            var message = DomainUtility.GetSimpleMessageWithRecipientById(document);
 
             var action = new MessageAction(message);
             var content = action.RequestContent;

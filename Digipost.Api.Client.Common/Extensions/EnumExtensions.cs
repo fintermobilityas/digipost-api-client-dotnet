@@ -146,12 +146,12 @@ internal static class EnumExtensions
 
     static TTargetEnum MapEnum<TTargetEnum>(Enum sourceEnum) where TTargetEnum : Enum
     {
-        Type targetEnumType = typeof(TTargetEnum);
+        var targetEnumType = typeof(TTargetEnum);
 
-        string sourceEnumName = sourceEnum.ToString();
-        string[] targetEnumNames = Enum.GetNames(targetEnumType);
+        var sourceEnumName = sourceEnum.ToString();
+        var targetEnumNames = Enum.GetNames(targetEnumType);
 
-        string mappedValueName = targetEnumNames.FirstOrDefault(
+        var mappedValueName = targetEnumNames.FirstOrDefault(
             targetName => string.Equals(
                 RemoveUnderscores(targetName),
                 RemoveUnderscores(sourceEnumName),
@@ -161,7 +161,7 @@ internal static class EnumExtensions
 
         if (!string.IsNullOrEmpty(mappedValueName))
         {
-            object mappedValue = Enum.Parse(targetEnumType, mappedValueName);
+            var mappedValue = Enum.Parse(targetEnumType, mappedValueName);
             return (TTargetEnum)mappedValue;
         }
 

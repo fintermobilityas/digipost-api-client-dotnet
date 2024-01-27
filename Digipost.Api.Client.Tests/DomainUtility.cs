@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Enums;
 using Digipost.Api.Client.Common.Identify;
@@ -10,7 +11,6 @@ using Digipost.Api.Client.Resources.Content;
 using Digipost.Api.Client.Send;
 using V8;
 using Document = Digipost.Api.Client.Send.Document;
-using Environment = Digipost.Api.Client.Common.Environment;
 using Identification = Digipost.Api.Client.Common.Identify.Identification;
 using Message = V8.Message;
 
@@ -18,21 +18,8 @@ namespace Digipost.Api.Client.Tests;
 
 public static class DomainUtility
 {
-    public static ClientConfig GetClientConfig()
-    {
-        return new ClientConfig(new Broker(1010), Environment.Production);
-    }
-
-    public static Sender GetSender()
-    {
-        return new Sender(1010);
-    }
-
-    public static IMessage GetSimpleMessageWithRecipientById()
-    {
-        return GetSimpleMessageWithRecipientById(GetDocument());
-    }
-
+    public static Sender GetSender() => new(1010);
+    
     public static IMessage GetSimpleMessageWithRecipientById(IDocument document)
     {
         var message = new Send.Message(
@@ -43,21 +30,15 @@ public static class DomainUtility
         return message;
     }
 
-    public static IMessage GetMessageWithBytesAndStaticGuidRecipientById()
+    public static IMessage GetMessageWithBytesAndStaticGuidRecipientById(IDocument primaryDocument, List<IDocument> attachmentDocuments)
     {
         var deliverytime = DateTime.Today.AddDays(3);
         var recipientById = GetRecipientByDigipostId();
-
-        return new Send.Message(GetSender(), recipientById, new Document("TestSubject", "txt", new byte[3]))
+        
+        return new Send.Message(GetSender(), recipientById, primaryDocument)
         {
             Id = "ThatMessageId",
-            Attachments = new List<IDocument>
-                {
-                    new Document("TestSubject attachment", "txt", new byte[3])
-                    {
-                        Guid = "attachmentGuid"
-                    }
-                },
+            Attachments = attachmentDocuments,
             DeliveryTime = deliverytime,
             PrimaryDocument = { Guid = "attachmentGuidPrimary" }
         };
@@ -104,7 +85,8 @@ public static class DomainUtility
 
     public static IDocument GetDocument(IDigipostDataType dataType = null)
     {
-        return new Document("simple-document-dotnet", "pdf", ContentResource.Hoveddokument.Pdf())
+        var stream = new MemoryStream(ContentResource.Hoveddokument.Pdf());
+        return new Document("simple-document-dotnet", "pdf", stream)
         {
             DataType = dataType
         };
@@ -116,10 +98,7 @@ public static class DomainUtility
         return identification;
     }
 
-    public static RecipientById GetRecipientByDigipostId()
-    {
-        return new RecipientById(IdentificationType.DigipostAddress, "ola.nordmann#246BB");
-    }
+    public static RecipientById GetRecipientByDigipostId() => new(IdentificationType.DigipostAddress, "ola.nordmann#246BB");
 
     public static RecipientByNameAndAddress GetRecipientByNameAndAddress()
     {

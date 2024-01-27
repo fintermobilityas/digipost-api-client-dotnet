@@ -58,7 +58,7 @@ internal class MessageAction : DigipostAction<IMessage>
 
         foreach (var document in documents)
         {
-            var attachmentContent = new ByteArrayContent(document.ContentBytes);
+            var attachmentContent = new StreamContent(document.Stream);
             attachmentContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
             attachmentContent.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")

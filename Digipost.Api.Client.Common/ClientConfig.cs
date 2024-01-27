@@ -52,4 +52,12 @@ public class ClientConfig
     ///     Used to test sending documents as if you've not imported the DataTypes project.
     /// </summary>
     public bool SkipMetaDataValidation { get; set; }
+
+    /// <summary>
+    /// The sender of the message, i.e. what the receiver of the message sees as the sender of the message.
+    /// If you are delivering a message on behalf of an organization with id 5555, set this property
+    /// to 5555. If you are delivering on behalf of yourself, set this to your organization`s sender id.
+    /// The id is created by Digipost.
+    /// </summary>
+    public Sender Sender => new(Broker.Id);
 }

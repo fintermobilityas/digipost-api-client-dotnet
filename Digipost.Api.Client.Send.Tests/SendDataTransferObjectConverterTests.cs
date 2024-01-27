@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Enums;
@@ -20,7 +21,8 @@ public class SendDataTransferObjectConverterTests
         public void Document()
         {
             //Arrange
-            IDocument source = new Document("TestSubject", "txt", new byte[2], AuthenticationLevel.Password, SensitivityLevel.Sensitive, new SmsNotification(3));
+            using var memoryStream = new MemoryStream(new byte[2]);
+            IDocument source = new Document("TestSubject", "txt", memoryStream, AuthenticationLevel.Password, SensitivityLevel.Sensitive, new SmsNotification(3));
             var expectedDto = new V8.Document
             {
                 Subject = source.Subject,
@@ -164,7 +166,12 @@ public class SendDataTransferObjectConverterTests
         public void Message()
         {
             //Arrange
-            var source = DomainUtility.GetMessageWithBytesAndStaticGuidRecipientById();
+            using var primaryDocument = new Document("TestSubject", "txt", new MemoryStream(new byte[3]));
+            using var attachmentDocument = new Document("TestSubject attachment", "txt", new MemoryStream(new byte[3]))
+            {
+                Guid = "attachmentGuid"
+            };
+            var source = DomainUtility.GetMessageWithBytesAndStaticGuidRecipientById(primaryDocument, [attachmentDocument]);
 
             var expectedDto = DomainUtility.GetMessageDataTransferObjectWithBytesAndStaticGuidRecipientById();
 
@@ -179,8 +186,13 @@ public class SendDataTransferObjectConverterTests
         public void MessageWithPrintDetailsAndRecipientById()
         {
             //Arrange
+            using var primaryDocument = new Document("TestSubject", "txt", new MemoryStream(new byte[3]));
+            using var attachmentDocument = new Document("TestSubject attachment", "txt", new MemoryStream(new byte[3]))
+            {
+                Guid = "attachmentGuid"
+            };
             var printDetails = DomainUtility.GetPrintDetails();
-            var source = DomainUtility.GetMessageWithBytesAndStaticGuidRecipientById();
+            var source = DomainUtility.GetMessageWithBytesAndStaticGuidRecipientById(primaryDocument, [attachmentDocument]);
             source.PrintDetails = printDetails;
 
             var expectedDto = DomainUtility.GetMessageDataTransferObjectWithBytesAndStaticGuidRecipientById();
@@ -199,19 +211,18 @@ public class SendDataTransferObjectConverterTests
             //Arrange
             var printDetails = DomainUtility.GetPrintDetails();
             var sender = new Sender(1010);
+            using var primaryDocument = new Document("PrimaryDocument subject", "txt", new MemoryStream(new byte[3]));
+            using var attachmentDocument = new Document("TestSubject attachment subject", "txt", new MemoryStream(new byte[2]))
+            {
+                Guid = "attachmentGuid"
+            };
             var source = new Message(
                 sender,
                 DomainUtility.GetRecipientByNameAndAddress(),
-                new Document("PrimaryDocument subject", "txt", new byte[3])
+                primaryDocument
             )
             {
-                Attachments = new List<IDocument>
-                    {
-                        new Document("TestSubject attachment subject", "txt", new byte[3])
-                        {
-                            Guid = "attachmentGuid"
-                        }
-                    },
+                Attachments = [attachmentDocument],
                 DeliveryTime = DateTime.Today.AddDays(3),
                 PrimaryDocument = { Guid = "primaryDocumentGuid" },
                 PrintDetails = printDetails
@@ -269,19 +280,18 @@ public class SendDataTransferObjectConverterTests
             var printDetails = DomainUtility.GetPrintDetails();
             var sender = new Sender(1010);
             var deadline = DateTime.Now.AddDays(6);
+            var primaryDocument = new Document("PrimaryDocument subject", "txt", new MemoryStream(new byte[3]));
+            var attachmentDocument = new Document("TestSubject attachment subject", "txt", new MemoryStream(new byte[2]))
+            {
+                Guid = "attachmentGuid"
+            };
             var source = new Message(
                 sender,
                 DomainUtility.GetRecipientByNameAndAddress(),
-                new Document("PrimaryDocument subject", "txt", new byte[3])
+                primaryDocument
             )
             {
-                Attachments = new List<IDocument>
-                    {
-                        new Document("TestSubject attachment subject", "txt", new byte[3])
-                        {
-                            Guid = "attachmentGuid"
-                        }
-                    },
+                Attachments = [attachmentDocument],
                 DeliveryTime = DateTime.Today.AddDays(3),
                 PrimaryDocument = { Guid = "primaryDocumentGuid" },
                 PrintDetails = printDetails,
