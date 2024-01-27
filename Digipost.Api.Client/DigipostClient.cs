@@ -192,13 +192,7 @@ public sealed class DigipostClient : IDigipostClient
 
         return _entrypointCache.Set(cacheKey, root, cacheEntryOptions);
     }
-
-    /// <summary>
-    /// Fetch Sender Information
-    /// </summary>
-    /// <param name="sender">The sender is optional. If not specified, the broker will be used.</param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    
     public async Task<SenderInformation> GetSenderInformationAsync(Sender sender = null, CancellationToken cancellationToken = default)
     {
         var senderToUse = sender ?? new Sender(_clientConfig.Broker.Id);
@@ -227,13 +221,7 @@ public sealed class DigipostClient : IDigipostClient
         var root = await GetRootAsync(new ApiRootUri(senderId), cancellationToken);
         return new Archive.ArchiveApi(_requestHelper, _loggerFactory, root);
     }
-
-    /// <summary>
-    /// Get access to the document api.
-    /// </summary>
-    /// <param name="sender">Optional parameter for sender if you are a broker. If you don't specify a sender, your broker ident will be used</param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    
     public async Task<IDocumentsApi> DocumentsApiAsync(Sender sender = null, CancellationToken cancellationToken = default)
     {
         var senderToUse = sender ?? new Sender(_clientConfig.Broker.Id);

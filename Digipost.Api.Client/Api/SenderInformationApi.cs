@@ -10,7 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Digipost.Api.Client.Api;
 
-internal class SenderInformationApi
+internal sealed class SenderInformationApi
 {
     readonly IMemoryCache _entrypointCache;
     readonly RequestHelper _requestHelper;

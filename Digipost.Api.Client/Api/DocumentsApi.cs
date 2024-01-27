@@ -14,17 +14,63 @@ namespace Digipost.Api.Client.Api;
 
 public interface IDocumentsApi
 {
+    /// <summary>
+    /// Retrieves the status of a specific document asynchronously.
+    /// </summary>
+    /// <param name="guid">The unique identifier of the document.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The status of the document.</returns>
     Task<DocumentStatus> GetDocumentStatusAsync(Guid guid, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Retrieves the events of a specific document asynchronously from a specified time range.
+    /// </summary>
+    /// <param name="from">The starting date and time of the document events to retrieve.</param>
+    /// <param name="to">The ending date and time of the document events to retrieve.</param>
+    /// <param name="offset">The offset used for pagination of results.</param>
+    /// <param name="maxResults">The maximum number of results to retrieve.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A collection of document events.</returns>
     Task<DocumentEvents> GetDocumentEventsAsync(DateTime from, DateTime to, int offset, int maxResults, CancellationToken cancellationToken);
 }
+
 public interface IShareDocumentsApi
 {
+    /// <summary>
+    /// Gets the state of a share documents request asynchronously.
+    /// </summary>
+    /// <param name="guid">The unique identifier of the share documents request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>
+    /// A <see cref="Task"/> representing the asynchronous operation.
+    /// The task result is a <see cref="ShareDocumentsRequestState"/> object containing the state of the share documents request.
+    /// </returns>
     Task<ShareDocumentsRequestState> GetShareDocumentsRequestStateAsync(Guid guid, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Gets the content of a shared document asynchronously.
+    /// </summary>
+    /// <param name="uri">The <see cref="GetSharedDocumentContentUri"/> containing the URI of the shared document.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>
+    /// A <see cref="Task{SharedDocumentContent}"/> representing the asynchronous operation.
+    /// The task result is a <see cref="SharedDocumentContent"/> object containing the content information of the shared document.
+    /// </returns>
     Task<SharedDocumentContent> GetShareDocumentContentAsync(GetSharedDocumentContentUri uri, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Fetches the content of a shared document asynchronously.
+    /// </summary>
+    /// <param name="uri">The <see cref="GetSharedDocumentContentStreamUri"/> containing the URI of the shared document.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>
+    /// A <see cref="Task{Stream}"/> representing the asynchronous operation.
+    /// The task result is a <see cref="Stream"/> object containing the content of the shared document.
+    /// </returns>
     Task<Stream> FetchSharedDocumentAsync(GetSharedDocumentContentStreamUri uri, CancellationToken cancellationToken);
 }
 
-internal class DocumentsApi(RequestHelper requestHelper, Root root, Sender sender)
+internal sealed class DocumentsApi(RequestHelper requestHelper, Root root, Sender sender)
     : IDocumentsApi, IShareDocumentsApi
 {
     public async Task<DocumentStatus> GetDocumentStatusAsync(Guid guid, CancellationToken cancellationToken)
