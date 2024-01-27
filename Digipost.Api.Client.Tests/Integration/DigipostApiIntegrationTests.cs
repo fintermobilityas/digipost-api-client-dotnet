@@ -46,7 +46,7 @@ namespace Digipost.Api.Client.Tests.Integration
             ClientConfig.LogRequestAndResponse = true;
             var serviceProvider = LoggingUtility.CreateServiceProviderAndSetUpLogging();
 
-            var allDelegationHandlers = new List<DelegatingHandler> {new LoggingHandler(ClientConfig, serviceProvider.GetService<ILoggerFactory>()), new AuthenticationHandler(ClientConfig, Certificate, serviceProvider.GetService<ILoggerFactory>())};
+            var allDelegationHandlers = new List<DelegatingHandler> {new AuthenticationHandler(ClientConfig, Certificate, serviceProvider.GetService<ILoggerFactory>())};
 
             var httpClient = HttpClientFactory.Create(
                 fakehandler,

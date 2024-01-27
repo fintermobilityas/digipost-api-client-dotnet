@@ -59,7 +59,7 @@ namespace Digipost.Api.Client
 
         private HttpClient GetHttpClient(X509Certificate2 enterpriseCertificate, WebProxy proxy = null, NetworkCredential credential = null)
         {
-            var allDelegationHandlers = new List<DelegatingHandler> {new LoggingHandler(_clientConfig, _loggerFactory), new AuthenticationHandler(_clientConfig, enterpriseCertificate, _loggerFactory)};
+            var allDelegationHandlers = new List<DelegatingHandler> {new AuthenticationHandler(_clientConfig, enterpriseCertificate, _loggerFactory)};
 
             var httpMessageHandler = new HttpClientHandler
             {
