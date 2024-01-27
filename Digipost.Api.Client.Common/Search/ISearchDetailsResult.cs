@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace Digipost.Api.Client.Common.Search
+namespace Digipost.Api.Client.Common.Search;
+
+public interface ISearchDetailsResult
 {
-    public interface ISearchDetailsResult
-    {
-        IEnumerable<SearchDetails> PersonDetails { get; set; }
-    }
+    IEnumerable<SearchDetails> PersonDetails { get; set; }
 }

@@ -1,19 +1,18 @@
-﻿namespace Digipost.Api.Client.Common.Enums
+﻿namespace Digipost.Api.Client.Common.Enums;
+
+public enum IdentificationError
 {
-    public enum IdentificationError
-    {
-        Unidentified,
+    Unidentified,
 
-        Invalid,
+    Invalid,
 
-        InvalidPersonalIdentificationNumber,
+    InvalidPersonalIdentificationNumber,
 
-        InvalidOrganisationNumber,
+    InvalidOrganisationNumber,
 
-        Unknown,
+    Unknown,
 
-        NotFound,
+    NotFound,
 
-        MultipleMatches
-    }
+    MultipleMatches
 }

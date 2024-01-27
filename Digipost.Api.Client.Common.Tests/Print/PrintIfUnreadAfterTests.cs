@@ -5,31 +5,30 @@ using Digipost.Api.Client.Tests;
 using Digipost.Api.Client.Tests.CompareObjects;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Print
+namespace Digipost.Api.Client.Common.Tests.Print;
+
+public class PrintIfUnreadAfterTests
 {
-    public class PrintIfUnreadAfterTests
+    public class ConstructorMethod : PrintIfUnreadAfterTests
     {
-        public class ConstructorMethod : PrintIfUnreadAfterTests
+        [Fact]
+        public void SimpleConstructor()
         {
-            [Fact]
-            public void SimpleConstructor()
-            {
-                DateTime deadline = DateTime.Now.AddDays(3);
-                PrintDetails printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
-                        DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors);
-                
-                //Arrange
-                var printIfUnreadAfter = new PrintIfUnread(
-                    deadline, 
-                    printDetails);
-                
-                //Act
+            DateTime deadline = DateTime.Now.AddDays(3);
+            PrintDetails printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
+                    DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors);
 
-                //Assert
-                Assert.Equal(deadline, printIfUnreadAfter.PrintIfUnreadAfter);
+            //Arrange
+            var printIfUnreadAfter = new PrintIfUnread(
+                deadline,
+                printDetails);
 
-                Comparator.AssertEqual(printDetails, printIfUnreadAfter.PrintDetails);
-            }
+            //Act
+
+            //Assert
+            Assert.Equal(deadline, printIfUnreadAfter.PrintIfUnreadAfter);
+
+            Comparator.AssertEqual(printDetails, printIfUnreadAfter.PrintDetails);
         }
     }
 }

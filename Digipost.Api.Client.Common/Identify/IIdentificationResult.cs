@@ -1,13 +1,12 @@
 using Digipost.Api.Client.Common.Enums;
 
-namespace Digipost.Api.Client.Common.Identify
+namespace Digipost.Api.Client.Common.Identify;
+
+public interface IIdentificationResult
 {
-    public interface IIdentificationResult
-    {
-        IdentificationResultType ResultType { get; }
+    IdentificationResultType ResultType { get; }
 
-        IdentificationError? Error { get; }
+    IdentificationError? Error { get; }
 
-        string Data { get; set; }
-    }
+    string Data { get; set; }
 }

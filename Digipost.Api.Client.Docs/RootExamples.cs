@@ -6,21 +6,20 @@ using Sender = Digipost.Api.Client.Common.Sender;
 #pragma warning disable 0169
 #pragma warning disable 0649
 
-namespace Digipost.Api.Client.Docs
+namespace Digipost.Api.Client.Docs;
+
+public class RootExamples
 {
-    public class RootExamples
+    static readonly DigipostClient client;
+    static readonly Sender sender;
+
+    void FetchDefaultRoot()
     {
-        private static readonly DigipostClient client;
-        private static readonly Sender sender;
+        var root = client.GetRootAsync(new ApiRootUri());
+    }
 
-        private void FetchDefaultRoot()
-        {
-            var root = client.GetRoot(new ApiRootUri());
-        }
-
-        private void FetchSenderRoot()
-        {
-            var root = client.GetRoot(new ApiRootUri(new Sender(1234)));
-        }
+    void FetchSenderRoot()
+    {
+        var root = client.GetRootAsync(new ApiRootUri(new Sender(1234)));
     }
 }

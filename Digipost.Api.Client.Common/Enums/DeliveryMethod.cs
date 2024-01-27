@@ -1,30 +1,29 @@
-﻿namespace Digipost.Api.Client.Common.Enums
+﻿namespace Digipost.Api.Client.Common.Enums;
+
+public enum DeliveryMethod
 {
-    public enum DeliveryMethod
-    {
-        /// <summary>
-        ///     Delivered through physical print and postal service.
-        /// </summary>
-        Print,
+    /// <summary>
+    ///     Delivered through physical print and postal service.
+    /// </summary>
+    Print,
 
-        /// <summary>
-        ///     Delivered digitally in Digipost
-        /// </summary>
-        Digipost,
+    /// <summary>
+    ///     Delivered digitally in Digipost
+    /// </summary>
+    Digipost,
 
-        /// <summary>
-        ///     Delivered through physical peppol.
-        /// </summary>
-        PEPPOL,
+    /// <summary>
+    ///     Delivered through physical peppol.
+    /// </summary>
+    PEPPOL,
 
-        /// <summary>
-        ///     Delivered to email
-        /// </summary>
-        EPOST,
+    /// <summary>
+    ///     Delivered to email
+    /// </summary>
+    EPOST,
 
-        /// <summary>
-        ///     Pending delivery
-        /// </summary>
-        PENDING
-    }
+    /// <summary>
+    ///     Pending delivery
+    /// </summary>
+    PENDING
 }

@@ -2,28 +2,27 @@
 using Digipost.Api.Client.Common.Recipient;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Recipient
+namespace Digipost.Api.Client.Common.Tests.Recipient;
+
+public class RecipientByIdTests
 {
-    public class RecipientByIdTests
+    public class ConstructorMethod : RecipientByIdTests
     {
-        public class ConstructorMethod : RecipientByIdTests
+        [Fact]
+        public void SimpleConstructor()
         {
-            [Fact]
-            public void SimpleConstructor()
-            {
-                //Arrange
-                const string testPerson = "ola.nordmann#2233";
+            //Arrange
+            const string testPerson = "ola.nordmann#2233";
 
-                var recipientById = new RecipientById(
-                    IdentificationType.DigipostAddress,
-                    testPerson);
+            var recipientById = new RecipientById(
+                IdentificationType.DigipostAddress,
+                testPerson);
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.Equal(IdentificationType.DigipostAddress, recipientById.IdentificationType);
-                Assert.Equal(testPerson, recipientById.Id);
-            }
+            //Assert
+            Assert.Equal(IdentificationType.DigipostAddress, recipientById.IdentificationType);
+            Assert.Equal(testPerson, recipientById.Id);
         }
     }
 }

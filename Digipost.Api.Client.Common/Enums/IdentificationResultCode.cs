@@ -1,13 +1,12 @@
-﻿namespace Digipost.Api.Client.Common.Enums
+﻿namespace Digipost.Api.Client.Common.Enums;
+
+public enum IdentificationResultCode
 {
-    public enum IdentificationResultCode
-    {
-        Digipost,
+    Digipost,
 
-        Identified,
+    Identified,
 
-        Unidentified,
+    Unidentified,
 
-        Invalid
-    }
+    Invalid
 }

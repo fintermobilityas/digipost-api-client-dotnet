@@ -3,35 +3,34 @@ using System.Linq;
 using KellermanSoftware.CompareNetObjects;
 using Xunit;
 
-namespace Digipost.Api.Client.Tests.CompareObjects
+namespace Digipost.Api.Client.Tests.CompareObjects;
+
+internal static class Comparator
 {
-    internal static class Comparator
+    static void Equal(object expected, object actual, out IEnumerable<Difference> differences)
     {
-        private static void Equal(object expected, object actual, out IEnumerable<Difference> differences)
-        {
-            var compareLogic = new CompareLogic(
-                new ComparisonConfig
-                {
-                    MaxDifferences = 5,
-                    IgnoreObjectTypes = true
-                });
-
-            var compareResult = compareLogic.Compare(expected, actual);
-
-            differences = compareResult.Differences.Select(d => new Difference
+        var compareLogic = new CompareLogic(
+            new ComparisonConfig
             {
-                PropertyName = d.PropertyName,
-                WhatIsCompared = d.GetWhatIsCompared(),
-                ExpectedValue = d.Object1Value,
-                ActualValue = d.Object2Value
-            }).ToList();
-        }
+                MaxDifferences = 5,
+                IgnoreObjectTypes = true
+            });
 
-        public static void AssertEqual(object expected, object actual)
+        var compareResult = compareLogic.Compare(expected, actual);
+
+        differences = compareResult.Differences.Select(d => new Difference
         {
-            IEnumerable<Difference> differences;
-            Equal(expected, actual, out differences);
-            Assert.Equal(new List<Difference>(), differences);
-        }
+            PropertyName = d.PropertyName,
+            WhatIsCompared = d.GetWhatIsCompared(),
+            ExpectedValue = d.Object1Value,
+            ActualValue = d.Object2Value
+        }).ToList();
+    }
+
+    public static void AssertEqual(object expected, object actual)
+    {
+        IEnumerable<Difference> differences;
+        Equal(expected, actual, out differences);
+        Assert.Equal(new List<Difference>(), differences);
     }
 }

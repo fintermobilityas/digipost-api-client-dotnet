@@ -1,15 +1,14 @@
-﻿namespace Digipost.Api.Client.Common.Enums
+﻿namespace Digipost.Api.Client.Common.Enums;
+
+public enum IdentificationType
 {
-    public enum IdentificationType
-    {
-        DigipostAddress,
+    DigipostAddress,
 
-        PersonalIdentificationNumber,
+    PersonalIdentificationNumber,
 
-        OrganizationNumber,
+    OrganizationNumber,
 
-        NameAndAddress,
-        
-        BankAccountNumber
-    }
+    NameAndAddress,
+
+    BankAccountNumber
 }

@@ -1,31 +1,30 @@
 ﻿using Digipost.Api.Client.Common.Recipient;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Recipient
+namespace Digipost.Api.Client.Common.Tests.Recipient;
+
+public class RecipientByNameAndAddressTests
 {
-    public class RecipientByNameAndAddressTests
+    public class ConstructorMethod : RecipientByNameAndAddressTests
     {
-        public class ConstructorMethod : RecipientByNameAndAddressTests
+        [Fact]
+        public void SimpleConstructor()
         {
-            [Fact]
-            public void SimpleConstructor()
-            {
-                //Arrange
-                const string fullName = "Ola Nordmann";
-                const string addressLine1 = "Biskop Gunnerus Gate 14";
-                const string postalCode = "0001";
-                const string city = "Oslo";
+            //Arrange
+            const string fullName = "Ola Nordmann";
+            const string addressLine1 = "Biskop Gunnerus Gate 14";
+            const string postalCode = "0001";
+            const string city = "Oslo";
 
-                var recipientByNameAndAddress = new RecipientByNameAndAddress(fullName, addressLine1, postalCode, city);
+            var recipientByNameAndAddress = new RecipientByNameAndAddress(fullName, addressLine1, postalCode, city);
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.Equal(fullName, recipientByNameAndAddress.FullName);
-                Assert.Equal(postalCode, recipientByNameAndAddress.PostalCode);
-                Assert.Equal(city, recipientByNameAndAddress.City);
-                Assert.Equal(addressLine1, recipientByNameAndAddress.AddressLine1);
-            }
+            //Assert
+            Assert.Equal(fullName, recipientByNameAndAddress.FullName);
+            Assert.Equal(postalCode, recipientByNameAndAddress.PostalCode);
+            Assert.Equal(city, recipientByNameAndAddress.City);
+            Assert.Equal(addressLine1, recipientByNameAndAddress.AddressLine1);
         }
     }
 }

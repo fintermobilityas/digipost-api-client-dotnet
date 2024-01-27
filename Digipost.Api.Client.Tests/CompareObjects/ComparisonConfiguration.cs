@@ -1,7 +1,6 @@
-﻿namespace Digipost.Api.Client.Tests.CompareObjects
+﻿namespace Digipost.Api.Client.Tests.CompareObjects;
+
+internal class ComparisonConfiguration
 {
-    internal class ComparisonConfiguration
-    {
-        public bool IgnoreObjectTypes { get; set; } = false;
-    }
+    public bool IgnoreObjectTypes { get; set; } = false;
 }

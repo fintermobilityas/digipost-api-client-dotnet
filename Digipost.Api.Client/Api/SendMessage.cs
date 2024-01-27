@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Entrypoint;
@@ -10,120 +11,71 @@ using Digipost.Api.Client.Send;
 using Microsoft.Extensions.Logging;
 using V8;
 
-namespace Digipost.Api.Client.Api
+namespace Digipost.Api.Client.Api;
+
+internal class SendMessageApi(SendRequestHelper requestHelper, ILoggerFactory loggerFactory, Root root)
 {
-    internal class SendMessageApi
+    const int MinimumSearchLength = 3;
+    readonly ILogger<SendMessageApi> _logger = loggerFactory.CreateLogger<SendMessageApi>();
+
+    public SendRequestHelper RequestHelper { get; } = requestHelper;
+
+    public async Task<IMessageDeliveryResult> SendMessageAsync(IMessage message, bool skipMetaDataValidation = false, CancellationToken cancellationToken = default)
     {
-        private readonly Root _root;
-        private const int MinimumSearchLength = 3;
-        private readonly ILogger<SendMessageApi> _logger;
+        _logger.LogDebug("Outgoing Digipost message to Recipient: {message}", message);
 
-        public SendMessageApi(SendRequestHelper requestHelper, ILoggerFactory loggerFactory, Root root)
+        var messageDelivery = await RequestHelper.PostMessageAsync<Message_Delivery>(message, root.GetSendMessageUri(), skipMetaDataValidation, cancellationToken);
+
+        var messageDeliveryResult = messageDelivery.FromDataTransferObject();
+
+        _logger.LogDebug("Response received for message to recipient, {message}: '{status}'. Will be available to Recipient at {deliverytime}.", message, messageDeliveryResult.Status, messageDeliveryResult.DeliveryTime);
+
+        return messageDeliveryResult;
+    }
+
+    public async Task<IIdentificationResult> IdentifyAsync(IIdentification identification, CancellationToken cancellationToken)
+    {
+        _logger.LogDebug("Outgoing identification request: {identification}", identification);
+
+        var identificationResultDataTransferObject = await RequestHelper.PostIdentificationAsync<Identification_Result>(identification, root.GetIdentifyRecipientUri(), cancellationToken);
+        var identificationResult = identificationResultDataTransferObject.FromDataTransferObject();
+
+        _logger.LogDebug("Response received for identification to recipient, ResultType '{resultType}', Data '{data}'.", identificationResult.ResultType, identificationResult.Data);
+
+        return identificationResult;
+    }
+
+    public async Task<ISearchDetailsResult> SearchAsync(string search, CancellationToken cancellationToken)
+    {
+        _logger.LogDebug("Outgoing search request, term: '{search}'.", search);
+
+        search = search.RemoveReservedUriCharacters();
+        var uri = root.GetRecipientSearchUri(search);
+
+        if (search.Length < MinimumSearchLength)
         {
-            _root = root;
-            _logger = loggerFactory.CreateLogger<SendMessageApi>();
-            RequestHelper = requestHelper;
+            var emptyResult = new SearchDetailsResult { PersonDetails = new List<SearchDetails>() };
+
+            var taskSource = new TaskCompletionSource<ISearchDetailsResult>();
+            taskSource.SetResult(emptyResult);
+            return await taskSource.Task;
         }
 
-        public SendRequestHelper RequestHelper { get; }
+        var searchDetailsResultDataTransferObject = await RequestHelper.GetAsync<Recipients>(uri, cancellationToken);
 
-        public IMessageDeliveryResult SendMessage(IMessage message, bool skipMetaDataValidation = false)
-        {
-            var messageDelivery = SendMessageAsync(message, skipMetaDataValidation);
+        var searchDetailsResult = searchDetailsResultDataTransferObject.FromDataTransferObject();
 
-            if (messageDelivery.IsFaulted && messageDelivery.Exception != null)
-                throw messageDelivery.Exception.InnerException;
+        _logger.LogDebug("Response received for search with term '{search}' retrieved.", search);
 
-            return messageDelivery.Result;
-        }
+        return searchDetailsResult;
+    }
 
-        public async Task<IMessageDeliveryResult> SendMessageAsync(IMessage message, bool skipMetaDataValidation = false)
-        {
-            _logger.LogDebug("Outgoing Digipost message to Recipient: {message}", message);
+    public async Task SendAdditionalDataAsync(IAdditionalData additionalData, AddAdditionalDataUri uri, CancellationToken cancellationToken)
+    {
+        _logger.LogDebug("Sending additional data '{uri}'", uri);
 
-            var messageDeliveryResultTask = RequestHelper.PostMessage<Message_Delivery>(message, _root.GetSendMessageUri(), skipMetaDataValidation);
+        await RequestHelper.PostAdditionalDataAsync<string>(additionalData, uri, cancellationToken);
 
-            if (messageDeliveryResultTask.IsFaulted && messageDeliveryResultTask.Exception != null)
-                throw messageDeliveryResultTask.Exception?.InnerException;
-
-            var messageDeliveryResult = (await messageDeliveryResultTask.ConfigureAwait(false)).FromDataTransferObject();
-
-            _logger.LogDebug("Response received for message to recipient, {message}: '{status}'. Will be available to Recipient at {deliverytime}.", message, messageDeliveryResult.Status, messageDeliveryResult.DeliveryTime);
-
-            return messageDeliveryResult;
-        }
-
-        public IIdentificationResult Identify(IIdentification identification)
-        {
-            return IdentifyAsync(identification).Result;
-        }
-
-        public async Task<IIdentificationResult> IdentifyAsync(IIdentification identification)
-        {
-            _logger.LogDebug("Outgoing identification request: {identification}", identification);
-
-            var identifyResponse = RequestHelper.PostIdentification<Identification_Result>(identification, _root.GetIdentifyRecipientUri());
-
-            if (identifyResponse.IsFaulted)
-            {
-                var exception = identifyResponse.Exception?.InnerException;
-
-                _logger.LogWarning("Identification failed, {exception}", exception);
-
-                if (identifyResponse.Exception != null)
-                    throw identifyResponse.Exception.InnerException;
-            }
-
-            var identificationResultDataTransferObject = await identifyResponse.ConfigureAwait(false);
-            var identificationResult = identificationResultDataTransferObject.FromDataTransferObject();
-
-            _logger.LogDebug("Response received for identification to recipient, ResultType '{resultType}', Data '{data}'.", identificationResult.ResultType, identificationResult.Data);
-
-            return identificationResult;
-        }
-
-        public ISearchDetailsResult Search(string search)
-        {
-            return SearchAsync(search).Result;
-        }
-
-        public async Task<ISearchDetailsResult> SearchAsync(string search)
-        {
-            _logger.LogDebug("Outgoing search request, term: '{search}'.", search);
-
-            search = search.RemoveReservedUriCharacters();
-            var uri = _root.GetRecipientSearchUri(search);
-
-            if (search.Length < MinimumSearchLength)
-            {
-                var emptyResult = new SearchDetailsResult {PersonDetails = new List<SearchDetails>()};
-
-                var taskSource = new TaskCompletionSource<ISearchDetailsResult>();
-                taskSource.SetResult(emptyResult);
-                return await taskSource.Task.ConfigureAwait(false);
-            }
-
-            var searchDetailsResultDataTransferObject = await RequestHelper.Get<Recipients>(uri).ConfigureAwait(false);
-
-            var searchDetailsResult = searchDetailsResultDataTransferObject.FromDataTransferObject();
-
-            _logger.LogDebug("Response received for search with term '{search}' retrieved.", search);
-
-            return searchDetailsResult;
-        }
-
-        public void SendAdditionalData(IAdditionalData additionalData, AddAdditionalDataUri uri)
-        {
-            SendAdditionalDataAsync(additionalData, uri).GetAwaiter().GetResult();
-        }
-
-        public async Task SendAdditionalDataAsync(IAdditionalData additionalData, AddAdditionalDataUri uri)
-        {
-            _logger.LogDebug("Sending additional data '{uri}'", uri);
-
-            await RequestHelper.PostAdditionalData<string>(additionalData, uri).ConfigureAwait(false);
-
-            _logger.LogDebug("Additional data added to '{uri}'", uri);
-        }
+        _logger.LogDebug("Additional data added to '{uri}'", uri);
     }
 }

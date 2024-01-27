@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using Digipost.Api.Client.Api;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Entrypoint;
@@ -15,162 +15,125 @@ using Digipost.Api.Client.Resources.Certificate;
 using Digipost.Api.Client.Resources.Xml;
 using Digipost.Api.Client.Send;
 using Digipost.Api.Client.Tests.Fakes;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Environment = Digipost.Api.Client.Common.Environment;
 
-namespace Digipost.Api.Client.Tests.Integration
+namespace Digipost.Api.Client.Tests.Integration;
+
+public class DigipostApiIntegrationTests
 {
-    public class DigipostApiIntegrationTests
+    protected X509Certificate2 Certificate;
+    protected ClientConfig ClientConfig;
+    protected Uri Uri;
+
+    public DigipostApiIntegrationTests()
     {
-        protected X509Certificate2 Certificate;
-        protected ClientConfig ClientConfig;
-        protected Uri Uri;
-
-        public DigipostApiIntegrationTests()
+        ClientConfig = new ClientConfig(new Broker(1337), Environment.Production)
         {
-            ClientConfig = new ClientConfig(new Broker(1337), Environment.Production)
-            {
-                LogRequestAndResponse = false,
-                TimeoutMilliseconds = 300000000
-            };
-            Uri = new Uri("/identification", UriKind.Relative);
-            Certificate = CertificateResource.Certificate();
+            LogRequestAndResponse = false,
+            TimeoutMilliseconds = 300000000
+        };
+        Uri = new Uri("/identification", UriKind.Relative);
+        Certificate = CertificateResource.Certificate();
+    }
+
+    HttpClient GetHttpClient(HttpMessageHandler fakeHandler)
+    {
+        ClientConfig.LogRequestAndResponse = true;
+
+        var authHandler = new AuthenticationHandler(ClientConfig, Certificate, new NullLoggerFactory());
+        authHandler.InnerHandler = fakeHandler;
+        
+        var httpClient = new HttpClient(authHandler);
+
+        httpClient.BaseAddress = new Uri("http://www.fakeBaseAddress.no");
+
+        return httpClient;
+    }
+
+    SendMessageApi GetDigipostApi(FakeResponseHandler fakeResponseHandler)
+    {
+        var httpClient = GetHttpClient(fakeResponseHandler);
+        
+        var requestHelper = new RequestHelper(httpClient, new NullLoggerFactory()) { HttpClient = httpClient };
+
+        var links = new Dictionary<string, Link>
+        {
+            ["SEARCH"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/recipient/search") { Rel = httpClient.BaseAddress + "relations/search" },
+            ["IDENTIFY_RECIPIENT"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/identification") { Rel = httpClient.BaseAddress + "relations/identify_recipient" },
+            ["CREATE_MESSAGE"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/message") { Rel = httpClient.BaseAddress + "relations/create_message" }
+        };
+        var root = new Root("")
+        {
+            Links = links
+        };
+
+        var digipostApi = new SendMessageApi(new SendRequestHelper(requestHelper), new NullLoggerFactory(), root);
+        return digipostApi;
+    }
+
+    public class SendMessageMethod : DigipostApiIntegrationTests
+    {
+        async Task SendMessageAsync(IMessage message, FakeResponseHandler fakeResponseHandler)
+        {
+            var digipostApi = GetDigipostApi(fakeResponseHandler);
+
+            await digipostApi.SendMessageAsync(message);
         }
 
-        internal HttpClient GetHttpClient(
-            FakeResponseHandler fakehandler)
+        [Fact]
+        public async Task InternalServerErrorShouldCauseDigipostResponseException()
         {
-            ClientConfig.LogRequestAndResponse = true;
-            var serviceProvider = LoggingUtility.CreateServiceProviderAndSetUpLogging();
+            var message = DomainUtility.GetSimpleMessageWithRecipientById();
+            const HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
+            var messageContent = new StringContent(string.Empty);
 
-            var allDelegationHandlers = new List<DelegatingHandler> {new LoggingHandler(ClientConfig, serviceProvider.GetService<ILoggerFactory>()), new AuthenticationHandler(ClientConfig, Certificate, serviceProvider.GetService<ILoggerFactory>())};
-
-            var httpClient = HttpClientFactory.Create(
-                fakehandler,
-                allDelegationHandlers.ToArray()
-            );
-
-            httpClient.BaseAddress = new Uri("http://www.fakeBaseAddress.no");
-
-            return httpClient;
+            await Assert.ThrowsAsync<ClientResponseException>(() =>
+                SendMessageAsync(message, new FakeResponseHandler { ResultCode = statusCode, HttpContent = messageContent }));
         }
 
-        private SendMessageApi GetDigipostApi(FakeResponseHandler fakeResponseHandler)
+        [Fact]
+        public async Task ProperRequestSentRecipientById()
         {
-            var httpClient = GetHttpClient(fakeResponseHandler);
-
-            var serviceProvider = LoggingUtility.CreateServiceProviderAndSetUpLogging();
-
-            var requestHelper = new RequestHelper(httpClient, serviceProvider.GetService<ILoggerFactory>()) {HttpClient = httpClient};
-
-            var links = new Dictionary<string, Link>
-            {
-                ["SEARCH"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/recipient/search") {Rel = httpClient.BaseAddress + "relations/search"},
-                ["IDENTIFY_RECIPIENT"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/identification") {Rel = httpClient.BaseAddress + "relations/identify_recipient"},
-                ["CREATE_MESSAGE"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/message") {Rel = httpClient.BaseAddress + "relations/create_message"}
-            };
-            var root = new Root("")
-            {
-                Links = links
-            };
-
-            var digipostApi = new SendMessageApi(new SendRequestHelper(requestHelper), serviceProvider.GetService<ILoggerFactory>(), root);
-            return digipostApi;
+            var message = DomainUtility.GetSimpleMessageWithRecipientById();
+            await SendMessageAsync(message, new FakeResponseHandler { ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery() });
         }
 
-        public class SendMessageMethod : DigipostApiIntegrationTests
+        [Fact]
+        public async Task ProperRequestSentRecipientByNameAndAddress()
         {
-            private void SendMessage(IMessage message, FakeResponseHandler fakeResponseHandler)
-            {
-                var digipostApi = GetDigipostApi(fakeResponseHandler);
+            var message = DomainUtility.GetSimpleMessageWithRecipientByNameAndAddress();
 
-                digipostApi.SendMessage(message);
-            }
-
-            [Fact]
-            public void InternalServerErrorShouldCauseDigipostResponseException()
-            {
-                Exception exception = null;
-
-                try
-                {
-                    var message = DomainUtility.GetSimpleMessageWithRecipientById();
-                    const HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
-                    var messageContent = new StringContent(string.Empty);
-
-                    SendMessage(message, new FakeResponseHandler {ResultCode = statusCode, HttpContent = messageContent});
-                }
-                catch (AggregateException e)
-                {
-                    exception = e.InnerExceptions.ElementAt(0);
-                }
-                catch (ClientResponseException e)
-                {
-                    exception = e;
-                }
-
-                Assert.True(exception is ClientResponseException);
-            }
-
-            [Fact]
-            public void ProperRequestSentRecipientById()
-            {
-                var message = DomainUtility.GetSimpleMessageWithRecipientById();
-                SendMessage(message, new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery()});
-            }
-
-            [Fact]
-            public void ProperRequestSentRecipientByNameAndAddress()
-            {
-                var message = DomainUtility.GetSimpleMessageWithRecipientByNameAndAddress();
-
-                SendMessage(message, new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery()});
-            }
-
-            [Fact]
-            public void ShouldSerializeErrorMessage()
-            {
-                Exception exception = null;
-
-                try
-                {
-                    var message = DomainUtility.GetSimpleMessageWithRecipientById();
-                    const HttpStatusCode statusCode = HttpStatusCode.NotFound;
-                    var messageContent = XmlResource.SendMessage.GetError();
-
-                    SendMessage(message, new FakeResponseHandler {ResultCode = statusCode, HttpContent = messageContent});
-                }
-                catch (AggregateException e)
-                {
-                    exception = e.InnerExceptions.ElementAt(0);
-                }
-                catch (ClientResponseException e)
-                {
-                    exception = e;
-                }
-
-                Assert.True(exception is ClientResponseException);
-            }
+            await SendMessageAsync(message, new FakeResponseHandler { ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery() });
         }
 
-        public class SendIdentifyMethod : DigipostApiIntegrationTests
+        [Fact]
+        public async Task ShouldSerializeErrorMessage()
         {
-            private void Identify(IIdentification identification)
-            {
-                var fakeResponseHandler = new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.Identification.GetResult()};
-                var digipostApi = GetDigipostApi(fakeResponseHandler);
+            var message = DomainUtility.GetSimpleMessageWithRecipientById();
+            const HttpStatusCode statusCode = HttpStatusCode.NotFound;
+            var messageContent = XmlResource.SendMessage.GetError();
 
-                digipostApi.Identify(identification);
-            }
+            await Assert.ThrowsAsync<ClientResponseException>(() => SendMessageAsync(message, new FakeResponseHandler { ResultCode = statusCode, HttpContent = messageContent }));
+        }
+    }
 
-            [Fact]
-            public void ProperRequestSent()
-            {
-                var identification = DomainUtility.GetPersonalIdentification();
-                Identify(identification);
-            }
+    public class SendIdentifyMethod : DigipostApiIntegrationTests
+    {
+        async Task IdentifyAsync(IIdentification identification)
+        {
+            var fakeResponseHandler = new FakeResponseHandler { ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.Identification.GetResult() };
+            var digipostApi = GetDigipostApi(fakeResponseHandler);
+
+            await digipostApi.IdentifyAsync(identification, default);
+        }
+
+        [Fact]
+        public async Task ProperRequestSent()
+        {
+            var identification = DomainUtility.GetPersonalIdentification();
+            await IdentifyAsync(identification);
         }
     }
 }

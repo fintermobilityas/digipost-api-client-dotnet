@@ -6,27 +6,26 @@ using Digipost.Api.Client.Common.Utilities;
 using Digipost.Api.Client.Send.Actions;
 using Xunit;
 
-namespace Digipost.Api.Client.Send.Tests
+namespace Digipost.Api.Client.Send.Tests;
+
+public class IdentificationActionTests
 {
-    public class IdentificationActionTests
+    public class RequestContentBody
     {
-        public class RequestContentBody
+        [Fact]
+        public void ReturnsCorrectDataForIdentification()
         {
-            [Fact]
-            public void ReturnsCorrectDataForIdentification()
-            {
-                //Arrange
-                var identification = new Identification(new RecipientById(IdentificationType.PersonalIdentificationNumber, "00000000000"));
+            //Arrange
+            var identification = new Identification(new RecipientById(IdentificationType.PersonalIdentificationNumber, "00000000000"));
 
-                //Act
-                var action = new IdentificationAction(identification);
-                var content = action.RequestContent;
+            //Act
+            var action = new IdentificationAction(identification);
+            var content = action.RequestContent;
 
-                //Assert
-                var identificationDto = identification.ToDataTransferObject();
-                var expected = SerializeUtil.Serialize(identificationDto);
-                Assert.Equal(expected, content.InnerXml);
-            }
+            //Assert
+            var identificationDto = identification.ToDataTransferObject();
+            var expected = SerializeUtil.Serialize(identificationDto);
+            Assert.Equal(expected, content.InnerXml);
         }
     }
 }

@@ -1,9 +1,8 @@
-namespace Digipost.Api.Client.Common.Print
+namespace Digipost.Api.Client.Common.Print;
+
+public interface IPrintInstruction
 {
-    public interface IPrintInstruction
-    {
-        string key { get; }
-        
-        string value { get; }
-    }
+    string key { get; }
+
+    string value { get; }
 }

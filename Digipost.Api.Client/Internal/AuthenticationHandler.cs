@@ -1,166 +1,159 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Security;
 
-namespace Digipost.Api.Client.Internal
+namespace Digipost.Api.Client.Internal;
+
+internal class AuthenticationHandler : DelegatingHandler
 {
-    internal class AuthenticationHandler : DelegatingHandler
+    static ILogger<DigipostClient> _logger;
+
+    public AuthenticationHandler(ClientConfig clientConfig, X509Certificate2 businessCertificate, ILoggerFactory loggerFactory)
     {
-        private static ILogger<DigipostClient> _logger;
+        _logger = loggerFactory.CreateLogger<DigipostClient>();
+        ClientConfig = clientConfig;
+        BusinessCertificate = businessCertificate;
+        Method = WebRequestMethods.Http.Get;
+    }
 
-        public AuthenticationHandler(ClientConfig clientConfig, X509Certificate2 businessCertificate, ILoggerFactory loggerFactory)
+    ClientConfig ClientConfig { get; }
+
+    X509Certificate2 BusinessCertificate { get; }
+
+    string Method { get; set; }
+
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        var date = DateTime.UtcNow.ToString("R");
+        var brokerId = ClientConfig.Broker.Id.ToString();
+
+        request.Headers.Add("X-Digipost-UserId", brokerId);
+        request.Headers.Add("Date", date);
+        request.Headers.Add("Accept", DigipostVersion.V8);
+        request.Headers.Add("User-Agent", GetAssemblyVersion());
+        Method = request.Method.ToString();
+
+        string contentHash = null;
+
+        if (request.Content != null)
         {
-            _logger = loggerFactory.CreateLogger<DigipostClient>();
-            ClientConfig = clientConfig;
-            BusinessCertificate = businessCertificate;
-            Method = WebRequestMethods.Http.Get;
+            var contentBytes = await request.Content.ReadAsByteArrayAsync();
+            contentHash = ComputeHash(contentBytes);
+            request.Headers.Add("X-Content-SHA256", contentHash);
         }
 
-        private ClientConfig ClientConfig { get; }
+        var signature = ComputeSignature(Method, request.RequestUri, date, contentHash, brokerId, BusinessCertificate, ClientConfig.LogRequestAndResponse);
+        request.Headers.Add("X-Digipost-Signature", signature);
 
-        private X509Certificate2 BusinessCertificate { get; }
+        return await base.SendAsync(request, cancellationToken);
+    }
 
-        private string Method { get; set; }
+    static string GetAssemblyVersion()
+    {
+        var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        return $"digipost-api-client-dotnet/{assemblyVersion} (netcore/{GetNetCoreVersion()})";
+    }
+
+    static string GetNetCoreVersion()
+    {
+        try
         {
-            var date = DateTime.UtcNow.ToString("R");
-            var brokerId = ClientConfig.Broker.Id.ToString();
+            var assembly = typeof(GCSettings).GetTypeInfo().Assembly;
+            var assemblyPath = assembly.CodeBase.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            var netCoreAppIndex = Array.IndexOf(assemblyPath, "Microsoft.NETCore.App");
 
-            request.Headers.Add("X-Digipost-UserId", brokerId);
-            request.Headers.Add("Date", date);
-            request.Headers.Add("Accept", DigipostVersion.V8);
-            request.Headers.Add("User-Agent", GetAssemblyVersion());
-            Method = request.Method.ToString();
-
-            string contentHash = null;
-
-            if (request.Content != null)
+            if (netCoreAppIndex > 0 && netCoreAppIndex < assemblyPath.Length - 2)
             {
-                var contentBytes = await request.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                contentHash = ComputeHash(contentBytes);
-                request.Headers.Add("X-Content-SHA256", contentHash);
+                return assemblyPath[netCoreAppIndex + 1];
             }
-
-            var signature = ComputeSignature(Method, request.RequestUri, date, contentHash, brokerId, BusinessCertificate, ClientConfig.LogRequestAndResponse);
-            request.Headers.Add("X-Digipost-Signature", signature);
-
-            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            // ignored
         }
 
-        private static string GetAssemblyVersion()
-        {
-            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+        return "AssemblyVersionNotFound";
+    }
 
-            return $"digipost-api-client-dotnet/{assemblyVersion} (netcore/{GetNetCoreVersion()})";
+    internal static string ComputeHash(byte[] inputBytes)
+    {
+        using (var sha256 = SHA256.Create())
+        {
+            var hashBytes = sha256.ComputeHash(inputBytes);
+            return Convert.ToBase64String(hashBytes);
+        }
+    }
+
+    internal static string ComputeSignature(string method, Uri uri, string date, string contentSha256Hash,
+        string userId, X509Certificate2 businessCertificate, bool logRequestAndResponse)
+    {
+        var uriParts = new UriParts(uri);
+
+        if (logRequestAndResponse)
+        {
+            _logger.LogDebug("Compute signature, canonical string generated by .NET Client:");
+            _logger.LogDebug("=== SIGNATURE DATA START===");
         }
 
-        private static string GetNetCoreVersion()
+        string messageHeader;
+
+        if (contentSha256Hash != null)
         {
-            try
-            {
-                var assembly = typeof(GCSettings).GetTypeInfo().Assembly;
-                var assemblyPath = assembly.CodeBase.Split(new[] {'/', '\\'}, StringSplitOptions.RemoveEmptyEntries);
-                var netCoreAppIndex = Array.IndexOf(assemblyPath, "Microsoft.NETCore.App");
-
-                if (netCoreAppIndex > 0 && netCoreAppIndex < assemblyPath.Length - 2)
-                {
-                    return assemblyPath[netCoreAppIndex + 1];
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            return "AssemblyVersionNotFound";
+            messageHeader = method.ToUpper() + "\n" +
+                            uriParts.AbsoluteUri + "\n" +
+                            "date: " + date + "\n" +
+                            "x-content-sha256: " + contentSha256Hash + "\n" +
+                            "x-digipost-userid: " + userId + "\n" +
+                            uriParts.Parameters.ToLower() + "\n";
+        }
+        else
+        {
+            messageHeader = method.ToUpper() + "\n" +
+                            uriParts.AbsoluteUri + "\n" +
+                            "date: " + date + "\n" +
+                            "x-digipost-userid: " + userId + "\n" +
+                            uriParts.Parameters.ToLower() + "\n";
         }
 
-        internal static string ComputeHash(byte[] inputBytes)
+        if (logRequestAndResponse)
         {
-            IDigest digest = new Sha256Digest();
-            var hash = new byte[digest.GetDigestSize()];
-
-            digest.BlockUpdate(inputBytes, 0, inputBytes.Length);
-            digest.DoFinal(hash, 0);
-
-            return Convert.ToBase64String(hash);
+            _logger.LogDebug(messageHeader);
+            _logger.LogDebug("=== SIGNATURE DATA END ===");
         }
 
-        internal static string ComputeSignature(string method, Uri uri, string date, string contentSha256Hash,
-            string userId, X509Certificate2 businessCertificate, bool logRequestAndResponse)
+        var messageBytes = Encoding.UTF8.GetBytes(messageHeader);
+
+        using (var rsa = businessCertificate.GetRSAPrivateKey())
+        using (var sha256 = SHA256.Create())
         {
-            var uriParts = new UriParts(uri);
+            var hash = sha256.ComputeHash(messageBytes);
+            var signature = rsa.SignHash(hash, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
-            if (logRequestAndResponse)
-            {
-                _logger.LogDebug("Compute signature, canonical string generated by .NET Client:");
-                _logger.LogDebug("=== SIGNATURE DATA START===");
-            }
+            return Convert.ToBase64String(signature);
+        }
+    }
 
-            string messageHeader;
-
-            if (contentSha256Hash != null)
-            {
-                messageHeader = method.ToUpper() + "\n" +
-                                uriParts.AbsoluteUri + "\n" +
-                                "date: " + date + "\n" +
-                                "x-content-sha256: " + contentSha256Hash + "\n" +
-                                "x-digipost-userid: " + userId + "\n" +
-                                uriParts.Parameters.ToLower() + "\n";
-            }
-            else
-            {
-                messageHeader = method.ToUpper() + "\n" +
-                                uriParts.AbsoluteUri + "\n" +
-                                "date: " + date + "\n" +
-                                "x-digipost-userid: " + userId + "\n" +
-                                uriParts.Parameters.ToLower() + "\n";
-            }
-
-            if (logRequestAndResponse)
-            {
-                _logger.LogDebug(messageHeader);
-                _logger.LogDebug("=== SIGNATURE DATA END ===");
-            }
-
-            byte[] messageBytes = Encoding.UTF8.GetBytes(messageHeader);
-
-
-            var privKey = DotNetUtilities.GetRsaKeyPair(businessCertificate.GetRSAPrivateKey());
-
-            ISigner signer = SignerUtilities.GetSigner("SHA-256withRSA");
-            signer.Init(true, privKey.Private);
-            signer.BlockUpdate(messageBytes, 0, messageBytes.Length);
-
-            var base64Signature = Convert.ToBase64String(signer.GenerateSignature());
-
-            return base64Signature;
+    class UriParts
+    {
+        public UriParts(Uri uri)
+        {
+            var datUri = uri.IsAbsoluteUri ? uri.AbsolutePath : "/" + uri.OriginalString;
+            AbsoluteUri = datUri.ToLower();
+            Parameters = uri.Query.Length > 0 ? uri.Query.Substring(1) : "";
         }
 
-        private class UriParts
-        {
-            public UriParts(Uri uri)
-            {
-                var datUri = uri.IsAbsoluteUri ? uri.AbsolutePath : "/" + uri.OriginalString;
-                AbsoluteUri = datUri.ToLower();
-                Parameters = uri.Query.Length > 0 ? uri.Query.Substring(1) : "";
-            }
+        public string AbsoluteUri { get; }
 
-            public string AbsoluteUri { get; }
-
-            public string Parameters { get; }
-        }
+        public string Parameters { get; }
     }
 }

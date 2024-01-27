@@ -3,82 +3,81 @@ using System.Collections.Generic;
 using Digipost.Api.Client.Common.Entrypoint;
 using Digipost.Api.Client.Common.Relations;
 
-namespace Digipost.Api.Client.Common.Share
+namespace Digipost.Api.Client.Common.Share;
+
+public class SharedDocument : RestLinkable
 {
-    public class SharedDocument : RestLinkable
+    public DateTime DeliveryTime { get; }
+
+    public string Subject { get; }
+
+    public string FileType { get; }
+
+    public int FileSizeBytes { get; }
+
+    public IOrigin Origin { get; }
+
+    public SharedDocument(
+        DateTime deliveryTime,
+        String subject,
+        String fileType,
+        int fileSizeBytes,
+        IOrigin origin,
+        Dictionary<string, Link> links)
+        : base(links)
     {
-        public DateTime DeliveryTime { get; }
-
-        public string Subject { get; }
-
-        public string FileType { get; }
-
-        public int FileSizeBytes { get; }
-
-        public IOrigin Origin { get; }
-
-        public SharedDocument(
-            DateTime deliveryTime,
-            String subject,
-            String fileType,
-            int fileSizeBytes,
-            IOrigin origin,
-            Dictionary<string, Link> links)
-            : base(links)
-        {
-            DeliveryTime = deliveryTime;
-            Subject = subject;
-            FileType = fileType;
-            FileSizeBytes = fileSizeBytes;
-            Origin = origin;
-        }
-
-        public GetSharedDocumentContentStreamUri GetSharedDocumentContentStreamUri()
-        {
-            return new GetSharedDocumentContentStreamUri(Links["GET_SHARED_DOCUMENT_CONTENT_STREAM"]);
-        }
-
-        public GetSharedDocumentContentUri GetSharedDocumentContentUri()
-        {
-            return new GetSharedDocumentContentUri(Links["GET_SHARED_DOCUMENT_CONTENT"]);
-        }
+        DeliveryTime = deliveryTime;
+        Subject = subject;
+        FileType = fileType;
+        FileSizeBytes = fileSizeBytes;
+        Origin = origin;
     }
 
-    public interface IOrigin
+    public GetSharedDocumentContentStreamUri GetSharedDocumentContentStreamUri()
     {
-        string Name { get; }
+        return new GetSharedDocumentContentStreamUri(Links["GET_SHARED_DOCUMENT_CONTENT_STREAM"]);
     }
 
-    public class OrganisationOrigin : IOrigin
+    public GetSharedDocumentContentUri GetSharedDocumentContentUri()
     {
-        public string Name { get; }
+        return new GetSharedDocumentContentUri(Links["GET_SHARED_DOCUMENT_CONTENT"]);
+    }
+}
 
-        public string OrganisationNumber { get; }
+public interface IOrigin
+{
+    string Name { get; }
+}
 
-        public OrganisationOrigin(string name, string organisationNumber)
-        {
-            Name = name;
-            OrganisationNumber = organisationNumber;
-        }
+public class OrganisationOrigin : IOrigin
+{
+    public string Name { get; }
 
-        public override string ToString()
-        {
-            return Name + "[" + OrganisationNumber + "]";
-        }
+    public string OrganisationNumber { get; }
+
+    public OrganisationOrigin(string name, string organisationNumber)
+    {
+        Name = name;
+        OrganisationNumber = organisationNumber;
     }
 
-    public class PrivatePersonOrigin : IOrigin
+    public override string ToString()
     {
-        public string Name { get; }
+        return Name + "[" + OrganisationNumber + "]";
+    }
+}
 
-        public PrivatePersonOrigin(string name)
-        {
-            Name = name;
-        }
+public class PrivatePersonOrigin : IOrigin
+{
+    public string Name { get; }
 
-        public override string ToString()
-        {
-            return Name;
-        }
+    public PrivatePersonOrigin(string name)
+    {
+        Name = name;
+    }
+
+    public override string ToString()
+    {
+        return Name;
     }
 }

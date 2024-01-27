@@ -1,9 +1,8 @@
-﻿namespace Digipost.Api.Client.Common
-{
-    public class ContentHash
-    {
-        public string HashAlgoritm { get; set; }
+﻿namespace Digipost.Api.Client.Common;
 
-        public string Value { get; set; }
-    }
+public class ContentHash
+{
+    public string HashAlgoritm { get; set; }
+
+    public string Value { get; set; }
 }

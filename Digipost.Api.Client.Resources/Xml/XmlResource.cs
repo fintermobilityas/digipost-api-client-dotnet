@@ -4,59 +4,58 @@ using System.Reflection;
 using System.Text;
 using Digipost.Api.Client.Shared.Resources.Resource;
 
-namespace Digipost.Api.Client.Resources.Xml
+namespace Digipost.Api.Client.Resources.Xml;
+
+internal static class XmlResource
 {
-    internal static class XmlResource
+    static readonly ResourceUtility ResourceUtility = new ResourceUtility(typeof(XmlResource).GetTypeInfo().Assembly, "Digipost.Api.Client.Resources.Xml.Data");
+
+    static StringContent GetResource(params string[] path)
     {
-        private static readonly ResourceUtility ResourceUtility = new ResourceUtility(typeof(XmlResource).GetTypeInfo().Assembly,"Digipost.Api.Client.Resources.Xml.Data");
+        var bytes = ResourceUtility.ReadAllBytes(path);
 
-        private static StringContent GetResource(params string[] path)
+        if (bytes == null)
         {
-            var bytes = ResourceUtility.ReadAllBytes(path);
-
-            if (bytes == null)
-            {
-                throw new FileLoadException($"Unable to load file at {string.Join("/", path)}. Remember to add file as Resource. Open Properties on file in Solution Explorer (Alt + Enter), and set Build Action to Embedded resource.");
-            }
-
-            return new StringContent(XmlUtility.ToXmlDocument(Encoding.UTF8.GetString(bytes)).OuterXml);
+            throw new FileLoadException($"Unable to load file at {string.Join("/", path)}. Remember to add file as Resource. Open Properties on file in Solution Explorer (Alt + Enter), and set Build Action to Embedded resource.");
         }
 
-        internal static class SendMessage
-        {
-            public static StringContent GetError()
-            {
-                return GetResource("SendMessageErrorUnknownRecipient.xml");
-            }
+        return new StringContent(XmlUtility.ToXmlDocument(Encoding.UTF8.GetString(bytes)).OuterXml);
+    }
 
-            public static StringContent GetMessageDelivery()
-            {
-                return GetResource("SendMessageMessageDelivery.xml");
-            }
+    internal static class SendMessage
+    {
+        public static StringContent GetError()
+        {
+            return GetResource("SendMessageErrorUnknownRecipient.xml");
         }
 
-        internal static class Identification
+        public static StringContent GetMessageDelivery()
         {
-            public static StringContent GetResult()
-            {
-                return GetResource("IdentificationResult.xml");
-            }
+            return GetResource("SendMessageMessageDelivery.xml");
         }
+    }
 
-        internal static class Search
+    internal static class Identification
+    {
+        public static StringContent GetResult()
         {
-            public static StringContent GetResult()
-            {
-                return GetResource("SearchResult.xml");
-            }
+            return GetResource("IdentificationResult.xml");
         }
+    }
 
-        internal static class Inbox
+    internal static class Search
+    {
+        public static StringContent GetResult()
         {
-            public static StringContent GetError()
-            {
-                return GetResource("InboxDocumentNotExisting.xml");
-            }
+            return GetResource("SearchResult.xml");
+        }
+    }
+
+    internal static class Inbox
+    {
+        public static StringContent GetError()
+        {
+            return GetResource("InboxDocumentNotExisting.xml");
         }
     }
 }
