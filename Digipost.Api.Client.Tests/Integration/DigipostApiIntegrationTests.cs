@@ -129,7 +129,7 @@ public class DigipostApiIntegrationTests
             var fakeResponseHandler = new FakeResponseHandler { ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.Identification.GetResult() };
             var digipostApi = GetDigipostApi(fakeResponseHandler);
 
-            await digipostApi.IdentifyAsync(identification);
+            await digipostApi.IdentifyAsync(identification, default);
         }
 
         [Fact]

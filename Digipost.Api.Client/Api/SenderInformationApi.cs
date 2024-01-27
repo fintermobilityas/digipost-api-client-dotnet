@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Exceptions;
@@ -20,13 +21,13 @@ internal class SenderInformationApi
         _requestHelper = requestHelper;
     }
 
-    public async Task<SenderInformation> GetSenderInformation(SenderInformationUri senderInformationUri)
+    public async Task<SenderInformation> GetSenderInformationAsync(SenderInformationUri senderInformationUri, CancellationToken cancellationToken)
     {
         var cacheKey = "senderOrganisation" + senderInformationUri;
 
         if (_entrypointCache.TryGetValue(cacheKey, out SenderInformation information)) return information;
 
-        var result = await _requestHelper.GetAsync<V8.Sender_Information>(senderInformationUri).ConfigureAwait(false);
+        var result = await _requestHelper.GetAsync<V8.Sender_Information>(senderInformationUri, cancellationToken);
         var senderInformation = result.FromDataTransferObject();
 
         if (!senderInformation.IsValidSender)

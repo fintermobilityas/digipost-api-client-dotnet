@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Digipost.Api.Client.Common.Actions;
 using Digipost.Api.Client.Common.Identify;
 using Digipost.Api.Client.Common.Relations;
 using Digipost.Api.Client.Common.Utilities;
@@ -17,32 +17,32 @@ internal class SendRequestHelper
         _requestHelper = requestHelper;
     }
 
-    internal Task<T> Get<T>(Uri uri)
+    internal Task<T> GetAsync<T>(Uri uri, CancellationToken cancellationToken)
     {
-        return _requestHelper.GetAsync<T>(uri);
+        return _requestHelper.GetAsync<T>(uri, cancellationToken);
     }
 
-    internal Task<T> PostMessage<T>(IMessage message, Uri uri, bool skipMetaDataValidation = false)
+    internal Task<T> PostMessageAsync<T>(IMessage message, Uri uri, bool skipMetaDataValidation = false, CancellationToken cancellationToken = default)
     {
         var messageAction = new MessageAction(message);
         var httpContent = messageAction.Content(message);
 
-        return _requestHelper.PostAsync<T>(httpContent, messageAction.RequestContent, uri, skipMetaDataValidation);
+        return _requestHelper.PostAsync<T>(httpContent, messageAction.RequestContent, uri, skipMetaDataValidation, cancellationToken);
     }
 
-    internal Task PostAdditionalData<T>(IAdditionalData additionalData, AddAdditionalDataUri uri)
+    internal Task PostAdditionalDataAsync<T>(IAdditionalData additionalData, AddAdditionalDataUri uri, CancellationToken cancellationToken)
     {
         var action = new AddAdditionalDataAction(additionalData);
         var httpContent = action.Content(additionalData);
 
-        return _requestHelper.PostAsync<T>(httpContent, action.RequestContent, uri);
+        return _requestHelper.PostAsync<T>(httpContent, action.RequestContent, uri, cancellationToken: cancellationToken);
     }
 
-    internal Task<T> PostIdentification<T>(IIdentification identification, Uri uri)
+    internal Task<T> PostIdentificationAsync<T>(IIdentification identification, Uri uri, CancellationToken cancellationToken)
     {
         var messageAction = new IdentificationAction(identification);
         var httpContent = messageAction.Content(identification);
 
-        return _requestHelper.PostAsync<T>(httpContent, messageAction.RequestContent, uri);
+        return _requestHelper.PostAsync<T>(httpContent, messageAction.RequestContent, uri, cancellationToken: cancellationToken);
     }
 }

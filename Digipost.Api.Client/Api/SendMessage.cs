@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Entrypoint;
@@ -12,26 +13,18 @@ using V8;
 
 namespace Digipost.Api.Client.Api;
 
-internal class SendMessageApi
+internal class SendMessageApi(SendRequestHelper requestHelper, ILoggerFactory loggerFactory, Root root)
 {
-    readonly Root _root;
     const int MinimumSearchLength = 3;
-    readonly ILogger<SendMessageApi> _logger;
+    readonly ILogger<SendMessageApi> _logger = loggerFactory.CreateLogger<SendMessageApi>();
 
-    public SendMessageApi(SendRequestHelper requestHelper, ILoggerFactory loggerFactory, Root root)
-    {
-        _root = root;
-        _logger = loggerFactory.CreateLogger<SendMessageApi>();
-        RequestHelper = requestHelper;
-    }
+    public SendRequestHelper RequestHelper { get; } = requestHelper;
 
-    public SendRequestHelper RequestHelper { get; }
-
-    public async Task<IMessageDeliveryResult> SendMessageAsync(IMessage message, bool skipMetaDataValidation = false)
+    public async Task<IMessageDeliveryResult> SendMessageAsync(IMessage message, bool skipMetaDataValidation = false, CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Outgoing Digipost message to Recipient: {message}", message);
 
-        var messageDelivery = await RequestHelper.PostMessage<Message_Delivery>(message, _root.GetSendMessageUri(), skipMetaDataValidation);
+        var messageDelivery = await RequestHelper.PostMessageAsync<Message_Delivery>(message, root.GetSendMessageUri(), skipMetaDataValidation, cancellationToken);
 
         var messageDeliveryResult = messageDelivery.FromDataTransferObject();
 
@@ -40,11 +33,11 @@ internal class SendMessageApi
         return messageDeliveryResult;
     }
 
-    public async Task<IIdentificationResult> IdentifyAsync(IIdentification identification)
+    public async Task<IIdentificationResult> IdentifyAsync(IIdentification identification, CancellationToken cancellationToken)
     {
         _logger.LogDebug("Outgoing identification request: {identification}", identification);
 
-        var identificationResultDataTransferObject = await RequestHelper.PostIdentification<Identification_Result>(identification, _root.GetIdentifyRecipientUri());
+        var identificationResultDataTransferObject = await RequestHelper.PostIdentificationAsync<Identification_Result>(identification, root.GetIdentifyRecipientUri(), cancellationToken);
         var identificationResult = identificationResultDataTransferObject.FromDataTransferObject();
 
         _logger.LogDebug("Response received for identification to recipient, ResultType '{resultType}', Data '{data}'.", identificationResult.ResultType, identificationResult.Data);
@@ -52,12 +45,12 @@ internal class SendMessageApi
         return identificationResult;
     }
 
-    public async Task<ISearchDetailsResult> SearchAsync(string search)
+    public async Task<ISearchDetailsResult> SearchAsync(string search, CancellationToken cancellationToken)
     {
         _logger.LogDebug("Outgoing search request, term: '{search}'.", search);
 
         search = search.RemoveReservedUriCharacters();
-        var uri = _root.GetRecipientSearchUri(search);
+        var uri = root.GetRecipientSearchUri(search);
 
         if (search.Length < MinimumSearchLength)
         {
@@ -65,10 +58,10 @@ internal class SendMessageApi
 
             var taskSource = new TaskCompletionSource<ISearchDetailsResult>();
             taskSource.SetResult(emptyResult);
-            return await taskSource.Task.ConfigureAwait(false);
+            return await taskSource.Task;
         }
 
-        var searchDetailsResultDataTransferObject = await RequestHelper.Get<Recipients>(uri).ConfigureAwait(false);
+        var searchDetailsResultDataTransferObject = await RequestHelper.GetAsync<Recipients>(uri, cancellationToken);
 
         var searchDetailsResult = searchDetailsResultDataTransferObject.FromDataTransferObject();
 
@@ -77,11 +70,11 @@ internal class SendMessageApi
         return searchDetailsResult;
     }
 
-    public async Task SendAdditionalDataAsync(IAdditionalData additionalData, AddAdditionalDataUri uri)
+    public async Task SendAdditionalDataAsync(IAdditionalData additionalData, AddAdditionalDataUri uri, CancellationToken cancellationToken)
     {
         _logger.LogDebug("Sending additional data '{uri}'", uri);
 
-        await RequestHelper.PostAdditionalData<string>(additionalData, uri).ConfigureAwait(false);
+        await RequestHelper.PostAdditionalDataAsync<string>(additionalData, uri, cancellationToken);
 
         _logger.LogDebug("Additional data added to '{uri}'", uri);
     }

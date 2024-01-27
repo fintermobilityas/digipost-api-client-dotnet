@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Digipost.Api.Client.Common.Exceptions;
@@ -22,53 +23,53 @@ internal class RequestHelper
 
     internal HttpClient HttpClient { get; set; }
 
-    internal Task<T> PostAsync<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false)
+    internal Task<T> PostAsync<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false, CancellationToken cancellationToken = default)
     {
         ValidateXml(messageActionRequestContent, skipMetaDataValidation);
 
-        var postAsync = HttpClient.PostAsync(uri, httpContent);
+        var postAsync = HttpClient.PostAsync(uri, httpContent, cancellationToken);
 
-        return SendAsync<T>(postAsync);
+        return SendAsync<T>(postAsync, cancellationToken);
     }
 
-    internal Task<T> GetAsync<T>(Uri uri)
+    internal Task<T> GetAsync<T>(Uri uri, CancellationToken cancellationToken)
     {
-        return SendAsync<T>(HttpClient.GetAsync(uri));
+        return SendAsync<T>(HttpClient.GetAsync(uri, cancellationToken), cancellationToken);
     }
 
-    internal Task<T> PutAsync<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false)
+    internal Task<T> PutAsync<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false, CancellationToken cancellationToken = default)
     {
         ValidateXml(messageActionRequestContent, skipMetaDataValidation);
 
-        var postAsync = HttpClient.PutAsync(uri, httpContent);
+        var postAsync = HttpClient.PutAsync(uri, httpContent, cancellationToken);
 
-        return SendAsync<T>(postAsync);
+        return SendAsync<T>(postAsync, cancellationToken);
     }
 
-    internal Task<string> DeleteAsync(Uri uri)
+    internal Task<string> DeleteAsync(Uri uri, CancellationToken cancellationToken)
     {
-        return SendAsync<string>(HttpClient.DeleteAsync(uri));
+        return SendAsync<string>(HttpClient.DeleteAsync(uri, cancellationToken), cancellationToken);
     }
 
-    internal async Task<Stream> GetStreamAsync(Uri uri)
+    internal async Task<Stream> GetStreamAsync(Uri uri, CancellationToken cancellationToken)
     {
-        var responseTask = HttpClient.GetAsync(uri);
-        var httpResponseMessage = await responseTask.ConfigureAwait(false);
+        var responseTask = HttpClient.GetAsync(uri, cancellationToken);
+        var httpResponseMessage = await responseTask;
 
         if (!httpResponseMessage.IsSuccessStatusCode)
         {
-            var responseContent = await ReadResponse(httpResponseMessage).ConfigureAwait(false);
+            var responseContent = await ReadResponse(httpResponseMessage, cancellationToken);
             HandleResponseErrorAndThrow(responseContent, httpResponseMessage.StatusCode);
         }
 
         return await httpResponseMessage.Content.ReadAsStreamAsync();
     }
 
-    async Task<T> SendAsync<T>(Task<HttpResponseMessage> responseTask)
+    async Task<T> SendAsync<T>(Task<HttpResponseMessage> responseTask, CancellationToken cancellationToken)
     {
-        var httpResponseMessage = await responseTask.ConfigureAwait(false);
+        var httpResponseMessage = await responseTask;
 
-        var responseContent = await ReadResponse(httpResponseMessage).ConfigureAwait(false);
+        var responseContent = await ReadResponse(httpResponseMessage, cancellationToken);
 
         if (!httpResponseMessage.IsSuccessStatusCode)
             HandleResponseErrorAndThrow(responseContent, httpResponseMessage.StatusCode);
@@ -117,12 +118,12 @@ internal class RequestHelper
 
     static string GetDocumentXmlWithoutMetaData(XmlNode document)
     {
-        return Regex.Replace(document.InnerXml, @"<data-type[^>]*>(.*?)</data-type>", "").Trim();
+        return Regex.Replace(document.InnerXml, "<data-type[^>]*>(.*?)</data-type>", "").Trim();
     }
 
-    static async Task<string> ReadResponse(HttpResponseMessage requestResult)
+    static async Task<string> ReadResponse(HttpResponseMessage requestResult, CancellationToken cancellationToken)
     {
-        var contentResult = await requestResult.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var contentResult = await requestResult.Content.ReadAsStringAsync();
         return contentResult;
     }
 

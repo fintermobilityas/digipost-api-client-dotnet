@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Entrypoint;
@@ -8,118 +8,58 @@ using Digipost.Api.Client.Common.Relations;
 using Digipost.Api.Client.Common.Share;
 using Digipost.Api.Client.Common.Utilities;
 using Digipost.Api.Client.Send;
-using Microsoft.Extensions.Logging;
 using V8;
 
 namespace Digipost.Api.Client.Api;
 
 public interface IDocumentsApi
 {
-    /**
-     * Guid should be the Guid added to the actual document, usually the main document
-     */
-    Task<DocumentStatus> GetDocumentStatus(Guid guid);
-    Task<DocumentStatus> GetDocumentStatusAsync(Guid guid);
-
-    Task<DocumentEvents> GetDocumentEvents(DateTime from, DateTime to, int offset, int maxResults);
-    Task<DocumentEvents> GetDocumentEventsAsync(DateTime from, DateTime to, int offset, int maxResults);
+    Task<DocumentStatus> GetDocumentStatusAsync(Guid guid, CancellationToken cancellationToken);
+    Task<DocumentEvents> GetDocumentEventsAsync(DateTime from, DateTime to, int offset, int maxResults, CancellationToken cancellationToken);
 }
 public interface IShareDocumentsApi
 {
-    Task<ShareDocumentsRequestState> GetShareDocumentsRequestState(Guid guid);
-    Task<ShareDocumentsRequestState> GetShareDocumentsRequestStateAsync(Guid guid);
-    Task<SharedDocumentContent> GetShareDocumentContent(GetSharedDocumentContentUri uri);
-    Task<SharedDocumentContent> GetShareDocumentContentAsync(GetSharedDocumentContentUri uri);
-    Task<Stream> FetchSharedDocument(GetSharedDocumentContentStreamUri uri);
+    Task<ShareDocumentsRequestState> GetShareDocumentsRequestStateAsync(Guid guid, CancellationToken cancellationToken);
+    Task<SharedDocumentContent> GetShareDocumentContentAsync(GetSharedDocumentContentUri uri, CancellationToken cancellationToken);
+    Task<Stream> FetchSharedDocumentAsync(GetSharedDocumentContentStreamUri uri, CancellationToken cancellationToken);
 }
 
-internal class DocumentsApi : IDocumentsApi, IShareDocumentsApi
+internal class DocumentsApi(RequestHelper requestHelper, Root root, Sender sender)
+    : IDocumentsApi, IShareDocumentsApi
 {
-    readonly RequestHelper _requestHelper;
-    readonly ILoggerFactory _loggerFactory;
-    readonly Root _root;
-    readonly Sender _sender;
-
-    public DocumentsApi(RequestHelper requestHelper, ILoggerFactory loggerFactory, Root root, Sender sender)
+    public async Task<DocumentStatus> GetDocumentStatusAsync(Guid guid, CancellationToken cancellationToken)
     {
-        _requestHelper = requestHelper;
-        _loggerFactory = loggerFactory;
-        _root = root;
-        _sender = sender;
-    }
-
-    public Task<DocumentStatus> GetDocumentStatus(Guid guid)
-    {
-        var result = GetDocumentStatusAsync(guid);
-
-        if (result.IsFaulted && result.Exception != null)
-            throw result.Exception.InnerException;
-
-        return result;
-    }
-
-    public async Task<DocumentStatus> GetDocumentStatusAsync(Guid guid)
-    {
-        var documentStatusUri = _root.GetDocumentStatusUri(guid);
-        var result = await _requestHelper.GetAsync<Document_Status>(documentStatusUri).ConfigureAwait(false);
+        var documentStatusUri = root.GetDocumentStatusUri(guid);
+        var result = await requestHelper.GetAsync<Document_Status>(documentStatusUri, cancellationToken);
 
         return result.FromDataTransferObject();
     }
 
-    public Task<DocumentEvents> GetDocumentEvents(DateTime from, DateTime to, int offset, int maxResults)
+    public async Task<DocumentEvents> GetDocumentEventsAsync(DateTime from, DateTime to, int offset, int maxResults, CancellationToken cancellationToken)
     {
-        var result = GetDocumentEventsAsync(from, to, offset, maxResults);
-
-        if (result.IsFaulted && result.Exception != null)
-            throw result.Exception.InnerException;
-
-        return result;
-    }
-
-    public async Task<DocumentEvents> GetDocumentEventsAsync(DateTime from, DateTime to, int offset, int maxResults)
-    {
-        var documentEventsUri = _root.GetDocumentEventsUri(_sender, from, to, offset, maxResults);
-        var result = await _requestHelper.GetAsync<Document_Events>(documentEventsUri).ConfigureAwait(false);
+        var documentEventsUri = root.GetDocumentEventsUri(sender, from, to, offset, maxResults);
+        var result = await requestHelper.GetAsync<Document_Events>(documentEventsUri, cancellationToken);
 
         return result.FromDataTransferObject();
     }
 
-    public Task<ShareDocumentsRequestState> GetShareDocumentsRequestState(Guid guid)
+    public async Task<ShareDocumentsRequestState> GetShareDocumentsRequestStateAsync(Guid guid, CancellationToken cancellationToken)
     {
-        var result = GetShareDocumentsRequestStateAsync(guid);
+        var shareDocumentsRequestStateUri = root.GetShareDocumentsRequestStateUri(guid);
+        var result = await requestHelper.GetAsync<Share_Documents_Request_State>(shareDocumentsRequestStateUri, cancellationToken);
 
-        if (result.IsFaulted && result.Exception != null)
-            throw result.Exception.InnerException;
-
-        return result;
+        return result.FromDataTransferObject();
     }
-
-    public async Task<ShareDocumentsRequestState> GetShareDocumentsRequestStateAsync(Guid guid)
+    
+    public async Task<SharedDocumentContent> GetShareDocumentContentAsync(GetSharedDocumentContentUri uri, CancellationToken cancellationToken)
     {
-        var shareDocumentsRequestStateUri = _root.GetShareDocumentsRequestStateUri(guid);
-        var result = await _requestHelper.GetAsync<Share_Documents_Request_State>(shareDocumentsRequestStateUri).ConfigureAwait(false);
+        var result = await requestHelper.GetAsync<Shared_Document_Content>(uri, cancellationToken);
 
         return result.FromDataTransferObject();
     }
 
-    public Task<SharedDocumentContent> GetShareDocumentContent(GetSharedDocumentContentUri uri)
+    public async Task<Stream> FetchSharedDocumentAsync(GetSharedDocumentContentStreamUri uri, CancellationToken cancellationToken)
     {
-        var result = GetShareDocumentContentAsync(uri);
-        if (result.IsFaulted && result.Exception != null)
-            throw result.Exception.InnerException;
-
-        return result;
-    }
-
-    public async Task<SharedDocumentContent> GetShareDocumentContentAsync(GetSharedDocumentContentUri uri)
-    {
-        var result = await _requestHelper.GetAsync<Shared_Document_Content>(uri).ConfigureAwait(false);
-
-        return result.FromDataTransferObject();
-    }
-
-    public async Task<Stream> FetchSharedDocument(GetSharedDocumentContentStreamUri uri)
-    {
-        return await _requestHelper.GetStreamAsync(uri).ConfigureAwait(false);
+        return await requestHelper.GetStreamAsync(uri, cancellationToken);
     }
 }

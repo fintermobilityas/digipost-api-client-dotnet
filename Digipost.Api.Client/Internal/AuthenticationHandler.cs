@@ -46,7 +46,7 @@ internal class AuthenticationHandler : DelegatingHandler
 
         if (request.Content != null)
         {
-            var contentBytes = await request.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            var contentBytes = await request.Content.ReadAsByteArrayAsync();
             contentHash = ComputeHash(contentBytes);
             request.Headers.Add("X-Content-SHA256", contentHash);
         }
@@ -54,7 +54,7 @@ internal class AuthenticationHandler : DelegatingHandler
         var signature = ComputeSignature(Method, request.RequestUri, date, contentHash, brokerId, BusinessCertificate, ClientConfig.LogRequestAndResponse);
         request.Headers.Add("X-Digipost-Signature", signature);
 
-        return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        return await base.SendAsync(request, cancellationToken);
     }
 
     static string GetAssemblyVersion()

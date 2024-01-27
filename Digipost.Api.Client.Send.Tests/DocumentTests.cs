@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Enums;
 using Digipost.Api.Client.Resources.Content;
 using Xunit;

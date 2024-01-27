@@ -1,7 +1,6 @@
 ﻿using System;
 using Digipost.Api.Client.Common.Enums;
 using Digipost.Api.Client.Common.Extensions;
-using V8;
 using Xunit;
 
 namespace Digipost.Api.Client.Common.Tests.Extensions;

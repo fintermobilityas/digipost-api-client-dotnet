@@ -3,7 +3,6 @@ using System.Security.Cryptography.X509Certificates;
 using Digipost.Api.Client.Common.Enums;
 using Digipost.Api.Client.Common.Recipient;
 using Digipost.Api.Client.Resources.Certificate;
-using Digipost.Api.Client.Shared.Certificate;
 using Environment = Digipost.Api.Client.Common.Environment;
 
 namespace Digipost.Api.Client.Tests.Utilities;

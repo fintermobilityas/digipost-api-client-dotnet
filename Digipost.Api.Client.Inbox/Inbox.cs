@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Digipost.Api.Client.Common.Entrypoint;
 using Digipost.Api.Client.Common.Relations;
@@ -9,14 +10,14 @@ namespace Digipost.Api.Client.Inbox;
 
 internal interface IInbox
 {
-    Task<IEnumerable<InboxDocument>> Fetch(int offset = 0, int limit = 100);
+    Task<IEnumerable<InboxDocument>> FetchAsync(int offset = 0, int limit = 100, CancellationToken cancellationToken = default);
 
-    Task<Stream> FetchDocument(GetInboxDocumentContentUri document);
+    Task<Stream> FetchDocumentAsync(GetInboxDocumentContentUri document, CancellationToken cancellationToken);
 
-    Task DeleteDocument(InboxDocumentDeleteUri document);
+    Task DeleteDocumentAsync(InboxDocumentDeleteUri document, CancellationToken cancellationToken);
 }
 
-public class Inbox : IInbox
+public sealed class Inbox : IInbox
 {
     readonly Root _inboxRoot;
     readonly RequestHelper _requestHelper;
@@ -27,22 +28,15 @@ public class Inbox : IInbox
         _requestHelper = requestHelper;
     }
 
-    public async Task<IEnumerable<InboxDocument>> Fetch(int offset = 0, int limit = 100)
+    public async Task<IEnumerable<InboxDocument>> FetchAsync(int offset = 0, int limit = 100, CancellationToken cancellationToken = default)
     {
         var inboxPath = _inboxRoot.GetGetInboxUri(offset, limit);
-
-        var result = await _requestHelper.GetAsync<V8.Inbox>(inboxPath).ConfigureAwait(false);
-
+        var result = await _requestHelper.GetAsync<V8.Inbox>(inboxPath, cancellationToken);
         return result.FromDataTransferObject();
     }
 
-    public async Task<Stream> FetchDocument(GetInboxDocumentContentUri getInboxDocumentContentUri)
-    {
-        return await _requestHelper.GetStreamAsync(getInboxDocumentContentUri).ConfigureAwait(false);
-    }
+    public Task<Stream> FetchDocumentAsync(GetInboxDocumentContentUri getInboxDocumentContentUri, CancellationToken cancellationToken) => 
+        _requestHelper.GetStreamAsync(getInboxDocumentContentUri, cancellationToken);
 
-    public async Task DeleteDocument(InboxDocumentDeleteUri deleteUri)
-    {
-        await _requestHelper.DeleteAsync(deleteUri).ConfigureAwait(false);
-    }
+    public Task DeleteDocumentAsync(InboxDocumentDeleteUri deleteUri, CancellationToken cancellationToken) => _requestHelper.DeleteAsync(deleteUri, cancellationToken);
 }

@@ -23,7 +23,7 @@ public class FakeResponseHandler : DelegatingHandler
             Content = HttpContent ?? HttpContent,
             StatusCode = ResultCode ?? HttpStatusCode.OK
         };
-        return await Task.FromResult(response).ConfigureAwait(false);
+        return await Task.FromResult(response);
     }
 
     void AddResponseHeader(HttpResponseMessage response)
