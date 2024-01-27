@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -10,12 +11,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Microsoft.Extensions.Logging;
+using Environment = System.Environment;
 
 namespace Digipost.Api.Client.Internal;
 
 internal class AuthenticationHandler : DelegatingHandler
 {
     static ILogger<DigipostClient> _logger;
+    static readonly string UserAgent = $"digipost-api-client-dotnet/{Assembly.GetExecutingAssembly().GetName().Version} (netcore/{Environment.Version})";
 
     public AuthenticationHandler(ClientConfig clientConfig, X509Certificate2 businessCertificate, ILoggerFactory loggerFactory)
     {
@@ -39,7 +42,7 @@ internal class AuthenticationHandler : DelegatingHandler
         request.Headers.Add("X-Digipost-UserId", brokerId);
         request.Headers.Add("Date", date);
         request.Headers.Add("Accept", DigipostVersion.V8);
-        request.Headers.Add("User-Agent", GetAssemblyVersion());
+        request.Headers.Add("User-Agent", UserAgent);
         Method = request.Method.ToString();
 
         string contentHash = null;
@@ -58,34 +61,6 @@ internal class AuthenticationHandler : DelegatingHandler
     }
 
     static string GetAssemblyVersion()
-    {
-        var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
-
-        return $"digipost-api-client-dotnet/{assemblyVersion} (netcore/{GetNetCoreVersion()})";
-    }
-
-    static string GetNetCoreVersion()
-    {
-        try
-        {
-            var assembly = typeof(GCSettings).GetTypeInfo().Assembly;
-            var assemblyPath = assembly.CodeBase.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
-            var netCoreAppIndex = Array.IndexOf(assemblyPath, "Microsoft.NETCore.App");
-
-            if (netCoreAppIndex > 0 && netCoreAppIndex < assemblyPath.Length - 2)
-            {
-                return assemblyPath[netCoreAppIndex + 1];
-            }
-        }
-        catch (Exception)
-        {
-            // ignored
-        }
-
-        return "AssemblyVersionNotFound";
-    }
-
-    internal static string ComputeHash(byte[] inputBytes)
     {
         using var sha256 = SHA256.Create();
         var hashBytes = sha256.ComputeHash(inputBytes);
@@ -139,11 +114,11 @@ internal class AuthenticationHandler : DelegatingHandler
         return Convert.ToBase64String(signature);
     }
 
-    class UriParts
+    sealed class UriParts
     {
         public UriParts(Uri uri)
         {
-            var datUri = uri.IsAbsoluteUri ? uri.AbsolutePath : "/" + uri.OriginalString;
+            var datUri = uri.IsAbsoluteUri ? uri.AbsolutePath : $"/{uri.OriginalString}";
             AbsoluteUri = datUri.ToLower();
             Parameters = uri.Query.Length > 0 ? uri.Query.Substring(1) : "";
         }
