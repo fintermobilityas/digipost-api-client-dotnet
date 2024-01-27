@@ -10,6 +10,6 @@ public class Error : IError
 
     public override string ToString()
     {
-            return $"Errorcode: {Errorcode}, Errormessage: {Errormessage}, Errortype: {Errortype}";
-        }
+        return $"Errorcode: {Errorcode}, Errormessage: {Errormessage}, Errortype: {Errortype}";
+    }
 }

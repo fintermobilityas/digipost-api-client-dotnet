@@ -8,7 +8,7 @@ public class EnvironmentTests
     [Fact]
     public void Can_Change_Url()
     {
-            var env = Environment.DifiTest;
-            env.Url = new Uri("http://api.newenvironment.digipost.no");
-        }
+        var env = Environment.DifiTest;
+        env.Url = new Uri("http://api.newenvironment.digipost.no");
+    }
 }

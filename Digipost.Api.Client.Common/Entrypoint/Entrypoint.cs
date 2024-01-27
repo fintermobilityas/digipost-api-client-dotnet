@@ -11,8 +11,8 @@ public class Root : RestLinkable
 {
     public Root(string certificate)
     {
-            Certificate = certificate;
-        }
+        Certificate = certificate;
+    }
 
     /// <summary>
     /// The element certificate contains Digipost's current public key. It can be used to verify
@@ -22,86 +22,86 @@ public class Root : RestLinkable
 
     public ApiRootUri GetApiRootUri(Sender sender = null)
     {
-            return new ApiRootUri(sender);
-        }
+        return new ApiRootUri(sender);
+    }
 
     public SenderInformationUri GetSenderInformationUri(Sender sender)
     {
-            return new SenderInformationUri(Links["GET_SENDER_INFORMATION"], sender);
-        }
+        return new SenderInformationUri(Links["GET_SENDER_INFORMATION"], sender);
+    }
     public SenderInformationUri GetSenderInformationUri(string organisationNumber, string partId)
     {
-            return new SenderInformationUri(Links["GET_SENDER_INFORMATION"], organisationNumber, partId);
-        }
+        return new SenderInformationUri(Links["GET_SENDER_INFORMATION"], organisationNumber, partId);
+    }
 
     public GetInboxUri GetGetInboxUri(int offset = 0, int limit = 100)
     {
-            return new GetInboxUri(Links["GET_INBOX"], offset, limit);
-        }
+        return new GetInboxUri(Links["GET_INBOX"], offset, limit);
+    }
 
     public SendMessageUri GetSendMessageUri()
     {
-            return new SendMessageUri(Links["CREATE_MESSAGE"]);
-        }
+        return new SendMessageUri(Links["CREATE_MESSAGE"]);
+    }
 
     public IdentifyRecipientUri GetIdentifyRecipientUri()
     {
-            return new IdentifyRecipientUri(Links["IDENTIFY_RECIPIENT"]);
-        }
+        return new IdentifyRecipientUri(Links["IDENTIFY_RECIPIENT"]);
+    }
 
     public RecipientSearchUri GetRecipientSearchUri(string search)
     {
-            return new RecipientSearchUri(Links["SEARCH"], search);
-        }
+        return new RecipientSearchUri(Links["SEARCH"], search);
+    }
 
     public GetArchivesUri GetGetArchivesUri()
     {
-            return new GetArchivesUri(Links["GET_ARCHIVES"]);
-        }
+        return new GetArchivesUri(Links["GET_ARCHIVES"]);
+    }
 
     public GetArchiveDocumentsUri GetArchiveDocumentsUri()
     {
-            return new GetArchiveDocumentsUri(Links["ARCHIVE_DOCUMENTS"]);
-        }
+        return new GetArchiveDocumentsUri(Links["ARCHIVE_DOCUMENTS"]);
+    }
 
     public GetArchiveDocumentByReferenceIdUri GetGetArchiveDocumentsReferenceIdUri(string referenceId)
     {
-            return new GetArchiveDocumentByReferenceIdUri(Links["GET_ARCHIVE_DOCUMENTS_BY_REFERENCEID"], referenceId);
-        }
+        return new GetArchiveDocumentByReferenceIdUri(Links["GET_ARCHIVE_DOCUMENTS_BY_REFERENCEID"], referenceId);
+    }
     public GetArchiveDocumentByUuidUri GetGetArchiveDocumentsByUuidUri(string externalId)
     {
-            var nameUuidFromBytes = UuidInterop.NameUuidFromBytes(externalId);
+        var nameUuidFromBytes = UuidInterop.NameUuidFromBytes(externalId);
 
-            return new GetArchiveDocumentByUuidUri(Links["GET_ARCHIVE_DOCUMENT_BY_UUID"], Guid.Parse(nameUuidFromBytes));
-        }
+        return new GetArchiveDocumentByUuidUri(Links["GET_ARCHIVE_DOCUMENT_BY_UUID"], Guid.Parse(nameUuidFromBytes));
+    }
 
     public GetArchiveDocumentByUuidUri GetGetArchiveDocumentsByUuidUri(Guid guid)
     {
-            return new GetArchiveDocumentByUuidUri(Links["GET_ARCHIVE_DOCUMENT_BY_UUID"], guid);
-        }
+        return new GetArchiveDocumentByUuidUri(Links["GET_ARCHIVE_DOCUMENT_BY_UUID"], guid);
+    }
 
     public DocumentEventsUri GetDocumentEventsUri(Sender sender, DateTime from, DateTime to, int offset, int maxResults)
     {
-            return new DocumentEventsUri(Links["DOCUMENT_EVENTS"], sender, from, to, offset, maxResults);
-        }
+        return new DocumentEventsUri(Links["DOCUMENT_EVENTS"], sender, from, to, offset, maxResults);
+    }
 
     public DocumentStatusUri GetDocumentStatusUri(Guid guid)
     {
-            return new DocumentStatusUri(Links["DOCUMENT_STATUS"], guid);
-        }
+        return new DocumentStatusUri(Links["DOCUMENT_STATUS"], guid);
+    }
 
     public ShareDocumentsRequestStateUri GetShareDocumentsRequestStateUri(Guid guid)
     {
-            return new ShareDocumentsRequestStateUri(Links["GET_SHARE_DOCUMENTS_REQUEST_STATE"], guid);
-        }
+        return new ShareDocumentsRequestStateUri(Links["GET_SHARE_DOCUMENTS_REQUEST_STATE"], guid);
+    }
 }
 
 public class Link
 {
     public Link(string uri)
     {
-            Uri = uri;
-        }
+        Uri = uri;
+    }
 
     /// <summary>
     /// The actual uri for the resource
@@ -125,6 +125,6 @@ public class Link
     /// <returns></returns>
     public Uri AbsoluteUri()
     {
-            return new Uri(Uri, UriKind.Absolute);
-        }
+        return new Uri(Uri, UriKind.Absolute);
+    }
 }

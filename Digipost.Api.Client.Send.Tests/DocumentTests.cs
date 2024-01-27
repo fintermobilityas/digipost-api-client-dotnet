@@ -15,7 +15,7 @@ public class DocumentTests
         public void DocumentFromBytes()
         {
             //Arrange
-            var document = new Document("Subject", "txt", new byte[] {1, 2, 3}, AuthenticationLevel.TwoFactor, SensitivityLevel.Sensitive, new SmsNotification(2));
+            var document = new Document("Subject", "txt", new byte[] { 1, 2, 3 }, AuthenticationLevel.TwoFactor, SensitivityLevel.Sensitive, new SmsNotification(2));
 
             //Act
 
@@ -23,7 +23,7 @@ public class DocumentTests
             Assert.NotNull(document.Guid);
             Assert.Equal("Subject", document.Subject);
             Assert.Equal("txt", document.FileType);
-            Assert.True(document.ContentBytes.SequenceEqual(new byte[] {1, 2, 3}));
+            Assert.True(document.ContentBytes.SequenceEqual(new byte[] { 1, 2, 3 }));
             Assert.Equal(AuthenticationLevel.TwoFactor, document.AuthenticationLevel);
             Assert.Equal(SensitivityLevel.Sensitive, document.SensitivityLevel);
             //Assert.Equal(new SmsNotification(2), document.SmsNotification.);

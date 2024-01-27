@@ -13,8 +13,8 @@ public class Broker
     /// </param>
     public Broker(long id)
     {
-            Id = id;
-        }
+        Id = id;
+    }
 
     /// <summary>
     ///     The id for actual sender of the message. If used in scenarios where one party, the broker, is creating a message

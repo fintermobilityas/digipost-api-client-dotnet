@@ -25,6 +25,6 @@ public class SearchDetails : ISearchDetails
 
     public override string ToString()
     {
-            return $"FirstName: {FirstName}, MiddleName: {MiddleName}, LastName: {LastName}, DigipostAddress: {DigipostAddress}, MobileNumber: {MobileNumber}, OrganizationName: {OrganizationName}, SearchDetailsAddress: {SearchDetailsAddress}";
-        }
+        return $"FirstName: {FirstName}, MiddleName: {MiddleName}, LastName: {LastName}, DigipostAddress: {DigipostAddress}, MobileNumber: {MobileNumber}, OrganizationName: {OrganizationName}, SearchDetailsAddress: {SearchDetailsAddress}";
+    }
 }

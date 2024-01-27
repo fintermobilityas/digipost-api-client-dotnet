@@ -6,9 +6,9 @@ public class RecipientById : DigipostRecipient
 {
     public RecipientById(IdentificationType identificationType, string id)
     {
-            IdentificationType = identificationType;
-            Id = id;
-        }
+        IdentificationType = identificationType;
+        Id = id;
+    }
 
     public string Id { get; set; }
 
@@ -16,6 +16,6 @@ public class RecipientById : DigipostRecipient
 
     public override string ToString()
     {
-            return $"Id: {Id}, IdentificationType: {IdentificationType}";
-        }
+        return $"Id: {Id}, IdentificationType: {IdentificationType}";
+    }
 }

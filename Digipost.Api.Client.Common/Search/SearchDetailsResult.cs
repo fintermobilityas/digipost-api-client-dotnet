@@ -12,6 +12,6 @@ public class SearchDetailsResult : ISearchDetailsResult
 
     public override string ToString()
     {
-            return $"PersonDetails: {string.Join(",", PersonDetails.Select(p => p.ToString()))}";
-        }
+        return $"PersonDetails: {string.Join(",", PersonDetails.Select(p => p.ToString()))}";
+    }
 }

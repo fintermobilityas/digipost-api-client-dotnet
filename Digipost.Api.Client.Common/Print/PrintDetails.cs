@@ -6,11 +6,11 @@ public class PrintDetails : IPrintDetails
 {
     public PrintDetails(IPrintRecipient printRecipient, IPrintReturnRecipient printReturnRecipient, PrintColors printColors = PrintColors.Monochrome)
     {
-            PrintRecipient = printRecipient;
-            PrintReturnRecipient = printReturnRecipient;
-            PrintColors = printColors;
-            NondeliverableHandling = NondeliverableHandling.ReturnToSender;
-        }
+        PrintRecipient = printRecipient;
+        PrintReturnRecipient = printReturnRecipient;
+        PrintColors = printColors;
+        NondeliverableHandling = NondeliverableHandling.ReturnToSender;
+    }
 
     public IPrintRecipient PrintRecipient { get; set; }
 
@@ -24,6 +24,6 @@ public class PrintDetails : IPrintDetails
 
     public override string ToString()
     {
-            return PrintRecipient.ToString();
-        }
+        return PrintRecipient.ToString();
+    }
 }

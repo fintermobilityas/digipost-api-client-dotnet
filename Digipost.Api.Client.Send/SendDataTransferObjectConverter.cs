@@ -93,7 +93,7 @@ internal static class SendDataTransferObjectConverter
 
         if (smsNotification.NotifyAtTimes.Count > 0)
         {
-            var timesAsListedTimes = smsNotification.NotifyAtTimes.Select(dateTime => new Listed_Time {Time = dateTime, TimeSpecified = true});
+            var timesAsListedTimes = smsNotification.NotifyAtTimes.Select(dateTime => new Listed_Time { Time = dateTime, TimeSpecified = true });
             foreach (var timesAsListedTime in timesAsListedTimes)
             {
                 smsNotificationDto.At.Add(timesAsListedTime);
@@ -132,7 +132,7 @@ internal static class SendDataTransferObjectConverter
         return new Document(documentDto.Subject, documentDto.File_Type, documentDto.Authentication_Level.ToAuthenticationLevel(), documentDto.Sensitivity_Level.ToSensitivityLevel(), FromDataTransferObject(documentDto.Sms_Notification))
         {
             Guid = documentDto.Uuid,
-            ContentHash = new ContentHash {HashAlgoritm = documentDto.Content_Hash.Hash_Algorithm, Value = documentDto.Content_Hash.Value},
+            ContentHash = new ContentHash { HashAlgoritm = documentDto.Content_Hash.Hash_Algorithm, Value = documentDto.Content_Hash.Value },
             Links = documentDto.Link.FromDataTransferObject()
         };
     }
@@ -158,12 +158,12 @@ internal static class SendDataTransferObjectConverter
             dto.Sender_Id,
             dto.Created,
             dto.Status.ToDeliveryStatus(),
-            dto.ReadSpecified ? dto.Read.ToRead() : (DocumentStatus.Read?) null,
+            dto.ReadSpecified ? dto.Read.ToRead() : (DocumentStatus.Read?)null,
             dto.Channel.ToDeliveryMethod(),
             dto.Content_Hash,
-            dto.DeliveredSpecified ? dto.Delivered : (DateTime?) null,
-            dto.Is_Primary_DocumentSpecified ? dto.Is_Primary_Document : (bool?) null,
-            dto.Content_Hash_AlgorithmSpecified ? dto.Content_Hash_Algorithm.ToHashAlgoritm() : (HashAlgoritm?) null
+            dto.DeliveredSpecified ? dto.Delivered : (DateTime?)null,
+            dto.Is_Primary_DocumentSpecified ? dto.Is_Primary_Document : (bool?)null,
+            dto.Content_Hash_AlgorithmSpecified ? dto.Content_Hash_Algorithm.ToHashAlgoritm() : (HashAlgoritm?)null
         );
     }
 

@@ -12,6 +12,6 @@ internal class Difference
 
     public override string ToString()
     {
-            return $"Difference in property '{PropertyName}'! Expected '{ExpectedValue}' but was '{ActualValue}'";
-        }
+        return $"Difference in property '{PropertyName}'! Expected '{ExpectedValue}' but was '{ActualValue}'";
+    }
 }

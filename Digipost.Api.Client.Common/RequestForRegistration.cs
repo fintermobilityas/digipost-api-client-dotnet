@@ -12,11 +12,11 @@ public class RequestForRegistration
         IPrintDetails printDetails
     )
     {
-            RegistrationDeadline = registrationDeadline;
-            PhoneNumber = phoneNumber;
-            EmailAddress = emailAddress;
-            PrintDetails = printDetails;
-        }
+        RegistrationDeadline = registrationDeadline;
+        PhoneNumber = phoneNumber;
+        EmailAddress = emailAddress;
+        PrintDetails = printDetails;
+    }
 
     public DateTime RegistrationDeadline { get; }
 

@@ -10,17 +10,17 @@ public class NorwegianAddressTests
         [Fact]
         public void WhatYouAreTestingOnMethod()
         {
-                //Arrange
-                var norwegianAddress = new NorwegianAddress("0001", "Oslo", "Addr1", "Addr2", "Addr3");
+            //Arrange
+            var norwegianAddress = new NorwegianAddress("0001", "Oslo", "Addr1", "Addr2", "Addr3");
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.Equal("0001", norwegianAddress.PostalCode);
-                Assert.Equal("Oslo", norwegianAddress.City);
-                Assert.Equal("Addr1", norwegianAddress.AddressLine1);
-                Assert.Equal("Addr2", norwegianAddress.AddressLine2);
-                Assert.Equal("Addr3", norwegianAddress.AddressLine3);
-            }
+            //Assert
+            Assert.Equal("0001", norwegianAddress.PostalCode);
+            Assert.Equal("Oslo", norwegianAddress.City);
+            Assert.Equal("Addr1", norwegianAddress.AddressLine1);
+            Assert.Equal("Addr2", norwegianAddress.AddressLine2);
+            Assert.Equal("Addr3", norwegianAddress.AddressLine3);
+        }
     }
 }

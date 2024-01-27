@@ -39,7 +39,7 @@ internal class SendMessageApi
 
         return messageDeliveryResult;
     }
-        
+
     public async Task<IIdentificationResult> IdentifyAsync(IIdentification identification)
     {
         _logger.LogDebug("Outgoing identification request: {identification}", identification);
@@ -51,7 +51,7 @@ internal class SendMessageApi
 
         return identificationResult;
     }
-        
+
     public async Task<ISearchDetailsResult> SearchAsync(string search)
     {
         _logger.LogDebug("Outgoing search request, term: '{search}'.", search);
@@ -61,7 +61,7 @@ internal class SendMessageApi
 
         if (search.Length < MinimumSearchLength)
         {
-            var emptyResult = new SearchDetailsResult {PersonDetails = new List<SearchDetails>()};
+            var emptyResult = new SearchDetailsResult { PersonDetails = new List<SearchDetails>() };
 
             var taskSource = new TaskCompletionSource<ISearchDetailsResult>();
             taskSource.SetResult(emptyResult);

@@ -46,7 +46,7 @@ public class CertificateReader
         deserializeObject.TryGetValue("Certificate:Path:Absolute", out var certificatePath);
         deserializeObject.TryGetValue("Certificate:Password", out var certificatePassword);
 
-        _logger.LogDebug("Reading certificate from path found in secrets file: {certificatePath}",certificatePath);
+        _logger.LogDebug("Reading certificate from path found in secrets file: {certificatePath}", certificatePath);
 
         return new X509Certificate2(certificatePath, certificatePassword, X509KeyStorageFlags.Exportable);
     }

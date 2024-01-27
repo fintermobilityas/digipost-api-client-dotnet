@@ -16,6 +16,6 @@ public class SearchDetailsAddress : ISearchDetailsAddress
 
     public override string ToString()
     {
-            return $"Street: {Street}, HouseNumber: {HouseNumber}, HouseLetter: {HouseLetter}, AdditionalAddressLine: {AdditionalAddressLine}, PostalCode: {PostalCode}, City: {City}";
-        }
+        return $"Street: {Street}, HouseNumber: {HouseNumber}, HouseLetter: {HouseLetter}, AdditionalAddressLine: {AdditionalAddressLine}, PostalCode: {PostalCode}, City: {City}";
+    }
 }

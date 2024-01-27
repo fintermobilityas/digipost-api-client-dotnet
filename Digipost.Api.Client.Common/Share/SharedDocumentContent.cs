@@ -6,9 +6,9 @@ public class SharedDocumentContent
 {
     public SharedDocumentContent(string contentType, Uri uri)
     {
-            ContentType = contentType;
-            Uri = uri;
-        }
+        ContentType = contentType;
+        Uri = uri;
+    }
 
     public string ContentType { get; }
 

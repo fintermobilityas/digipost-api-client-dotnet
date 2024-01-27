@@ -13,7 +13,7 @@ public class SenderOrganisation
 
     public SenderOrganisation(string organisationNumber, string partId)
     {
-            OrganisationNumber = organisationNumber;
-            PartId = partId;
-        }
+        OrganisationNumber = organisationNumber;
+        PartId = partId;
+    }
 }

@@ -28,10 +28,10 @@ public class InboxDocument : RestLinkable
 
     public GetInboxDocumentContentUri GetGetDocumentContentUri()
     {
-            return new GetInboxDocumentContentUri(Links["GET_DOCUMENT_CONTENT"]);
-        }
+        return new GetInboxDocumentContentUri(Links["GET_DOCUMENT_CONTENT"]);
+    }
     public InboxDocumentDeleteUri GetDeleteUri()
     {
-            return new InboxDocumentDeleteUri(Links["SELF_DELETE"]);
-        }
+        return new InboxDocumentDeleteUri(Links["SELF_DELETE"]);
+    }
 }

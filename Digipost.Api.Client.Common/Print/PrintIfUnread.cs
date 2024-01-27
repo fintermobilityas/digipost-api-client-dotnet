@@ -15,10 +15,10 @@ public class PrintIfUnread : IPrintIfUnread
     /// </param>
     public PrintIfUnread(DateTime printifunreadafter, IPrintDetails printDetails)
     {
-            PrintIfUnreadAfter = printifunreadafter;
-            PrintDetails = printDetails;
-        }
-        
+        PrintIfUnreadAfter = printifunreadafter;
+        PrintDetails = printDetails;
+    }
+
     public DateTime PrintIfUnreadAfter { get; set; }
 
     public IPrintDetails PrintDetails { get; set; }

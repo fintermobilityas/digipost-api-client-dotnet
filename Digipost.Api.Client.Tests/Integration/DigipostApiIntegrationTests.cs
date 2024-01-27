@@ -47,7 +47,7 @@ public class DigipostApiIntegrationTests
         ClientConfig.LogRequestAndResponse = true;
         var serviceProvider = LoggingUtility.CreateServiceProviderAndSetUpLogging();
 
-        var allDelegationHandlers = new List<DelegatingHandler> {new AuthenticationHandler(ClientConfig, Certificate, serviceProvider.GetService<ILoggerFactory>())};
+        var allDelegationHandlers = new List<DelegatingHandler> { new AuthenticationHandler(ClientConfig, Certificate, serviceProvider.GetService<ILoggerFactory>()) };
 
         var httpClient = HttpClientFactory.Create(
             fakehandler,
@@ -65,13 +65,13 @@ public class DigipostApiIntegrationTests
 
         var serviceProvider = LoggingUtility.CreateServiceProviderAndSetUpLogging();
 
-        var requestHelper = new RequestHelper(httpClient, serviceProvider.GetService<ILoggerFactory>()) {HttpClient = httpClient};
+        var requestHelper = new RequestHelper(httpClient, serviceProvider.GetService<ILoggerFactory>()) { HttpClient = httpClient };
 
         var links = new Dictionary<string, Link>
         {
-            ["SEARCH"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/recipient/search") {Rel = httpClient.BaseAddress + "relations/search"},
-            ["IDENTIFY_RECIPIENT"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/identification") {Rel = httpClient.BaseAddress + "relations/identify_recipient"},
-            ["CREATE_MESSAGE"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/message") {Rel = httpClient.BaseAddress + "relations/create_message"}
+            ["SEARCH"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/recipient/search") { Rel = httpClient.BaseAddress + "relations/search" },
+            ["IDENTIFY_RECIPIENT"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/identification") { Rel = httpClient.BaseAddress + "relations/identify_recipient" },
+            ["CREATE_MESSAGE"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/message") { Rel = httpClient.BaseAddress + "relations/create_message" }
         };
         var root = new Root("")
         {
@@ -106,7 +106,7 @@ public class DigipostApiIntegrationTests
         public async Task ProperRequestSentRecipientById()
         {
             var message = DomainUtility.GetSimpleMessageWithRecipientById();
-            await SendMessageAsync(message, new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery()});
+            await SendMessageAsync(message, new FakeResponseHandler { ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery() });
         }
 
         [Fact]
@@ -114,7 +114,7 @@ public class DigipostApiIntegrationTests
         {
             var message = DomainUtility.GetSimpleMessageWithRecipientByNameAndAddress();
 
-            await SendMessageAsync(message, new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery()});
+            await SendMessageAsync(message, new FakeResponseHandler { ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.SendMessage.GetMessageDelivery() });
         }
 
         [Fact]
@@ -132,7 +132,7 @@ public class DigipostApiIntegrationTests
     {
         async Task IdentifyAsync(IIdentification identification)
         {
-            var fakeResponseHandler = new FakeResponseHandler {ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.Identification.GetResult()};
+            var fakeResponseHandler = new FakeResponseHandler { ResultCode = HttpStatusCode.OK, HttpContent = XmlResource.Identification.GetResult() };
             var digipostApi = GetDigipostApi(fakeResponseHandler);
 
             await digipostApi.IdentifyAsync(identification);

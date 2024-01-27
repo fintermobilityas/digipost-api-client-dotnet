@@ -11,18 +11,18 @@ public class RecipientByIdTests
         [Fact]
         public void SimpleConstructor()
         {
-                //Arrange
-                const string testPerson = "ola.nordmann#2233";
+            //Arrange
+            const string testPerson = "ola.nordmann#2233";
 
-                var recipientById = new RecipientById(
-                    IdentificationType.DigipostAddress,
-                    testPerson);
+            var recipientById = new RecipientById(
+                IdentificationType.DigipostAddress,
+                testPerson);
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.Equal(IdentificationType.DigipostAddress, recipientById.IdentificationType);
-                Assert.Equal(testPerson, recipientById.Id);
-            }
+            //Assert
+            Assert.Equal(IdentificationType.DigipostAddress, recipientById.IdentificationType);
+            Assert.Equal(testPerson, recipientById.Id);
+        }
     }
 }

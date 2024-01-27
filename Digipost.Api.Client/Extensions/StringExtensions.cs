@@ -12,8 +12,8 @@ internal static class StringExtensions
     /// <returns></returns>
     public static string RemoveReservedUriCharacters(this string str)
     {
-            var pattern = new Regex("[!#$&'()*+,/:;=?[\\]@%-.<>^_`{|}~]");
+        var pattern = new Regex("[!#$&'()*+,/:;=?[\\]@%-.<>^_`{|}~]");
 
-            return pattern.Replace(str, "");
-        }
+        return pattern.Replace(str, "");
+    }
 }

@@ -33,7 +33,7 @@ internal class ArchiveAction : DigipostAction<Archive>
 
     protected override string Serialize(Archive requestContent)
     {
-        var messageDataTransferObject = ((Archive) requestContent).ToDataTransferObject();
+        var messageDataTransferObject = ((Archive)requestContent).ToDataTransferObject();
         return SerializeUtil.Serialize(messageDataTransferObject);
     }
 

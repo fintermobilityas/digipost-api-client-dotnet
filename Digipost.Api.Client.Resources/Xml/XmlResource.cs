@@ -8,7 +8,7 @@ namespace Digipost.Api.Client.Resources.Xml;
 
 internal static class XmlResource
 {
-    static readonly ResourceUtility ResourceUtility = new ResourceUtility(typeof(XmlResource).GetTypeInfo().Assembly,"Digipost.Api.Client.Resources.Xml.Data");
+    static readonly ResourceUtility ResourceUtility = new ResourceUtility(typeof(XmlResource).GetTypeInfo().Assembly, "Digipost.Api.Client.Resources.Xml.Data");
 
     static StringContent GetResource(params string[] path)
     {

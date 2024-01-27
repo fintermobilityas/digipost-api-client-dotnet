@@ -14,9 +14,9 @@ public class ClientConfig
     /// <param name="environment">Environment to connect to for sending.</param>
     public ClientConfig(Broker broker, Environment environment)
     {
-            Environment = environment;
-            Broker = broker;
-        }
+        Environment = environment;
+        Broker = broker;
+    }
 
     public Environment Environment { get; set; }
 

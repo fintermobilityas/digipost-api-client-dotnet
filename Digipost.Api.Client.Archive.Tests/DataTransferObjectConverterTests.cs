@@ -39,11 +39,11 @@ public class DataTransferObjectConverterTests
                 File_Type = "txt",
                 Content_Type = "text/plain",
                 Attributes = { },
-                Link = {new Link() {Rel = $"{BaseUri}/relations/get_something", Uri = $"{BaseUri}/something", Media_Type = "text/plain"}}
+                Link = { new Link() { Rel = $"{BaseUri}/relations/get_something", Uri = $"{BaseUri}/something", Media_Type = "text/plain" } }
             };
 
             var expected = new ArchiveDocument(newGuid, "per.txt", "txt", "text/plain");
-            expected.Links.Add("get_something", new Common.Entrypoint.Link($"{BaseUri}/something") {MediaType = "text/plain", Rel = $"{BaseUri}/relations/get_something"});
+            expected.Links.Add("get_something", new Common.Entrypoint.Link($"{BaseUri}/something") { MediaType = "text/plain", Rel = $"{BaseUri}/relations/get_something" });
 
             var actual = source.FromDataTransferObject();
 
@@ -62,7 +62,7 @@ public class DataTransferObjectConverterTests
                 File_Name = "per.txt",
                 File_Type = "txt",
                 Content_Type = "text/plain",
-                Attributes = { new Archive_Document_Attribute(){Key = "test", Value = "val"} },
+                Attributes = { new Archive_Document_Attribute() { Key = "test", Value = "val" } },
             };
 
             Comparator.AssertEqual(expected, source.ToDataTransferObject());

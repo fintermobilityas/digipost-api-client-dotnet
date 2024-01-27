@@ -14,48 +14,49 @@ public class PrintDetailsTests
         [Fact]
         public void SimpleConstructor()
         {
-                //Arrange
-                var printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
-                    DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors);
-                
-                List<PrintInstruction> printinstruction = new List<PrintInstruction>();
-                printinstruction.Add(new PrintInstruction("test", "testing"));
-                printDetails.PrintInstructions = new PrintInstructions(printinstruction);
+            //Arrange
+            var printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
+                DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors);
 
-                //Act
+            List<PrintInstruction> printinstruction = new List<PrintInstruction>();
+            printinstruction.Add(new PrintInstruction("test", "testing"));
+            printDetails.PrintInstructions = new PrintInstructions(printinstruction);
 
-                //Assert
-                Comparator.AssertEqual(DomainUtility.GetPrintRecipientWithNorwegianAddress(), printDetails.PrintRecipient);
+            //Act
 
-                Comparator.AssertEqual(DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), printDetails.PrintReturnRecipient);
+            //Assert
+            Comparator.AssertEqual(DomainUtility.GetPrintRecipientWithNorwegianAddress(), printDetails.PrintRecipient);
 
-                Assert.Equal(PrintColors.Colors, printDetails.PrintColors);
-                Assert.Equal(NondeliverableHandling.ReturnToSender, printDetails.NondeliverableHandling);
-                Comparator.AssertEqual(printinstruction, printDetails.PrintInstructions.PrintInstruction);
-            }
+            Comparator.AssertEqual(DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), printDetails.PrintReturnRecipient);
+
+            Assert.Equal(PrintColors.Colors, printDetails.PrintColors);
+            Assert.Equal(NondeliverableHandling.ReturnToSender, printDetails.NondeliverableHandling);
+            Comparator.AssertEqual(printinstruction, printDetails.PrintInstructions.PrintInstruction);
+        }
 
         [Fact]
         public void CanSetShreddedDeliverableHandling()
         {
-                //Arrange
-                List<PrintInstruction> printinstruction = new List<PrintInstruction>();
-                printinstruction.Add(new PrintInstruction("test", "testing"));
-                var printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
-                    DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors)
-                {
-                    NondeliverableHandling = NondeliverableHandling.Shred, PrintInstructions = new PrintInstructions(printinstruction)
-                };
+            //Arrange
+            List<PrintInstruction> printinstruction = new List<PrintInstruction>();
+            printinstruction.Add(new PrintInstruction("test", "testing"));
+            var printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
+                DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors)
+            {
+                NondeliverableHandling = NondeliverableHandling.Shred,
+                PrintInstructions = new PrintInstructions(printinstruction)
+            };
 
-                //Act
+            //Act
 
-                //Assert
-                Comparator.AssertEqual(DomainUtility.GetPrintRecipientWithNorwegianAddress(), printDetails.PrintRecipient);
+            //Assert
+            Comparator.AssertEqual(DomainUtility.GetPrintRecipientWithNorwegianAddress(), printDetails.PrintRecipient);
 
-                Comparator.AssertEqual(DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), printDetails.PrintReturnRecipient);
+            Comparator.AssertEqual(DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), printDetails.PrintReturnRecipient);
 
-                Assert.Equal(PrintColors.Colors, printDetails.PrintColors);
-                Assert.Equal(NondeliverableHandling.Shred, printDetails.NondeliverableHandling);
-                Comparator.AssertEqual(printinstruction, printDetails.PrintInstructions.PrintInstruction);
-            }
+            Assert.Equal(PrintColors.Colors, printDetails.PrintColors);
+            Assert.Equal(NondeliverableHandling.Shred, printDetails.NondeliverableHandling);
+            Comparator.AssertEqual(printinstruction, printDetails.PrintInstructions.PrintInstruction);
+        }
     }
 }

@@ -10,52 +10,52 @@ public class ArchiveDocument : RestLinkable, IRequestContent
 {
     internal ArchiveDocument(Guid id, string fileName, string fileType, string contentType)
     {
-            Id = id;
-            FileName = fileName;
-            FileType = fileType;
-            ContentType = contentType;
-            Attributes = new Dictionary<string, string>();
-            Links = new Dictionary<string, Link>();
-        }
+        Id = id;
+        FileName = fileName;
+        FileType = fileType;
+        ContentType = contentType;
+        Attributes = new Dictionary<string, string>();
+        Links = new Dictionary<string, Link>();
+    }
 
     public ArchiveDocument(Guid id, string fileName, string fileType, string contentType, byte[] contentBytes)
     {
-            Id = id;
-            FileName = fileName;
-            FileType = fileType;
-            ContentType = contentType;
-            Attributes = new Dictionary<string, string>();
-            Links = new Dictionary<string, Link>();
-            ContentBytes = contentBytes;
-        }
+        Id = id;
+        FileName = fileName;
+        FileType = fileType;
+        ContentType = contentType;
+        Attributes = new Dictionary<string, string>();
+        Links = new Dictionary<string, Link>();
+        ContentBytes = contentBytes;
+    }
 
     public ArchiveDocument WithReferenceId(string referenceId)
     {
-            ReferenceId = referenceId;
-            return this;
-        }
+        ReferenceId = referenceId;
+        return this;
+    }
 
     public ArchiveDocument WithDeletionTime(DateTime deletionTime)
     {
-            DeletionTime = deletionTime;
-            return this;
-        }
+        DeletionTime = deletionTime;
+        return this;
+    }
 
     public ArchiveDocument WithAttribute(string key, string value)
     {
-            Attributes.Add(key, value);
-            return this;
-        }
+        Attributes.Add(key, value);
+        return this;
+    }
 
     public ArchiveDocument WithAttributes(Dictionary<string, string> additionalAttributes)
     {
-            foreach (var keyValuePair in additionalAttributes)
-            {
-                Attributes.Add(keyValuePair.Key, keyValuePair.Value);
-            }
-
-            return this;
+        foreach (var keyValuePair in additionalAttributes)
+        {
+            Attributes.Add(keyValuePair.Key, keyValuePair.Value);
         }
+
+        return this;
+    }
 
     public Guid Id { get; }
 
@@ -79,26 +79,26 @@ public class ArchiveDocument : RestLinkable, IRequestContent
 
     public GetArchiveDocumentByUuidUri GetArchiveDocumentByUuidUri()
     {
-            return new GetArchiveDocumentByUuidUri(Links["GET_ARCHIVE_DOCUMENT_BY_UUID"]);
-        }
+        return new GetArchiveDocumentByUuidUri(Links["GET_ARCHIVE_DOCUMENT_BY_UUID"]);
+    }
 
     public ArchiveDocumentContentUri DocumentContentUri()
     {
-            return new ArchiveDocumentContentUri(Links["GET_ARCHIVE_DOCUMENT_CONTENT"]);
-        }
+        return new ArchiveDocumentContentUri(Links["GET_ARCHIVE_DOCUMENT_CONTENT"]);
+    }
 
     public ArchiveDocumentContentStreamUri GetDocumentContentStreamUri()
     {
-            return new ArchiveDocumentContentStreamUri(Links["GET_ARCHIVE_DOCUMENT_CONTENT_STREAM"]);
-        }
+        return new ArchiveDocumentContentStreamUri(Links["GET_ARCHIVE_DOCUMENT_CONTENT_STREAM"]);
+    }
 
     public ArchiveDocumentUpdateUri GetUpdateUri()
     {
-            return new ArchiveDocumentUpdateUri(Links["SELF_UPDATE"]);
-        }
+        return new ArchiveDocumentUpdateUri(Links["SELF_UPDATE"]);
+    }
 
     public ArchiveDocumentDeleteUri GetDeleteUri()
     {
-            return new ArchiveDocumentDeleteUri(Links["SELF_DELETE"]);
-        }
+        return new ArchiveDocumentDeleteUri(Links["SELF_DELETE"]);
+    }
 }

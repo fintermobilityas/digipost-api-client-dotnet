@@ -14,15 +14,15 @@ public class SenderInformation
 
     public SenderInformation(SenderStatus senderStatus)
     {
-            SenderStatus = senderStatus;
-        }
+        SenderStatus = senderStatus;
+    }
 
     public SenderInformation(Sender sender, SenderStatus senderStatus, IEnumerable<SenderFeature> senderFeatures)
     {
-            Sender = sender;
-            SenderStatus = senderStatus;
-            SenderFeatures = senderFeatures;
-        }
+        Sender = sender;
+        SenderStatus = senderStatus;
+        SenderFeatures = senderFeatures;
+    }
 }
 
 public class SenderFeature
@@ -33,7 +33,7 @@ public class SenderFeature
 
     public SenderFeature(string identificator, string param)
     {
-            Identificator = identificator;
-            Param = param;
-        }
+        Identificator = identificator;
+        Param = param;
+    }
 }

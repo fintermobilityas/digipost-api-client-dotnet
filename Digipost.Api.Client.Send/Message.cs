@@ -22,11 +22,11 @@ public class Message : IMessage
     /// </param>
     public Message(Sender sender, IDigipostRecipient digipostRecipient, IDocument primaryDocument)
     {
-            Sender = sender;
-            DigipostRecipient = digipostRecipient;
-            PrimaryDocument = primaryDocument;
-            Attachments = new List<IDocument>();
-        }
+        Sender = sender;
+        DigipostRecipient = digipostRecipient;
+        PrimaryDocument = primaryDocument;
+        Attachments = new List<IDocument>();
+    }
 
     public string Id { get; set; }
 
@@ -54,6 +54,6 @@ public class Message : IMessage
 
     public override string ToString()
     {
-            return DigipostRecipient.ToString();
-        }
+        return DigipostRecipient.ToString();
+    }
 }

@@ -9,7 +9,7 @@ public class PrintInstruction : IPrintInstruction
 
     public PrintInstruction(string key, string value)
     {
-            this.key = key;
-            this.value = value;
-        }
+        this.key = key;
+        this.value = value;
+    }
 }

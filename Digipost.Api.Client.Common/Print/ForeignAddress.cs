@@ -17,10 +17,10 @@ public class ForeignAddress : Address, IForeignAddress
         string addressLine1, string addressLine2 = null, string addressLine3 = null, string addressLine4 = null)
         : base(addressLine1, addressLine2, addressLine3)
     {
-            AddressLine4 = addressLine4;
-            CountryIdentifier = countryIdentifier;
-            CountryIdentifierValue = countryIdentifierValue;
-        }
+        AddressLine4 = addressLine4;
+        CountryIdentifier = countryIdentifier;
+        CountryIdentifierValue = countryIdentifierValue;
+    }
 
     public string AddressLine4 { get; set; }
 
@@ -30,6 +30,6 @@ public class ForeignAddress : Address, IForeignAddress
 
     public override string ToString()
     {
-            return $"Country: {CountryIdentifier.Country}, AddressLine1: {AddressLine1}, AddressLine2: {AddressLine2}, AddressLine3: {AddressLine3}, AddressLine4: {AddressLine4}";
-        }
+        return $"Country: {CountryIdentifier.Country}, AddressLine1: {AddressLine1}, AddressLine2: {AddressLine2}, AddressLine3: {AddressLine3}, AddressLine4: {AddressLine4}";
+    }
 }

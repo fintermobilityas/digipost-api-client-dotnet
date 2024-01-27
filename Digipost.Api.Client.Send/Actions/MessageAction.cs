@@ -53,7 +53,7 @@ internal class MessageAction : DigipostAction<IMessage>
 
     static void AddDocumentsToContent(IMessage message, MultipartContent content)
     {
-        var documents = new List<IDocument> {message.PrimaryDocument};
+        var documents = new List<IDocument> { message.PrimaryDocument };
         documents.AddRange(message.Attachments);
 
         foreach (var document in documents)

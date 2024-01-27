@@ -14,8 +14,8 @@ public class Sender
     /// <param name="id">The id of the sender, created by Digipost</param>
     public Sender(long id)
     {
-            Id = id;
-        }
+        Id = id;
+    }
 
     /// <summary>
     ///     The id of the sender of the message, i.e. what the receiver of the message sees as the sender of the message. If

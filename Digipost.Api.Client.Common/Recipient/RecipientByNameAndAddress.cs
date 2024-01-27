@@ -6,11 +6,11 @@ public class RecipientByNameAndAddress : DigipostRecipient, IRecipientByNameAndA
 {
     public RecipientByNameAndAddress(string fullName, string addressLine1, string postalCode, string city)
     {
-            FullName = fullName;
-            PostalCode = postalCode;
-            City = city;
-            AddressLine1 = addressLine1;
-        }
+        FullName = fullName;
+        PostalCode = postalCode;
+        City = city;
+        AddressLine1 = addressLine1;
+    }
 
     public string FullName { get; set; }
 
@@ -30,6 +30,6 @@ public class RecipientByNameAndAddress : DigipostRecipient, IRecipientByNameAndA
 
     public override string ToString()
     {
-            return $"FullName: {FullName}, AddressLine1: {AddressLine1}, AddressLine2: {AddressLine2}, PostalCode: {PostalCode}, City: {City}, BirthDate: {BirthDate}, PhoneNumber: {PhoneNumber}, Email: {Email}";
-        }
+        return $"FullName: {FullName}, AddressLine1: {AddressLine1}, AddressLine2: {AddressLine2}, PostalCode: {PostalCode}, City: {City}, BirthDate: {BirthDate}, PhoneNumber: {PhoneNumber}, Email: {Email}";
+    }
 }

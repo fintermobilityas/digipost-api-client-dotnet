@@ -8,9 +8,9 @@ public class SmsNotification : ISmsNotification
 {
     public SmsNotification()
     {
-            NotifyAfterHours = new List<int>();
-            NotifyAtTimes = new List<DateTime>();
-        }
+        NotifyAfterHours = new List<int>();
+        NotifyAtTimes = new List<DateTime>();
+    }
 
     /// <summary>
     ///     Sms notification for a message
@@ -19,8 +19,8 @@ public class SmsNotification : ISmsNotification
     public SmsNotification(params DateTime[] sendingTime)
         : this()
     {
-            NotifyAtTimes = sendingTime.ToList();
-        }
+        NotifyAtTimes = sendingTime.ToList();
+    }
 
     /// <summary>
     ///     Sms notification for a message
@@ -29,8 +29,8 @@ public class SmsNotification : ISmsNotification
     public SmsNotification(params int[] afterHours)
         : this()
     {
-            NotifyAfterHours = afterHours.ToList();
-        }
+        NotifyAfterHours = afterHours.ToList();
+    }
 
     public List<DateTime> NotifyAtTimes { get; set; }
 

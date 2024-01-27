@@ -6,8 +6,8 @@ public class Identification : IIdentification
 {
     public Identification(DigipostRecipient digipostRecipient)
     {
-            DigipostRecipient = digipostRecipient;
-        }
+        DigipostRecipient = digipostRecipient;
+    }
 
     public DigipostRecipient DigipostRecipient { get; set; }
 }

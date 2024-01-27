@@ -19,17 +19,17 @@ public class DocumentStatus
         HashAlgoritm? contentHashAlgoritm
     )
     {
-            Guid = guid;
-            Sender = new Sender(senderId);
-            Created = created;
-            DeliveryStatus = documentDeliveryStatus;
-            DocumentRead = read;
-            DeliveryMethod = deliveryMethod;
-            ContentHash = contentHash;
-            Delivered = delivered;
-            IsPrimaryDocument = isPrimaryDocument;
-            ContentHashAlgoritm = contentHashAlgoritm;
-        }
+        Guid = guid;
+        Sender = new Sender(senderId);
+        Created = created;
+        DeliveryStatus = documentDeliveryStatus;
+        DocumentRead = read;
+        DeliveryMethod = deliveryMethod;
+        ContentHash = contentHash;
+        Delivered = delivered;
+        IsPrimaryDocument = isPrimaryDocument;
+        ContentHashAlgoritm = contentHashAlgoritm;
+    }
 
     public string Guid { get; }
 

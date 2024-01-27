@@ -13,17 +13,17 @@ public class PrintRecipientTests
         [Fact]
         public void SimpleConstructor()
         {
-                //Arrange
-                const string name = "name";
+            //Arrange
+            const string name = "name";
 
-                var printRecipient = new PrintRecipient(name, DomainUtility.GetNorwegianAddress());
+            var printRecipient = new PrintRecipient(name, DomainUtility.GetNorwegianAddress());
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.Equal(name, printRecipient.Name);
+            //Assert
+            Assert.Equal(name, printRecipient.Name);
 
-                Comparator.AssertEqual(DomainUtility.GetNorwegianAddress(), printRecipient.Address);
-            }
+            Comparator.AssertEqual(DomainUtility.GetNorwegianAddress(), printRecipient.Address);
+        }
     }
 }

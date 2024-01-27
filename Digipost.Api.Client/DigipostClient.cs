@@ -82,14 +82,14 @@ public interface IDigipostClient
     /// <param name="sender">The sender of the message. Default is null.</param>
     /// <returns>The instance of <see cref="IShareDocumentsApi"/>.</returns>
     Task<IShareDocumentsApi> GetDocumentSharingAsync(Sender sender = null);
-        
+
     /// <summary>
     /// Identifies the specified recipient.
     /// </summary>
     /// <param name="identification">The identification information of the recipient.</param>
     /// <returns>A task representing the asynchronous operation and containing the identification result.</returns>
     Task<IIdentificationResult> IdentifyAsyncAsync(IIdentification identification);
-        
+
     /// <summary>
     /// Sends a message asynchronously.
     /// </summary>
@@ -147,7 +147,7 @@ public sealed class DigipostClient : IDigipostClient
 
     HttpClient GetHttpClient(X509Certificate2 enterpriseCertificate, WebProxy proxy = null, NetworkCredential credential = null)
     {
-        var allDelegationHandlers = new List<DelegatingHandler> {new AuthenticationHandler(_clientConfig, enterpriseCertificate, _loggerFactory)};
+        var allDelegationHandlers = new List<DelegatingHandler> { new AuthenticationHandler(_clientConfig, enterpriseCertificate, _loggerFactory) };
 
         var httpMessageHandler = new HttpClientHandler
         {
@@ -243,7 +243,7 @@ public sealed class DigipostClient : IDigipostClient
         var root = await GetRootAsync(new ApiRootUri(sender));
         return new DocumentsApi(_requestHelper, _loggerFactory, root, sender);
     }
-        
+
     public async Task<IShareDocumentsApi> GetDocumentSharingAsync(Sender sender = null)
     {
         var root = await GetRootAsync(new ApiRootUri(sender));
@@ -255,7 +255,7 @@ public sealed class DigipostClient : IDigipostClient
         var sendMessageApi = await _sendMessageApi();
         return await sendMessageApi.IdentifyAsync(identification);
     }
-        
+
     public async Task<IMessageDeliveryResult> SendMessageAsyncAsync(IMessage message)
     {
         var sendMessageApi = await _sendMessageApi();

@@ -14,29 +14,29 @@ public class MessageActionTests
         [Fact]
         public void ReturnsCorrectDataForMessage()
         {
-                //Arrange
-                var message = DomainUtility.GetSimpleMessageWithRecipientById();
+            //Arrange
+            var message = DomainUtility.GetSimpleMessageWithRecipientById();
 
-                //Act
-                var action = new MessageAction(message);
-                var content = action.RequestContent;
+            //Act
+            var action = new MessageAction(message);
+            var content = action.RequestContent;
 
-                //Assert
-                var expected = SerializeUtil.Serialize(message.ToDataTransferObject());
-                Assert.Equal(expected, content.InnerXml);
-            }
+            //Assert
+            var expected = SerializeUtil.Serialize(message.ToDataTransferObject());
+            Assert.Equal(expected, content.InnerXml);
+        }
 
         [Fact]
         public void SerializedXmlContainsDataType()
         {
-                ExternalLink externalLink = new ExternalLink(new Uri("https://digipost.no"));
+            ExternalLink externalLink = new ExternalLink(new Uri("https://digipost.no"));
 
-                var message = DomainUtility.GetSimpleMessageWithRecipientById(DomainUtility.GetDocument(externalLink));
+            var message = DomainUtility.GetSimpleMessageWithRecipientById(DomainUtility.GetDocument(externalLink));
 
-                var action = new MessageAction(message);
-                var content = action.RequestContent;
+            var action = new MessageAction(message);
+            var content = action.RequestContent;
 
-                Assert.Contains("<externalLink", content.InnerXml);
-            }
+            Assert.Contains("<externalLink", content.InnerXml);
+        }
     }
 }

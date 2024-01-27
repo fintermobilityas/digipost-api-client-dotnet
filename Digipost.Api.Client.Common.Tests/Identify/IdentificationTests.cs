@@ -11,14 +11,14 @@ public class IdentificationTests
         [Fact]
         public void SimpleConstructor()
         {
-                //Arrange
-                var recipientByNameAndAddress = DomainUtility.GetRecipientByNameAndAddress();
-                var identification = new Identification(recipientByNameAndAddress);
+            //Arrange
+            var recipientByNameAndAddress = DomainUtility.GetRecipientByNameAndAddress();
+            var identification = new Identification(recipientByNameAndAddress);
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.Equal(recipientByNameAndAddress, identification.DigipostRecipient);
-            }
+            //Assert
+            Assert.Equal(recipientByNameAndAddress, identification.DigipostRecipient);
+        }
     }
 }

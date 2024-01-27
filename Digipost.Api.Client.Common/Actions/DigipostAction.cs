@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace Digipost.Api.Client.Common.Actions;
 
-public abstract class DigipostAction<T> where T: IRequestContent
+public abstract class DigipostAction<T> where T : IRequestContent
 {
     protected DigipostAction(T requestContent)
     {

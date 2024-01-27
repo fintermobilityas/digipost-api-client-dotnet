@@ -14,33 +14,33 @@ public class MessageTests
         [Fact]
         public void ConstructWithRecipientAndPrimaryDocument()
         {
-                //Arrange
-                var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
-                );
+            //Arrange
+            var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
+            );
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.NotNull(message.PrimaryDocument);
-            }
+            //Assert
+            Assert.NotNull(message.PrimaryDocument);
+        }
 
         [Fact]
         public void ConstructWithRecipientByIdAndPrintDetailsMethod()
         {
-                //Arrange
-                var recipient = DomainUtility.GetRecipientByDigipostId();
-                var document = DomainUtility.GetDocument();
-                var printDetails = DomainUtility.GetPrintDetails();
+            //Arrange
+            var recipient = DomainUtility.GetRecipientByDigipostId();
+            var document = DomainUtility.GetDocument();
+            var printDetails = DomainUtility.GetPrintDetails();
 
-                var message = new Message(Sender, recipient, document) {PrintDetails = printDetails};
+            var message = new Message(Sender, recipient, document) { PrintDetails = printDetails };
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.Equal(recipient, message.DigipostRecipient);
-                Assert.Equal(document, message.PrimaryDocument);
-                Assert.Equal(printDetails, message.PrintDetails);
-            }
+            //Assert
+            Assert.Equal(recipient, message.DigipostRecipient);
+            Assert.Equal(document, message.PrimaryDocument);
+            Assert.Equal(printDetails, message.PrintDetails);
+        }
     }
 
     public class DeliveryTimeSpecifiedMethod : MessageTests
@@ -48,27 +48,28 @@ public class MessageTests
         [Fact]
         public void DeliveryTimeNotSpecifiedGivesFalse()
         {
-                //Arrange
-                var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
-                );
+            //Arrange
+            var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
+            );
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.False(message.DeliveryTimeSpecified);
-            }
+            //Assert
+            Assert.False(message.DeliveryTimeSpecified);
+        }
 
         [Fact]
         public void DeliveryTimeSpecifiedGivesTrue()
         {
-                //Arrange
-                var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
-                ) {DeliveryTime = DateTime.Today};
+            //Arrange
+            var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
+            )
+            { DeliveryTime = DateTime.Today };
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.True(message.DeliveryTimeSpecified);
-            }
+            //Assert
+            Assert.True(message.DeliveryTimeSpecified);
+        }
     }
 }

@@ -9,13 +9,13 @@ public class UuidInteropTests
     [Fact]
     public void InteropWithKnownJavaExample()
     {
-            //Arrange
-            var startString = "per er kul";
+        //Arrange
+        var startString = "per er kul";
 
-            //Act
-            var result = UuidInterop.NameUuidFromBytes(startString);
+        //Act
+        var result = UuidInterop.NameUuidFromBytes(startString);
 
-            //Assert
-            Assert.Equal("46f45680-1c6e-3425-bc1b-182a9928549f", result);
-        }
+        //Assert
+        Assert.Equal("46f45680-1c6e-3425-bc1b-182a9928549f", result);
+    }
 }

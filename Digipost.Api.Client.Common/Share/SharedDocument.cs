@@ -26,22 +26,22 @@ public class SharedDocument : RestLinkable
         Dictionary<string, Link> links)
         : base(links)
     {
-            DeliveryTime = deliveryTime;
-            Subject = subject;
-            FileType = fileType;
-            FileSizeBytes = fileSizeBytes;
-            Origin = origin;
-        }
+        DeliveryTime = deliveryTime;
+        Subject = subject;
+        FileType = fileType;
+        FileSizeBytes = fileSizeBytes;
+        Origin = origin;
+    }
 
     public GetSharedDocumentContentStreamUri GetSharedDocumentContentStreamUri()
     {
-            return new GetSharedDocumentContentStreamUri(Links["GET_SHARED_DOCUMENT_CONTENT_STREAM"]);
-        }
+        return new GetSharedDocumentContentStreamUri(Links["GET_SHARED_DOCUMENT_CONTENT_STREAM"]);
+    }
 
     public GetSharedDocumentContentUri GetSharedDocumentContentUri()
     {
-            return new GetSharedDocumentContentUri(Links["GET_SHARED_DOCUMENT_CONTENT"]);
-        }
+        return new GetSharedDocumentContentUri(Links["GET_SHARED_DOCUMENT_CONTENT"]);
+    }
 }
 
 public interface IOrigin
@@ -57,14 +57,14 @@ public class OrganisationOrigin : IOrigin
 
     public OrganisationOrigin(string name, string organisationNumber)
     {
-            Name = name;
-            OrganisationNumber = organisationNumber;
-        }
+        Name = name;
+        OrganisationNumber = organisationNumber;
+    }
 
     public override string ToString()
     {
-            return Name + "[" + OrganisationNumber + "]";
-        }
+        return Name + "[" + OrganisationNumber + "]";
+    }
 }
 
 public class PrivatePersonOrigin : IOrigin
@@ -73,11 +73,11 @@ public class PrivatePersonOrigin : IOrigin
 
     public PrivatePersonOrigin(string name)
     {
-            Name = name;
-        }
+        Name = name;
+    }
 
     public override string ToString()
     {
-            return Name;
-        }
+        return Name;
+    }
 }

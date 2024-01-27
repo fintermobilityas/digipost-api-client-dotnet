@@ -84,7 +84,8 @@ public class SendExamples
             sender,
             new RecipientById(IdentificationType.PersonalIdentificationNumber, id: "241084xxxxx"),
             primaryDocument
-        ) {Attachments = {attachment1, attachment2}};
+        )
+        { Attachments = { attachment1, attachment2 } };
 
         var result = await client.SendMessageAsyncAsync(message);
     }
@@ -412,7 +413,7 @@ public class SendExamples
 
         // when you the user has shared a document:
         var documentSharing = await client.GetDocumentSharingAsync(sender);
-            
+
         var shareDocumentsRequestState = await documentSharing
             .GetShareDocumentsRequestState(requestGuid);
 

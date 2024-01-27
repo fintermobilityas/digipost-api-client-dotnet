@@ -9,18 +9,18 @@ public static class LoggingUtility
 {
     public static IServiceProvider CreateServiceProviderAndSetUpLogging()
     {
-            var services = new ServiceCollection();
+        var services = new ServiceCollection();
 
-            services.AddSingleton<ILoggerFactory, LoggerFactory>();
-            services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
-            services.AddLogging((builder) =>
-            {
-                builder.SetMinimumLevel(LogLevel.Trace);
+        services.AddSingleton<ILoggerFactory, LoggerFactory>();
+        services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+        services.AddLogging((builder) =>
+        {
+            builder.SetMinimumLevel(LogLevel.Trace);
 
-                builder.AddNLog(new NLogProviderOptions {CaptureMessageTemplates = true, CaptureMessageProperties = true});
-                NLog.LogManager.LoadConfiguration("./../../../../Digipost.Api.Client.Common/nlog.config");
-            });
+            builder.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true });
+            NLog.LogManager.LoadConfiguration("./../../../../Digipost.Api.Client.Common/nlog.config");
+        });
 
-            return services.BuildServiceProvider();
-        }
+        return services.BuildServiceProvider();
+    }
 }

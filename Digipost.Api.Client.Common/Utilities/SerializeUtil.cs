@@ -49,7 +49,7 @@ public static class SerializeUtil
         {
             using (var xmlReader = XmlReader.Create(textReader, settings))
             {
-                return (T) serializer.Deserialize(xmlReader);
+                return (T)serializer.Deserialize(xmlReader);
             }
         }
     }

@@ -8,11 +8,11 @@ public class PrintMessage : Message
     public PrintMessage(Sender sender, IPrintDetails printDetails, IDocument primaryDocument)
         : base(sender, null, primaryDocument)
     {
-            PrintDetails = printDetails;
-        }
+        PrintDetails = printDetails;
+    }
 
     public override string ToString()
     {
-            return PrintDetails.ToString();
-        }
+        return PrintDetails.ToString();
+    }
 }

@@ -7,5 +7,5 @@ public class CertificateException : Exception
     public CertificateException(string message, Exception innerException)
         : base(message, innerException)
     {
-        }
+    }
 }

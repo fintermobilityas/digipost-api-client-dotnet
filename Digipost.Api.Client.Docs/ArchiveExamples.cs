@@ -115,7 +115,7 @@ public class ArchiveExamples
         var archiveApi = await Client.GetArchiveAsync(Sender);
         var root = await Client.GetRootAsync(new ApiRootUri());
         ArchiveDocument archiveDocument = await archiveApi.FetchArchiveDocument(root.GetGetArchiveDocumentsByUuidUri(Guid.Parse("10ff4c99-8560-4741-83f0-1093dc4deb1c")));
-            
+
         ArchiveDocumentContent archiveDocumentContent = await archiveApi.GetDocumentContent(archiveDocument.DocumentContentUri());
         Uri uri = archiveDocumentContent.Uri;
 
@@ -126,7 +126,7 @@ public class ArchiveExamples
     {
         var archiveDocument = new ArchiveDocument(Guid.NewGuid(), "invoice_123123.pdf", "pdf", "application/psd", readFileFromDisk("invoice_123123.pdf"))
         {
-            Attributes = {["invoicenumber"] = "123123"}
+            Attributes = { ["invoicenumber"] = "123123" }
         };
     }
 

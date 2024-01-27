@@ -22,7 +22,7 @@ public class InboxApiIntegrationTests
     static Inbox GetInbox()
     {
         var httpClient = new HttpClient(
-            new FakeResponseHandler {ResultCode = HttpStatusCode.NotFound, HttpContent = XmlResource.Inbox.GetError()}
+            new FakeResponseHandler { ResultCode = HttpStatusCode.NotFound, HttpContent = XmlResource.Inbox.GetError() }
         )
         {
             BaseAddress = new Uri("http://www.fakeBaseAddress.no")
@@ -31,7 +31,7 @@ public class InboxApiIntegrationTests
 
         var links = new Dictionary<string, Link>
         {
-            ["GET_INBOX"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/inbox") {Rel = httpClient.BaseAddress + "relations/get_inbox"}
+            ["GET_INBOX"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/inbox") { Rel = httpClient.BaseAddress + "relations/get_inbox" }
         };
         var root = new Root("")
         {
@@ -45,7 +45,7 @@ public class InboxApiIntegrationTests
     public class FetchMethod : InboxApiIntegrationTests
     {
         [Fact]
-        public Task ErrorShouldCauseDigipostResponseException() => 
+        public Task ErrorShouldCauseDigipostResponseException() =>
             Assert.ThrowsAsync<ClientResponseException>(() => _inbox.Fetch());
     }
 }

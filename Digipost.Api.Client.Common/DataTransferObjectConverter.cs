@@ -24,7 +24,7 @@ internal static class DataTransferObjectConverter
     {
         return links.ToDictionary(
             l => l.Rel.Substring(l.Rel.LastIndexOf('/') + 1).ToUpper(),
-            link => new Link(link.Uri) {Rel = link.Rel, MediaType = link.Media_Type}
+            link => new Link(link.Uri) { Rel = link.Rel, MediaType = link.Media_Type }
         );
     }
 
@@ -51,12 +51,12 @@ internal static class DataTransferObjectConverter
 
         if (identification.DigipostRecipient is RecipientById)
         {
-            identificationDto = IdentificationDataTransferObjectFromIdentificationById((RecipientById) identification.DigipostRecipient);
+            identificationDto = IdentificationDataTransferObjectFromIdentificationById((RecipientById)identification.DigipostRecipient);
         }
 
         if (identification.DigipostRecipient is RecipientByNameAndAddress)
         {
-            identificationDto = IdentificationDataTranferObjectFromIdentificationByNameAndAddress((RecipientByNameAndAddress) identification.DigipostRecipient);
+            identificationDto = IdentificationDataTranferObjectFromIdentificationByNameAndAddress((RecipientByNameAndAddress)identification.DigipostRecipient);
         }
 
         return identificationDto;
@@ -67,13 +67,13 @@ internal static class DataTransferObjectConverter
         switch (recipientById.IdentificationType)
         {
             case IdentificationType.DigipostAddress:
-                return new Identification {Digipost_Address = recipientById.Id};
+                return new Identification { Digipost_Address = recipientById.Id };
             case IdentificationType.PersonalIdentificationNumber:
-                return new Identification {Personal_Identification_Number = recipientById.Id};
+                return new Identification { Personal_Identification_Number = recipientById.Id };
             case IdentificationType.OrganizationNumber:
-                return new Identification {Organisation_Number = recipientById.Id};
+                return new Identification { Organisation_Number = recipientById.Id };
             case IdentificationType.BankAccountNumber:
-                return new Identification {Bank_Account_Number = recipientById.Id};
+                return new Identification { Bank_Account_Number = recipientById.Id };
             default:
                 throw new ArgumentOutOfRangeException(nameof(recipientById.IdentificationType), recipientById.IdentificationType, null);
         }
@@ -111,12 +111,12 @@ internal static class DataTransferObjectConverter
 
         if (recipient is RecipientById)
         {
-            messageRecipientDto = RecipientDataTransferObjectFromRecipientById((RecipientById) recipient);
+            messageRecipientDto = RecipientDataTransferObjectFromRecipientById((RecipientById)recipient);
         }
 
         if (recipient is RecipientByNameAndAddress)
         {
-            messageRecipientDto = RecipientDataTransferObjectFromRecipientByNameAndAddress((RecipientByNameAndAddress) recipient);
+            messageRecipientDto = RecipientDataTransferObjectFromRecipientByNameAndAddress((RecipientByNameAndAddress)recipient);
         }
 
         return messageRecipientDto;
@@ -127,13 +127,13 @@ internal static class DataTransferObjectConverter
         switch (recipient.IdentificationType)
         {
             case IdentificationType.DigipostAddress:
-                return new Message_Recipient {Digipost_Address = recipient.Id};
+                return new Message_Recipient { Digipost_Address = recipient.Id };
             case IdentificationType.PersonalIdentificationNumber:
-                return new Message_Recipient {Personal_Identification_Number = recipient.Id};
+                return new Message_Recipient { Personal_Identification_Number = recipient.Id };
             case IdentificationType.OrganizationNumber:
-                return new Message_Recipient {Organisation_Number = recipient.Id};
+                return new Message_Recipient { Organisation_Number = recipient.Id };
             case IdentificationType.BankAccountNumber:
-                return new Message_Recipient {Bank_Account_Number = recipient.Id};
+                return new Message_Recipient { Bank_Account_Number = recipient.Id };
             default:
                 throw new ArgumentOutOfRangeException(nameof(recipient.IdentificationType), recipient.IdentificationType, null);
         }
@@ -171,8 +171,8 @@ internal static class DataTransferObjectConverter
 
         var printDetailsDataTransferObject = new Print_Details
         {
-            Recipient = ToDataTransferObject((IPrint) printDetails.PrintRecipient),
-            Return_Address = ToDataTransferObject((IPrint) printDetails.PrintReturnRecipient),
+            Recipient = ToDataTransferObject((IPrint)printDetails.PrintRecipient),
+            Return_Address = ToDataTransferObject((IPrint)printDetails.PrintReturnRecipient),
             Color = printDetails.PrintColors.ToPrintColors(),
             Nondeliverable_Handling = printDetails.NondeliverableHandling.ToNondeliverablehandling(),
         };
@@ -238,11 +238,11 @@ internal static class DataTransferObjectConverter
 
         if (recipient.Address is INorwegianAddress)
         {
-            printRecipientDto.Norwegian_Address = ToDataTransferObject((INorwegianAddress) recipient.Address);
+            printRecipientDto.Norwegian_Address = ToDataTransferObject((INorwegianAddress)recipient.Address);
         }
         else
         {
-            printRecipientDto.Foreign_Address = ToDataTransferObject((IForeignAddress) recipient.Address);
+            printRecipientDto.Foreign_Address = ToDataTransferObject((IForeignAddress)recipient.Address);
         }
 
         return printRecipientDto;
@@ -431,9 +431,9 @@ internal static class DataTransferObjectConverter
     internal static ShareDocumentsRequestState FromDataTransferObject(this Share_Documents_Request_State dto)
     {
         return new ShareDocumentsRequestState(
-            dto.Shared_At_TimeSpecified ? dto.Shared_At_Time : (DateTime?) null,
-            dto.Expiry_TimeSpecified ? dto.Expiry_Time : (DateTime?) null,
-            dto.Withdrawn_TimeSpecified ? dto.Withdrawn_Time : (DateTime?) null,
+            dto.Shared_At_TimeSpecified ? dto.Shared_At_Time : (DateTime?)null,
+            dto.Expiry_TimeSpecified ? dto.Expiry_Time : (DateTime?)null,
+            dto.Withdrawn_TimeSpecified ? dto.Withdrawn_Time : (DateTime?)null,
             dto.Shared_Documents.FromDataTransferObject(),
             dto.Link.FromDataTransferObject()
         );

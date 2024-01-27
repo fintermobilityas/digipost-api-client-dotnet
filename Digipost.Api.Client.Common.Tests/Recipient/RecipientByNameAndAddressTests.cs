@@ -10,21 +10,21 @@ public class RecipientByNameAndAddressTests
         [Fact]
         public void SimpleConstructor()
         {
-                //Arrange
-                const string fullName = "Ola Nordmann";
-                const string addressLine1 = "Biskop Gunnerus Gate 14";
-                const string postalCode = "0001";
-                const string city = "Oslo";
+            //Arrange
+            const string fullName = "Ola Nordmann";
+            const string addressLine1 = "Biskop Gunnerus Gate 14";
+            const string postalCode = "0001";
+            const string city = "Oslo";
 
-                var recipientByNameAndAddress = new RecipientByNameAndAddress(fullName, addressLine1, postalCode, city);
+            var recipientByNameAndAddress = new RecipientByNameAndAddress(fullName, addressLine1, postalCode, city);
 
-                //Act
+            //Act
 
-                //Assert
-                Assert.Equal(fullName, recipientByNameAndAddress.FullName);
-                Assert.Equal(postalCode, recipientByNameAndAddress.PostalCode);
-                Assert.Equal(city, recipientByNameAndAddress.City);
-                Assert.Equal(addressLine1, recipientByNameAndAddress.AddressLine1);
-            }
+            //Assert
+            Assert.Equal(fullName, recipientByNameAndAddress.FullName);
+            Assert.Equal(postalCode, recipientByNameAndAddress.PostalCode);
+            Assert.Equal(city, recipientByNameAndAddress.City);
+            Assert.Equal(addressLine1, recipientByNameAndAddress.AddressLine1);
+        }
     }
 }

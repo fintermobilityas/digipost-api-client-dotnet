@@ -14,9 +14,9 @@ public class NorwegianAddress : Address, INorwegianAddress
         string city, string addressLine1, string addressLine2 = null, string addressLine3 = null)
         : base(addressLine1, addressLine2, addressLine3)
     {
-            City = city;
-            PostalCode = postalCode;
-        }
+        City = city;
+        PostalCode = postalCode;
+    }
 
     public string PostalCode { get; set; }
 
@@ -24,6 +24,6 @@ public class NorwegianAddress : Address, INorwegianAddress
 
     public override string ToString()
     {
-            return $"City: {City}, PostalCode: {PostalCode}, AddressLine1: {AddressLine1}, AddressLine2: {AddressLine2}, AddressLine3: {AddressLine3}";
-        }
+        return $"City: {City}, PostalCode: {PostalCode}, AddressLine1: {AddressLine1}, AddressLine2: {AddressLine2}, AddressLine3: {AddressLine3}";
+    }
 }

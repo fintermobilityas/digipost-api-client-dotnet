@@ -14,18 +14,18 @@ public class EnumExtensionsTests
         [Fact]
         public void Converts_All_Enum_Values()
         {
-                var enumValues = Enum.GetValues(typeof(AuthenticationLevel));
-                var enumValuesDto = Enum.GetValues(typeof(V8.Authentication_Level));
+            var enumValues = Enum.GetValues(typeof(AuthenticationLevel));
+            var enumValuesDto = Enum.GetValues(typeof(V8.Authentication_Level));
 
-                var ignoredIdPortenAlternativesNotAvailableForPrivateSendersCount = 2;
-                Assert.Equal(enumValues.Length, enumValuesDto.Length - ignoredIdPortenAlternativesNotAvailableForPrivateSendersCount);
+            var ignoredIdPortenAlternativesNotAvailableForPrivateSendersCount = 2;
+            Assert.Equal(enumValues.Length, enumValuesDto.Length - ignoredIdPortenAlternativesNotAvailableForPrivateSendersCount);
 
-                foreach (var enumValue in enumValues)
-                {
-                    var currentEnum = (AuthenticationLevel) enumValue;
-                    currentEnum.ToAuthenticationLevel();
-                }
+            foreach (var enumValue in enumValues)
+            {
+                var currentEnum = (AuthenticationLevel)enumValue;
+                currentEnum.ToAuthenticationLevel();
             }
+        }
     }
 
     public class ToEventType
@@ -33,17 +33,17 @@ public class EnumExtensionsTests
         [Fact]
         public void Convert_All_Enum_Values()
         {
-                var enumValues = Enum.GetValues(typeof(DocumentEventType));
-                var enumValuesDto = Enum.GetValues(typeof(V8.Event_Type));
+            var enumValues = Enum.GetValues(typeof(DocumentEventType));
+            var enumValuesDto = Enum.GetValues(typeof(V8.Event_Type));
 
-                Assert.Equal(enumValues.Length, enumValuesDto.Length);
+            Assert.Equal(enumValues.Length, enumValuesDto.Length);
 
-                foreach (var enumValue in enumValuesDto)
-                {
-                    var currentEnum = (V8.Event_Type) enumValue;
-                    currentEnum.ToEventType();
-                }
+            foreach (var enumValue in enumValuesDto)
+            {
+                var currentEnum = (V8.Event_Type)enumValue;
+                currentEnum.ToEventType();
             }
+        }
     }
 
     public class ToSensitivityLevel
@@ -51,17 +51,17 @@ public class EnumExtensionsTests
         [Fact]
         public void Converts_All_Enum_Values()
         {
-                var enumValues = Enum.GetValues(typeof(SensitivityLevel));
-                var enumValuesDto = Enum.GetValues(typeof(V8.Sensitivity_Level));
+            var enumValues = Enum.GetValues(typeof(SensitivityLevel));
+            var enumValuesDto = Enum.GetValues(typeof(V8.Sensitivity_Level));
 
-                Assert.Equal(enumValues.Length, enumValuesDto.Length);
+            Assert.Equal(enumValues.Length, enumValuesDto.Length);
 
-                foreach (var enumValue in enumValues)
-                {
-                    var currentEnum = (SensitivityLevel) enumValue;
-                    currentEnum.ToSensitivityLevel();
-                }
+            foreach (var enumValue in enumValues)
+            {
+                var currentEnum = (SensitivityLevel)enumValue;
+                currentEnum.ToSensitivityLevel();
             }
+        }
     }
 
     public class ToPrintColors
@@ -69,17 +69,17 @@ public class EnumExtensionsTests
         [Fact]
         public void Converts_All_Enum_Values()
         {
-                var enumValues = Enum.GetValues(typeof(PrintColors));
-                var enumValuesDto = Enum.GetValues(typeof(V8.Print_Colors));
+            var enumValues = Enum.GetValues(typeof(PrintColors));
+            var enumValuesDto = Enum.GetValues(typeof(V8.Print_Colors));
 
-                Assert.Equal(enumValues.Length, enumValuesDto.Length);
+            Assert.Equal(enumValues.Length, enumValuesDto.Length);
 
-                foreach (var enumValue in enumValues)
-                {
-                    var currentEnum = (PrintColors) enumValue;
-                    currentEnum.ToPrintColors();
-                }
+            foreach (var enumValue in enumValues)
+            {
+                var currentEnum = (PrintColors)enumValue;
+                currentEnum.ToPrintColors();
             }
+        }
     }
 
     public class ToNondeliverableHandling
@@ -87,17 +87,17 @@ public class EnumExtensionsTests
         [Fact]
         public void Converts_All_Enum_Values()
         {
-                var enumValues = Enum.GetValues(typeof(NondeliverableHandling));
-                var enumValuesDto = Enum.GetValues(typeof(V8.Nondeliverable_Handling));
+            var enumValues = Enum.GetValues(typeof(NondeliverableHandling));
+            var enumValuesDto = Enum.GetValues(typeof(V8.Nondeliverable_Handling));
 
-                Assert.Equal(enumValues.Length, enumValuesDto.Length);
+            Assert.Equal(enumValues.Length, enumValuesDto.Length);
 
-                foreach (var enumValue in enumValues)
-                {
-                    var currentEnum = (NondeliverableHandling) enumValue;
-                    currentEnum.ToNondeliverablehandling();
-                }
+            foreach (var enumValue in enumValues)
+            {
+                var currentEnum = (NondeliverableHandling)enumValue;
+                currentEnum.ToNondeliverablehandling();
             }
+        }
     }
 
 
@@ -106,17 +106,17 @@ public class EnumExtensionsTests
         [Fact]
         public void Converts_All_Enum_Values()
         {
-                var enumValuesDto = Enum.GetValues(typeof(V8.Channel));
-                var enumValues = Enum.GetValues(typeof(DeliveryMethod));
+            var enumValuesDto = Enum.GetValues(typeof(V8.Channel));
+            var enumValues = Enum.GetValues(typeof(DeliveryMethod));
 
-                Assert.Equal(enumValues.Length, enumValuesDto.Length);
+            Assert.Equal(enumValues.Length, enumValuesDto.Length);
 
-                foreach (var enumValueDto in enumValuesDto)
-                {
-                    var currentEnum = (V8.Channel) enumValueDto;
-                    currentEnum.ToDeliveryMethod();
-                }
+            foreach (var enumValueDto in enumValuesDto)
+            {
+                var currentEnum = (V8.Channel)enumValueDto;
+                currentEnum.ToDeliveryMethod();
             }
+        }
     }
 
     public class ToMessageStatus
@@ -124,16 +124,16 @@ public class EnumExtensionsTests
         [Fact]
         public void Converts_All_Enum_Values()
         {
-                var enumValuesDto = Enum.GetValues(typeof(V8.Message_Status));
-                var enumValues = Enum.GetValues(typeof(MessageStatus));
+            var enumValuesDto = Enum.GetValues(typeof(V8.Message_Status));
+            var enumValues = Enum.GetValues(typeof(MessageStatus));
 
-                Assert.Equal(enumValues.Length, enumValuesDto.Length);
+            Assert.Equal(enumValues.Length, enumValuesDto.Length);
 
-                foreach (var enumValueDto in enumValuesDto)
-                {
-                    var currentEnum = (V8.Message_Status) enumValueDto;
-                    currentEnum.ToMessageStatus();
-                }
+            foreach (var enumValueDto in enumValuesDto)
+            {
+                var currentEnum = (V8.Message_Status)enumValueDto;
+                currentEnum.ToMessageStatus();
             }
+        }
     }
 }

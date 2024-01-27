@@ -137,8 +137,8 @@ internal class RequestHelper
 
     void ThrowEmptyResponseError(HttpStatusCode httpStatusCode)
     {
-        _logger.LogError((int) httpStatusCode + ": " + httpStatusCode);
-        throw new ClientResponseException((int) httpStatusCode + ": " + httpStatusCode);
+        _logger.LogError((int)httpStatusCode + ": " + httpStatusCode);
+        throw new ClientResponseException((int)httpStatusCode + ": " + httpStatusCode);
     }
 
     static T HandleSuccessResponse<T>(string responseContent)

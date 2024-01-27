@@ -9,6 +9,6 @@ public enum IdentificationType
     OrganizationNumber,
 
     NameAndAddress,
-        
+
     BankAccountNumber
 }

@@ -12,24 +12,24 @@ internal class ArchiveDocumentAction : DigipostAction<ArchiveDocument>
     public ArchiveDocumentAction(ArchiveDocument archiveDocument)
         : base(archiveDocument)
     {
-        }
+    }
 
     internal override HttpContent Content(ArchiveDocument requestContent)
     {
-            var xmlMessage = Serialize(requestContent);
-            var messageContent = new StringContent(xmlMessage);
+        var xmlMessage = Serialize(requestContent);
+        var messageContent = new StringContent(xmlMessage);
 
-            var boundary = Guid.NewGuid().ToString();
-            var mediaTypeHeaderValue = new MediaTypeHeaderValue(DigipostVersion.V8);
-            mediaTypeHeaderValue.Parameters.Add(new NameValueWithParametersHeaderValue("boundary", boundary));
-            messageContent.Headers.ContentType = mediaTypeHeaderValue;
+        var boundary = Guid.NewGuid().ToString();
+        var mediaTypeHeaderValue = new MediaTypeHeaderValue(DigipostVersion.V8);
+        mediaTypeHeaderValue.Parameters.Add(new NameValueWithParametersHeaderValue("boundary", boundary));
+        messageContent.Headers.ContentType = mediaTypeHeaderValue;
 
-            return messageContent;
-        }
+        return messageContent;
+    }
 
     protected override string Serialize(ArchiveDocument requestContent)
     {
-            var messageDataTransferObject = requestContent.ToDataTransferObject();
-            return SerializeUtil.Serialize(messageDataTransferObject);
-        }
+        var messageDataTransferObject = requestContent.ToDataTransferObject();
+        return SerializeUtil.Serialize(messageDataTransferObject);
+    }
 }

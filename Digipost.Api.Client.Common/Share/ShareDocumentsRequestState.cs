@@ -20,15 +20,15 @@ public class ShareDocumentsRequestState : RestLinkable
         DateTime? withdrawnTime,
         IEnumerable<SharedDocument> sharedDocuments, Dictionary<string, Link> links)
     {
-            SharedAtTime = sharedAtTime;
-            ExpiryTime = expiryTime;
-            WithdrawnTime = withdrawnTime;
-            SharedDocuments = sharedDocuments;
-            Links = links;
-        }
+        SharedAtTime = sharedAtTime;
+        ExpiryTime = expiryTime;
+        WithdrawnTime = withdrawnTime;
+        SharedDocuments = sharedDocuments;
+        Links = links;
+    }
 
     public AddAdditionalDataUri GetStopSharingUri()
     {
-            return new AddAdditionalDataUri(Links["STOP_SHARING"]);
-        }
+        return new AddAdditionalDataUri(Links["STOP_SHARING"]);
+    }
 }

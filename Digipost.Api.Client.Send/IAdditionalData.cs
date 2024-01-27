@@ -27,7 +27,7 @@ public class AdditionalData : IAdditionalData
 
     public AdditionalData(Sender sender, IDigipostDataType dataType)
     {
-            Sender = sender;
-            DataType = dataType;
-        }
+        Sender = sender;
+        DataType = dataType;
+    }
 }
