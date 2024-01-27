@@ -161,6 +161,7 @@ FakesAssemblies/
 
 .DS_Store
 /cert/*
+.idea
 *.pk
 
 signingkey.snk

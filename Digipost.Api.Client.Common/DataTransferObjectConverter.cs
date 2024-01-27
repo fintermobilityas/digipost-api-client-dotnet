@@ -82,7 +82,7 @@ internal static class DataTransferObjectConverter
     {
         var identification = new Identification
         {
-            Name_And_Address = new Name_And_Address()
+            Name_And_Address = new Name_And_Address
             {
                 Fullname = recipientByNameAndAddress.FullName,
                 Addressline1 = recipientByNameAndAddress.AddressLine1,

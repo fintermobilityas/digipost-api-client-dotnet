@@ -15,7 +15,7 @@ public class DataTransferObjectConverterTests
         [Fact]
         public void Archive()
         {
-            var source = new V8.Archive()
+            var source = new V8.Archive
             {
                 Name = "per",
                 Sender_Id = 1010,
@@ -32,14 +32,14 @@ public class DataTransferObjectConverterTests
         public void ArchiveDocumentBasicState()
         {
             var newGuid = Guid.NewGuid();
-            var source = new Archive_Document()
+            var source = new Archive_Document
             {
                 Uuid = newGuid.ToString(),
                 File_Name = "per.txt",
                 File_Type = "txt",
                 Content_Type = "text/plain",
                 Attributes = { },
-                Link = { new Link() { Rel = $"{BaseUri}/relations/get_something", Uri = $"{BaseUri}/something", Media_Type = "text/plain" } }
+                Link = { new Link { Rel = $"{BaseUri}/relations/get_something", Uri = $"{BaseUri}/something", Media_Type = "text/plain" } }
             };
 
             var expected = new ArchiveDocument(newGuid, "per.txt", "txt", "text/plain");
@@ -56,13 +56,13 @@ public class DataTransferObjectConverterTests
             var newGuid = Guid.NewGuid();
             var source = new ArchiveDocument(newGuid, "per.txt", "txt", "text/plain").WithAttribute("test", "val");
 
-            var expected = new Archive_Document()
+            var expected = new Archive_Document
             {
                 Uuid = newGuid.ToString(),
                 File_Name = "per.txt",
                 File_Type = "txt",
                 Content_Type = "text/plain",
-                Attributes = { new Archive_Document_Attribute() { Key = "test", Value = "val" } },
+                Attributes = { new Archive_Document_Attribute { Key = "test", Value = "val" } },
             };
 
             Comparator.AssertEqual(expected, source.ToDataTransferObject());

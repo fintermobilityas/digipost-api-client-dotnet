@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Digipost.Api.Client.Archive.Actions;
@@ -16,45 +16,120 @@ namespace Digipost.Api.Client.Archive;
 public interface IArchiveApi
 {
     /// <summary>
-    /// List all the archives available to the current sender
+    /// Fetches the archives.
     /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task<IEnumerable<Archive>> FetchArchives(CancellationToken cancellationToken);
-
-    Task<Archive> ArchiveDocuments(Archive archiveWithDocument, CancellationToken cancellationToken);
-
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An asynchronous task that returns an IEnumerable of Archive objects.</returns>
+    IAsyncEnumerable<Archive> FetchArchivesAsync(CancellationToken cancellationToken);
+    
+    /// <summary>
+    /// Archives the given documents asynchronously.
+    /// </summary>
+    /// <param name="archiveWithDocuments">The Archive object containing the documents to be archived.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A Task representing the asynchronous operation. The task result is the archived Archive object.</returns>
     Task<Archive> ArchiveDocumentsAsync(Archive archiveWithDocuments, CancellationToken cancellationToken);
 
-    Task<IEnumerable<Archive>> FetchArchiveDocumentsByReferenceId(string referenceId, CancellationToken cancellationToken);
+    /// <summary>
+    /// Fetches the archive documents based on the reference ID.
+    /// </summary>
+    /// <param name="referenceId">The reference ID to fetch the documents for.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An asynchronous task that returns an IEnumerable of Archive objects.</returns>
+    IAsyncEnumerable<Archive> FetchArchiveDocumentsByReferenceIdAsync(string referenceId, CancellationToken cancellationToken);
 
-    Task<ArchiveDocument> FetchArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentByUuidUri, CancellationToken cancellationToken);
+    /// <summary>
+    /// Fetches the archive document by UUID.
+    /// </summary>
+    /// <param name="getArchiveDocumentByUuidUri">The URI to fetch the archive document by UUID.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The fetched archive document.</returns>
+    Task<ArchiveDocument> FetchArchiveDocumentAsync(GetArchiveDocumentByUuidUri getArchiveDocumentByUuidUri, CancellationToken cancellationToken);
 
-    Task<Archive> FetchArchiveDocuments(ArchiveNextDocumentsUri nextDocumentsUri, CancellationToken cancellationToken);
+    /// <summary>
+    /// Fetches archive documents from the API.
+    /// </summary>
+    /// <param name="nextDocumentsUri">The URI representing the next page of archive documents to fetch.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to cancel the request.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the fetched <see cref="Archive"/>.</returns>
+    Task<Archive> FetchArchiveDocumentsAsync(ArchiveNextDocumentsUri nextDocumentsUri, CancellationToken cancellationToken);
 
-    Task<ArchiveDocument> UpdateDocument(ArchiveDocument archiveDocument, ArchiveDocumentUpdateUri updateUri, CancellationToken cancellationToken);
+    /// <summary>
+    /// Updates the given <paramref name="archiveDocument"/> with the provided <paramref name="updateUri"/>.
+    /// </summary>
+    /// <param name="archiveDocument">The document to be updated.</param>
+    /// <param name="updateUri">The URI used to update the document.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the asynchronous operation.</param>
+    /// <returns>Returns a Task representing the asynchronous operation.</returns>
+    Task<ArchiveDocument> UpdateDocumentAsync(ArchiveDocument archiveDocument, ArchiveDocumentUpdateUri updateUri, CancellationToken cancellationToken);
 
-    Task DeleteDocument(ArchiveDocumentDeleteUri deleteUri, CancellationToken cancellationToken);
+    /// <summary>
+    /// Deletes a document from the archive.
+    /// </summary>
+    /// <param name="deleteUri">The delete URI of the document to be deleted.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    Task DeleteDocumentAsync(ArchiveDocumentDeleteUri deleteUri, CancellationToken cancellationToken);
 
-    /**
-     * This will hash and create a Guid the same way as java UUID.nameUUIDFromBytes
-     */
-    Task<Archive> GetArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentUri, CancellationToken cancellationToken);
+    /// <summary>
+    /// Fetches an archive document from the Digipost archive based on the given UUID.
+    /// </summary>
+    /// <param name="getArchiveDocumentUri">The URI of the archive document to fetch.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The fetched archive document.</returns>
+    Task<Archive> GetArchiveDocumentAsync(GetArchiveDocumentByUuidUri getArchiveDocumentUri, CancellationToken cancellationToken);
 
-    Task<Archive> FetchDocumentFromExternalId(string externalId, CancellationToken cancellationToken);
+    /// <summary>
+    /// Fetches a document from the archive based on its external ID.
+    /// </summary>
+    /// <param name="externalId">The external ID of the document.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An asynchronous task that returns the fetched document.</returns>
+    Task<Archive> FetchDocumentFromExternalIdAsync(string externalId, CancellationToken cancellationToken);
 
-    Task<Archive> FetchDocumentFromExternalId(Guid externalIdGuid, CancellationToken cancellationToken);
+    /// <summary>
+    /// Fetches the document from the external ID.
+    /// </summary>
+    /// <param name="externalId">The external ID.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An asynchronous task that returns an Archive object.</returns>
+    Task<Archive> FetchDocumentFromExternalIdAsync(Guid externalId, CancellationToken cancellationToken);
 
-    Task<Stream> StreamDocumentFromExternalId(string externalId, CancellationToken cancellationToken);
+    /// <summary>
+    /// Streams the document with the specified external ID.
+    /// </summary>
+    /// <param name="externalId">The external ID of the document.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result will be the stream of the document.</returns>
+    Task<Stream> StreamDocumentFromExternalIdAsync(string externalId, CancellationToken cancellationToken);
 
-    Task<Stream> StreamDocumentFromExternalId(Guid externalIdGuid, CancellationToken cancellationToken);
+    /// <summary>
+    /// Streams a document from the archive using the specified external ID.
+    /// </summary>
+    /// <param name="externalId">The external ID of the document.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task that represents the asynchronous operation.
+    /// The task result will be a Stream object containing the document content.</returns>
+    Task<Stream> StreamDocumentFromExternalIdAsync(Guid externalId, CancellationToken cancellationToken);
 
-    Task<Stream> StreamDocument(ArchiveDocumentContentStreamUri documentContentStreamUri, CancellationToken cancellationToken);
+    /// <summary>
+    /// Streams the document from the specified external ID.
+    /// </summary>
+    /// <param name="documentContentStreamUri">The external ID of the document.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A Task representing the asynchronous operation. The resulting Stream contains the document content.</returns>
+    Task<Stream> StreamDocumentAsync(ArchiveDocumentContentStreamUri documentContentStreamUri, CancellationToken cancellationToken);
 
-    Task<ArchiveDocumentContent> GetDocumentContent(ArchiveDocumentContentUri archiveDocumentContentUri, CancellationToken cancellationToken);
+    /// <summary>
+    /// Retrieves the content of a document in the archive.
+    /// </summary>
+    /// <param name="archiveDocumentContentUri">The URI of the document content.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An asynchronous task that returns an instance of ArchiveDocumentContent.</returns>
+    Task<ArchiveDocumentContent> GetDocumentContentAsync(ArchiveDocumentContentUri archiveDocumentContentUri, CancellationToken cancellationToken);
 }
 
-internal class ArchiveApi : IArchiveApi
+internal sealed class ArchiveApi : IArchiveApi
 {
     readonly Root _root;
     readonly RequestHelper _requestHelper;
@@ -67,41 +142,55 @@ internal class ArchiveApi : IArchiveApi
         _requestHelper = requestHelper;
     }
 
-    public async Task<IEnumerable<Archive>> FetchArchives(CancellationToken cancellationToken)
+    public async IAsyncEnumerable<Archive> FetchArchivesAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var archivesUri = _root.GetGetArchivesUri();
         var archives = await _requestHelper.GetAsync<Archives>(archivesUri, cancellationToken);
+        if (archives is not { Archive.Count: > 0 })
+        {
+            yield break;
+        }
 
-        return archives.Archive.Select(ArchiveDataTransferObjectConverter.FromDataTransferObject);
+        foreach (var archive in archives.Archive)
+        {
+            yield return archive.FromDataTransferObject();
+        }
     }
 
-    public async Task<IEnumerable<Archive>> FetchArchiveDocumentsByReferenceId(string referenceId, CancellationToken cancellationToken)
+    public async IAsyncEnumerable<Archive> FetchArchiveDocumentsByReferenceIdAsync(string referenceId, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var archives = await _requestHelper.GetAsync<Archives>(_root.GetGetArchiveDocumentsReferenceIdUri(referenceId), cancellationToken);
-
-        return archives.Archive.Select(ArchiveDataTransferObjectConverter.FromDataTransferObject);
+        if (archives is not { Archive.Count: > 0 })
+        {
+            yield break;
+        }
+        
+        foreach (var archive in archives.Archive)
+        {
+            yield return archive.FromDataTransferObject();
+        }
     }
 
-    public async Task<ArchiveDocument> FetchArchiveDocument(GetArchiveDocumentByUuidUri nextDocumentsUri, CancellationToken cancellationToken)
+    public async Task<ArchiveDocument> FetchArchiveDocumentAsync(GetArchiveDocumentByUuidUri nextDocumentsUri, CancellationToken cancellationToken)
     {
-        var archive = await GetArchiveDocument(nextDocumentsUri, cancellationToken);
+        var archive = await GetArchiveDocumentAsync(nextDocumentsUri, cancellationToken);
         return archive.One();
     }
 
-    public async Task<Archive> FetchArchiveDocuments(ArchiveNextDocumentsUri nextDocumentsUri, CancellationToken cancellationToken)
+    public async Task<Archive> FetchArchiveDocumentsAsync(ArchiveNextDocumentsUri nextDocumentsUri, CancellationToken cancellationToken)
     {
         var result = await _requestHelper.GetAsync<V8.Archive>(nextDocumentsUri, cancellationToken);
 
         return result.FromDataTransferObject();
     }
 
-    public async Task<Archive> GetArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentUri, CancellationToken cancellationToken)
+    public async Task<Archive> GetArchiveDocumentAsync(GetArchiveDocumentByUuidUri getArchiveDocumentUri, CancellationToken cancellationToken)
     {
         var result = await _requestHelper.GetAsync<V8.Archive>(getArchiveDocumentUri, cancellationToken);
         return result.FromDataTransferObject();
     }
 
-    public async Task<ArchiveDocument> UpdateDocument(ArchiveDocument archiveDocument, ArchiveDocumentUpdateUri updateUri, CancellationToken cancellationToken)
+    public async Task<ArchiveDocument> UpdateDocumentAsync(ArchiveDocument archiveDocument, ArchiveDocumentUpdateUri updateUri, CancellationToken cancellationToken)
     {
         var messageAction = new ArchiveDocumentAction(archiveDocument);
         var httpContent = messageAction.Content(archiveDocument);
@@ -111,16 +200,7 @@ internal class ArchiveApi : IArchiveApi
         return updatedArchiveDocument.FromDataTransferObject();
     }
 
-    public async Task DeleteDocument(ArchiveDocumentDeleteUri deleteUri, CancellationToken cancellationToken)
-    {
-        await _requestHelper.DeleteAsync(deleteUri, cancellationToken);
-    }
-
-    public async Task<Archive> ArchiveDocuments(Archive archiveWithDocuments, CancellationToken cancellationToken)
-    {
-        var result = await ArchiveDocumentsAsync(archiveWithDocuments, cancellationToken);
-        return result;
-    }
+    public Task DeleteDocumentAsync(ArchiveDocumentDeleteUri deleteUri, CancellationToken cancellationToken) => _requestHelper.DeleteAsync(deleteUri, cancellationToken);
 
     public async Task<Archive> ArchiveDocumentsAsync(Archive archiveWithDocuments, CancellationToken cancellationToken)
     {
@@ -140,40 +220,40 @@ internal class ArchiveApi : IArchiveApi
         return result;
     }
 
-    public async Task<Archive> FetchDocumentFromExternalId(string externalId, CancellationToken cancellationToken)
+    public async Task<Archive> FetchDocumentFromExternalIdAsync(string externalId, CancellationToken cancellationToken)
     {
         var result = await _requestHelper.GetAsync<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalId), cancellationToken);
         return result.FromDataTransferObject();
     }
 
-    public async Task<Archive> FetchDocumentFromExternalId(Guid externalIdGuid, CancellationToken cancellationToken)
+    public async Task<Archive> FetchDocumentFromExternalIdAsync(Guid externalId, CancellationToken cancellationToken)
     {
-        var result = await _requestHelper.GetAsync<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalIdGuid), cancellationToken);
+        var result = await _requestHelper.GetAsync<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalId), cancellationToken);
         return result.FromDataTransferObject();
     }
 
-    public async Task<Stream> StreamDocumentFromExternalId(string externalId, CancellationToken cancellationToken)
+    public async Task<Stream> StreamDocumentFromExternalIdAsync(string externalId, CancellationToken cancellationToken)
     {
-        var archive = await GetArchiveDocument(_root.GetGetArchiveDocumentsByUuidUri(externalId), cancellationToken);
+        var archive = await GetArchiveDocumentAsync(_root.GetGetArchiveDocumentsByUuidUri(externalId), cancellationToken);
         var documentContentStreamUri = archive.One().GetDocumentContentStreamUri();
 
-        return await StreamDocument(documentContentStreamUri, cancellationToken);
+        return await StreamDocumentAsync(documentContentStreamUri, cancellationToken);
     }
 
-    public async Task<Stream> StreamDocumentFromExternalId(Guid guid, CancellationToken cancellationToken)
+    public async Task<Stream> StreamDocumentFromExternalIdAsync(Guid externalId, CancellationToken cancellationToken)
     {
-        var archive = await GetArchiveDocument(_root.GetGetArchiveDocumentsByUuidUri(guid), cancellationToken);
+        var archive = await GetArchiveDocumentAsync(_root.GetGetArchiveDocumentsByUuidUri(externalId), cancellationToken);
         var documentContentStreamUri = archive.One().GetDocumentContentStreamUri();
 
-        return await StreamDocument(documentContentStreamUri, cancellationToken);
+        return await StreamDocumentAsync(documentContentStreamUri, cancellationToken);
     }
 
-    public async Task<Stream> StreamDocument(ArchiveDocumentContentStreamUri documentContentStreamUri, CancellationToken cancellationToken)
+    public async Task<Stream> StreamDocumentAsync(ArchiveDocumentContentStreamUri documentContentStreamUri, CancellationToken cancellationToken)
     {
         return await _requestHelper.GetStreamAsync(documentContentStreamUri, cancellationToken);
     }
 
-    public async Task<ArchiveDocumentContent> GetDocumentContent(ArchiveDocumentContentUri archiveDocumentContentUri, CancellationToken cancellationToken)
+    public async Task<ArchiveDocumentContent> GetDocumentContentAsync(ArchiveDocumentContentUri archiveDocumentContentUri, CancellationToken cancellationToken)
     {
         var result = await _requestHelper.GetAsync<Archive_Document_Content>(archiveDocumentContentUri, cancellationToken);
 

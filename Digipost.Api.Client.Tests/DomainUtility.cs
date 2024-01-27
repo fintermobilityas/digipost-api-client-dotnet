@@ -65,12 +65,12 @@ public static class DomainUtility
 
     public static Message GetMessageDataTransferObjectWithBytesAndStaticGuidRecipientById()
     {
-        var message = new Message()
+        var message = new Message
         {
             Sender_Id = long.Parse("1010"),
             Sender_IdSpecified = true,
             Message_Id = "ThatMessageId",
-            Primary_Document = new V8.Document()
+            Primary_Document = new V8.Document
             {
                 Subject = "TestSubject",
                 File_Type = "txt",
@@ -80,12 +80,12 @@ public static class DomainUtility
             },
             Delivery_Time = DateTime.Today.AddDays(3),
             Delivery_TimeSpecified = true,
-            Recipient = new Message_Recipient()
+            Recipient = new Message_Recipient
             {
                 Digipost_Address = "ola.nordmann#246BB"
             }
         };
-        message.Attachment.Add(new V8.Document()
+        message.Attachment.Add(new V8.Document
         {
             Subject = "TestSubject attachment",
             File_Type = "txt",
@@ -143,7 +143,7 @@ public static class DomainUtility
     {
         return new Print_Details
         {
-            Recipient = new Print_Recipient()
+            Recipient = new Print_Recipient
             {
                 Name = "Ola Nordmann",
                 Norwegian_Address = new Norwegian_Address
@@ -156,7 +156,7 @@ public static class DomainUtility
             Return_Address = new Print_Recipient
             {
                 Name = "Returkongen",
-                Norwegian_Address = new Norwegian_Address()
+                Norwegian_Address = new Norwegian_Address
                 {
                     Addressline1 = "Sophauggata 22",
                     City = "Sophaugen",

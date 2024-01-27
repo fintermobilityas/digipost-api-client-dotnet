@@ -9,7 +9,7 @@ internal static class ArchiveDataTransferObjectConverter
 {
     internal static V8.Archive ToDataTransferObject(this Archive a)
     {
-        var dto = new V8.Archive()
+        var dto = new V8.Archive
         {
             Name = a.Name,
             Sender_Id = a.Sender.Id,
@@ -26,7 +26,7 @@ internal static class ArchiveDataTransferObjectConverter
 
     internal static Archive_Document ToDataTransferObject(this ArchiveDocument ad)
     {
-        var dto = new Archive_Document()
+        var dto = new Archive_Document
         {
             Uuid = ad.Id.ToString(),
             File_Name = ad.FileName,
@@ -39,12 +39,12 @@ internal static class ArchiveDataTransferObjectConverter
 
         foreach (var attribute in ad.Attributes)
         {
-            dto.Attributes.Add(new Archive_Document_Attribute() { Key = attribute.Key, Value = attribute.Value });
+            dto.Attributes.Add(new Archive_Document_Attribute { Key = attribute.Key, Value = attribute.Value });
         }
 
         if (ad.ContentHash != null)
         {
-            dto.Content_Hash = new Content_Hash()
+            dto.Content_Hash = new Content_Hash
             {
                 Value = ad.ContentHash.Value,
                 Hash_Algorithm = ad.ContentHash.HashAlgoritm
@@ -54,9 +54,8 @@ internal static class ArchiveDataTransferObjectConverter
         return dto;
     }
 
-    internal static ArchiveDocument FromDataTransferObject(this Archive_Document ad)
-    {
-        return new ArchiveDocument(
+    internal static ArchiveDocument FromDataTransferObject(this Archive_Document ad) =>
+        new(
             new Guid(ad.Uuid),
             ad.File_Name,
             ad.File_Type,
@@ -70,19 +69,13 @@ internal static class ArchiveDataTransferObjectConverter
             Attributes = ad.Attributes.ToDictionary(ada => ada.Key, ada => ada.Value),
             Links = ad.Link.FromDataTransferObject()
         };
-    }
 
-    internal static Archive FromDataTransferObject(this V8.Archive a)
-    {
-        return new Archive(new Sender(a.Sender_Id), a.Name)
+    internal static Archive FromDataTransferObject(this V8.Archive a) =>
+        new(new Sender(a.Sender_Id), a.Name)
         {
             ArchiveDocuments = a.Documents.Select(FromDataTransferObject).ToList(),
             Links = a.Link.FromDataTransferObject()
         };
-    }
 
-    internal static ArchiveDocumentContent FromDataTransferObject(this Archive_Document_Content result)
-    {
-        return new ArchiveDocumentContent(result.Content_Type, new Uri(result.Uri, UriKind.Absolute));
-    }
+    internal static ArchiveDocumentContent FromDataTransferObject(this Archive_Document_Content result) => new(result.Content_Type, new Uri(result.Uri, UriKind.Absolute));
 }

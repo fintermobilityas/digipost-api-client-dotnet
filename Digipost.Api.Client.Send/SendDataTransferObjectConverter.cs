@@ -24,7 +24,7 @@ internal static class SendDataTransferObjectConverter
 
         if (message is PrintMessage)
         {
-            messageDto.Recipient = new Message_Recipient()
+            messageDto.Recipient = new Message_Recipient
             {
                 Print_Details = message.PrintDetails.ToDataTransferObject()
             };
@@ -75,7 +75,7 @@ internal static class SendDataTransferObjectConverter
 
         if (document.DataType != null)
         {
-            documentDto.Data_Type = new Data_Type()
+            documentDto.Data_Type = new Data_Type
             {
                 Any = document.DataType.ToXmlDocument().DocumentElement
             };
@@ -199,7 +199,7 @@ internal static class SendDataTransferObjectConverter
         {
             Sender_Id = additionalData.Sender.Id,
             Sender_IdSpecified = true,
-            Data_Type = new Data_Type()
+            Data_Type = new Data_Type
             {
                 Any = additionalData.DataType.ToXmlDocument().DocumentElement
             }

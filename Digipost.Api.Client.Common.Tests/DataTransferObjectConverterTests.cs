@@ -29,7 +29,7 @@ public class DataTransferObjectConverterTests
                 "Adresselinje4"
             );
 
-            var expectedDto = new V8.Foreign_Address()
+            var expectedDto = new V8.Foreign_Address
             {
                 Country_Code = "SE",
                 Addressline1 = source.AddressLine1,
@@ -50,7 +50,7 @@ public class DataTransferObjectConverterTests
         {
             //Arrange
             const string digipostAddress = "ola.nordmann#1234";
-            var source = new V8.Identification_Result()
+            var source = new V8.Identification_Result
             {
                 Result = Identification_Result_Code.DIGIPOST,
                 Digipost_Address = digipostAddress
@@ -74,7 +74,7 @@ public class DataTransferObjectConverterTests
         {
             //Arrange
             const string personAlias = "fewoinf23nio3255n32oi5n32oi5n#1234";
-            var source = new V8.Identification_Result()
+            var source = new V8.Identification_Result
             {
                 Result = Identification_Result_Code.IDENTIFIED,
                 Person_Alias = personAlias
@@ -104,7 +104,7 @@ public class DataTransferObjectConverterTests
         {
             //Arrange
             var reason = V8.Unidentified_Reason.NOT_FOUND;
-            var source = new V8.Identification_Result()
+            var source = new V8.Identification_Result
             {
                 Result = Identification_Result_Code.UNIDENTIFIED,
                 Unidentified_Reason = V8.Unidentified_Reason.NOT_FOUND,
@@ -140,9 +140,9 @@ public class DataTransferObjectConverterTests
 
             var sourceRecipient = (RecipientByNameAndAddress)source.DigipostRecipient;
 
-            var expectedDto = new V8.Identification()
+            var expectedDto = new V8.Identification
             {
-                Name_And_Address = new Name_And_Address()
+                Name_And_Address = new Name_And_Address
                 {
                     Fullname = sourceRecipient.FullName,
                     Addressline1 = sourceRecipient.AddressLine1,
@@ -178,9 +178,9 @@ public class DataTransferObjectConverterTests
 
             var sourceRecipient = (RecipientByNameAndAddress)source.DigipostRecipient;
 
-            var expectedDto = new V8.Identification()
+            var expectedDto = new V8.Identification
             {
-                Name_And_Address = new Name_And_Address()
+                Name_And_Address = new Name_And_Address
                 {
                     Fullname = sourceRecipient.FullName,
                     Addressline1 = sourceRecipient.AddressLine1,
@@ -205,7 +205,7 @@ public class DataTransferObjectConverterTests
         {
             //Arrange
             var source = new Identification(new RecipientById(IdentificationType.OrganizationNumber, "123456789"));
-            var expectedDto = new V8.Identification()
+            var expectedDto = new V8.Identification
             {
                 Organisation_Number = ((RecipientById)source.DigipostRecipient).Id
             };
@@ -222,7 +222,7 @@ public class DataTransferObjectConverterTests
         {
             //Arrange
             const string digipostAddress = "bedriften#1234";
-            var source = new V8.Identification_Result()
+            var source = new V8.Identification_Result
             {
                 Result = Identification_Result_Code.DIGIPOST,
                 Digipost_Address = digipostAddress
@@ -252,7 +252,7 @@ public class DataTransferObjectConverterTests
         {
             //Arrange
             object invalidValue = Invalid_Reason.INVALID_ORGANISATION_NUMBER;
-            var source = new Identification_Result()
+            var source = new Identification_Result
             {
                 Result = Identification_Result_Code.INVALID,
                 Invalid_Reason = (Invalid_Reason)invalidValue,
@@ -277,7 +277,7 @@ public class DataTransferObjectConverterTests
         {
             //Arrange
             var reason = Unidentified_Reason.NOT_FOUND;
-            var source = new Identification_Result()
+            var source = new Identification_Result
             {
                 Result = Identification_Result_Code.UNIDENTIFIED,
                 Unidentified_Reason = reason,
@@ -301,7 +301,7 @@ public class DataTransferObjectConverterTests
         public void IdentificationByPinReturnsDigipostResultWithNoneResultType()
         {
             //Arrange
-            var source = new Identification_Result()
+            var source = new Identification_Result
             {
                 Result = Identification_Result_Code.DIGIPOST,
                 //ItemsElementName = new [] { },
@@ -325,7 +325,7 @@ public class DataTransferObjectConverterTests
         {
             //Arrange
 
-            var source = new Identification_Result()
+            var source = new Identification_Result
             {
                 Result = Identification_Result_Code.IDENTIFIED,
 
@@ -350,7 +350,7 @@ public class DataTransferObjectConverterTests
         {
             //Arrange
             object invalidValue = Invalid_Reason.INVALID_PERSONAL_IDENTIFICATION_NUMBER;
-            var source = new Identification_Result()
+            var source = new Identification_Result
             {
                 Result = Identification_Result_Code.INVALID,
                 Invalid_Reason = (Invalid_Reason)invalidValue,
@@ -382,7 +382,7 @@ public class DataTransferObjectConverterTests
             //Arrange
             var source = new NorwegianAddress("0001", "Oslo", "Addr1", "Addr2", "Addr3");
 
-            var expectedDto = new Norwegian_Address()
+            var expectedDto = new Norwegian_Address
             {
                 Zip_Code = source.PostalCode,
                 City = source.City,
@@ -417,12 +417,12 @@ public class DataTransferObjectConverterTests
             var sourceAddress = source.PrintRecipient.Address;
             var returnAddress = source.PrintReturnRecipient.Address;
 
-            var expectedDto = new Print_Details()
+            var expectedDto = new Print_Details
             {
-                Recipient = new Print_Recipient()
+                Recipient = new Print_Recipient
                 {
                     Name = source.PrintRecipient.Name,
-                    Norwegian_Address = new Norwegian_Address()
+                    Norwegian_Address = new Norwegian_Address
                     {
                         Zip_Code = ((NorwegianAddress)sourceAddress).PostalCode,
                         City = ((NorwegianAddress)sourceAddress).City,
@@ -431,10 +431,10 @@ public class DataTransferObjectConverterTests
                         Addressline3 = sourceAddress.AddressLine3
                     }
                 },
-                Return_Address = new Print_Recipient()
+                Return_Address = new Print_Recipient
                 {
                     Name = source.PrintReturnRecipient.Name,
-                    Norwegian_Address = new Norwegian_Address()
+                    Norwegian_Address = new Norwegian_Address
                     {
                         Zip_Code = ((NorwegianAddress)returnAddress).PostalCode,
                         City = ((NorwegianAddress)returnAddress).City,
@@ -444,7 +444,7 @@ public class DataTransferObjectConverterTests
                     }
                 }
             };
-            expectedDto.Print_Instructions.Add(new Print_Instruction() { Key = "test", Value = "testing" });
+            expectedDto.Print_Instructions.Add(new Print_Instruction { Key = "test", Value = "testing" });
 
 
             //Act
@@ -473,12 +473,12 @@ public class DataTransferObjectConverterTests
             var sourceAddress = source.PrintDetails.PrintRecipient.Address;
             var returnAddress = source.PrintDetails.PrintReturnRecipient.Address;
 
-            var expectedDtoPrintDetails = new V8.Print_Details()
+            var expectedDtoPrintDetails = new V8.Print_Details
             {
-                Recipient = new Print_Recipient()
+                Recipient = new Print_Recipient
                 {
                     Name = source.PrintDetails.PrintRecipient.Name,
-                    Norwegian_Address = new Norwegian_Address()
+                    Norwegian_Address = new Norwegian_Address
                     {
                         Zip_Code = ((NorwegianAddress)sourceAddress).PostalCode,
                         City = ((NorwegianAddress)sourceAddress).City,
@@ -487,10 +487,10 @@ public class DataTransferObjectConverterTests
                         Addressline3 = sourceAddress.AddressLine3
                     }
                 },
-                Return_Address = new Print_Recipient()
+                Return_Address = new Print_Recipient
                 {
                     Name = source.PrintDetails.PrintReturnRecipient.Name,
-                    Norwegian_Address = new Norwegian_Address()
+                    Norwegian_Address = new Norwegian_Address
                     {
                         Zip_Code = ((NorwegianAddress)returnAddress).PostalCode,
                         City = ((NorwegianAddress)returnAddress).City,
@@ -501,7 +501,7 @@ public class DataTransferObjectConverterTests
                 }
             };
 
-            var expectedDto = new V8.Print_If_Unread()
+            var expectedDto = new V8.Print_If_Unread
             {
                 Print_If_Unread_After = printifunreadafter,
                 Print_Details = expectedDtoPrintDetails
@@ -531,10 +531,10 @@ public class DataTransferObjectConverterTests
                     "Adresselinje4"
                 ));
 
-            var expectedDto = new V8.Print_Recipient()
+            var expectedDto = new V8.Print_Recipient
             {
                 Name = source.Name,
-                Foreign_Address = new Foreign_Address()
+                Foreign_Address = new Foreign_Address
                 {
                     Country = "NORGE",
                     Addressline1 = source.Address.AddressLine1,
@@ -559,10 +559,10 @@ public class DataTransferObjectConverterTests
                 "Name",
                 new NorwegianAddress("0001", "Oslo", "Addr1", "Addr2", "Addr3"));
 
-            var expectedDto = new V8.Print_Recipient()
+            var expectedDto = new V8.Print_Recipient
             {
                 Name = source.Name,
-                Norwegian_Address = new Norwegian_Address()
+                Norwegian_Address = new Norwegian_Address
                 {
                     Zip_Code = ((NorwegianAddress)source.Address).PostalCode,
                     City = ((NorwegianAddress)source.Address).City,
@@ -594,10 +594,10 @@ public class DataTransferObjectConverterTests
                     "Adresselinje4"
                 ));
 
-            var expectedDto = new V8.Print_Recipient()
+            var expectedDto = new V8.Print_Recipient
             {
                 Name = source.Name,
-                Foreign_Address = new V8.Foreign_Address()
+                Foreign_Address = new V8.Foreign_Address
                 {
                     Country = ((ForeignAddress)source.Address).CountryIdentifierValue,
                     Addressline1 = source.Address.AddressLine1,
@@ -622,10 +622,10 @@ public class DataTransferObjectConverterTests
                 "Name",
                 new NorwegianAddress("0001", "Oslo", "Addr1", "Addr2", "Addr3"));
 
-            var expectedDto = new V8.Print_Recipient()
+            var expectedDto = new V8.Print_Recipient
             {
                 Name = source.Name,
-                Norwegian_Address = new Norwegian_Address()
+                Norwegian_Address = new Norwegian_Address
                 {
                     Zip_Code = ((NorwegianAddress)source.Address).PostalCode,
                     City = ((NorwegianAddress)source.Address).City,
@@ -651,7 +651,7 @@ public class DataTransferObjectConverterTests
                 "ola.nordmann#2233"
             );
 
-            var expectedDto = new V8.Message_Recipient()
+            var expectedDto = new V8.Message_Recipient
             {
                 Digipost_Address = "ola.nordmann#2233",
                 Print_Details = null //TODO: Implementer print!
@@ -678,9 +678,9 @@ public class DataTransferObjectConverterTests
                 Email = "email@test.no"
             };
 
-            var expectedDto = new V8.Message_Recipient()
+            var expectedDto = new V8.Message_Recipient
             {
-                Name_And_Address = new V8.Name_And_Address()
+                Name_And_Address = new V8.Name_And_Address
                 {
                     Fullname = source.FullName,
                     Addressline1 = source.AddressLine1,
@@ -705,7 +705,7 @@ public class DataTransferObjectConverterTests
         public void SearchResult()
         {
             //Arrange
-            var recipient0 = new V8.Recipient()
+            var recipient0 = new V8.Recipient
             {
                 Firstname = "Stian Jarand",
                 Middlename = "Jani",
@@ -715,7 +715,7 @@ public class DataTransferObjectConverterTests
                 Organisation_Name = "Organisatorisk Landsforbund",
                 Organisation_Number = "1234567689",
             };
-            recipient0.Address.Add(new V8.Address()
+            recipient0.Address.Add(new V8.Address
             {
                 Street = "Bakkeveien",
                 House_Number = "3",
@@ -724,7 +724,7 @@ public class DataTransferObjectConverterTests
                 Zip_Code = "3453",
                 City = "Konjakken"
             });
-            recipient0.Address.Add(new V8.Address()
+            recipient0.Address.Add(new V8.Address
             {
                 Street = "Komleveien",
                 House_Number = "33",
@@ -732,14 +732,14 @@ public class DataTransferObjectConverterTests
                 City = "Konjakken"
             });
 
-            var recipient1 = new V8.Recipient()
+            var recipient1 = new V8.Recipient
             {
                 Firstname = "Bentoni Jarandsen",
                 Lastname = "Larsen",
                 Mobile_Number = "02345638",
                 Digipost_Address = "Bentoni.Jarandsen.Larsen#KG33",
             };
-            recipient1.Address.Add(new V8.Address()
+            recipient1.Address.Add(new V8.Address
             {
                 Street = "Mudleveien",
                 House_Number = "45",
@@ -824,7 +824,7 @@ public class DataTransferObjectConverterTests
         public void Error()
         {
             //Arrange
-            var source = new V8.Error()
+            var source = new V8.Error
             {
                 Error_Code = "UNKNOWN_RECIPIENT",
                 Error_Message = "The recipient does not have a Digipost account.",

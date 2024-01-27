@@ -46,7 +46,7 @@ public class SendDataTransferObjectConverterTests
             //Arrange
             var deliverytime = DateTime.Now.AddDays(3);
 
-            var source = new V8.Message_Delivery()
+            var source = new V8.Message_Delivery
             {
                 Primary_Document = new V8.Document
                 {
@@ -55,7 +55,7 @@ public class SendDataTransferObjectConverterTests
                     Authentication_Level = Authentication_Level.TWO_FACTOR,
                     Sensitivity_Level = Sensitivity_Level.SENSITIVE,
                     Uuid = "uuid",
-                    Content_Hash = new Content_Hash() { Hash_Algorithm = "SHA256", Value = "5o0RMsXcgSZpGsL7FAmhSQnvGkqgOcvl5JDtMhXBSlc=" }
+                    Content_Hash = new Content_Hash { Hash_Algorithm = "SHA256", Value = "5o0RMsXcgSZpGsL7FAmhSQnvGkqgOcvl5JDtMhXBSlc=" }
                 },
                 Attachment = {
                         new V8.Document
@@ -65,7 +65,7 @@ public class SendDataTransferObjectConverterTests
                             Authentication_Level = Authentication_Level.TWO_FACTOR,
                             Sensitivity_Level = Sensitivity_Level.SENSITIVE,
                             Uuid = "attachmentGuid",
-                            Content_Hash = new Content_Hash() {Hash_Algorithm = "SHA256", Value = "5o0RMsXcgSZpGsL7FAmhSQnvGkqgOcvl5JDtMhXBSlc="}
+                            Content_Hash = new Content_Hash {Hash_Algorithm = "SHA256", Value = "5o0RMsXcgSZpGsL7FAmhSQnvGkqgOcvl5JDtMhXBSlc="}
                         }
                     },
                 Delivery_Time = deliverytime,
@@ -118,7 +118,7 @@ public class SendDataTransferObjectConverterTests
 
             afterHours.ForEach(s => expectedDto.After_Hours.Add(s));
 
-            atTimes.Select(a => new V8.Listed_Time() { TimeSpecified = true, Time = a })
+            atTimes.Select(a => new V8.Listed_Time { TimeSpecified = true, Time = a })
                 .ToList()
                 .ForEach(time => expectedDto.At.Add(time));
 
@@ -142,9 +142,9 @@ public class SendDataTransferObjectConverterTests
                 File_Type = "txt",
                 Authentication_Level = Authentication_Level.PASSWORD,
                 Sensitivity_Level = Sensitivity_Level.SENSITIVE,
-                Sms_Notification = new Sms_Notification() { After_Hours = { 3 } },
+                Sms_Notification = new Sms_Notification { After_Hours = { 3 } },
                 Uuid = "uuid",
-                Content_Hash = new Content_Hash() { Hash_Algorithm = "SHA256", Value = "5o0RMsXcgSZpGsL7FAmhSQnvGkqgOcvl5JDtMhXBSlc=" }
+                Content_Hash = new Content_Hash { Hash_Algorithm = "SHA256", Value = "5o0RMsXcgSZpGsL7FAmhSQnvGkqgOcvl5JDtMhXBSlc=" }
             };
 
             IDocument expected = new Document(source.Subject, source.File_Type, AuthenticationLevel.Password, SensitivityLevel.Sensitive, new SmsNotification(3))
@@ -218,13 +218,13 @@ public class SendDataTransferObjectConverterTests
             };
 
             var expectedDto =
-                new V8.Message()
+                new V8.Message
                 {
                     Sender_Id = sender.Id,
                     Sender_IdSpecified = true,
-                    Recipient = new Message_Recipient()
+                    Recipient = new Message_Recipient
                     {
-                        Name_And_Address = new Name_And_Address()
+                        Name_And_Address = new Name_And_Address
                         {
                             Fullname = "Ola Nordmann",
                             Postalcode = "0001",
@@ -289,13 +289,13 @@ public class SendDataTransferObjectConverterTests
             };
 
             var expectedDto =
-                new V8.Message()
+                new V8.Message
                 {
                     Sender_Id = sender.Id,
                     Sender_IdSpecified = true,
-                    Recipient = new V8.Message_Recipient()
+                    Recipient = new V8.Message_Recipient
                     {
-                        Name_And_Address = new V8.Name_And_Address()
+                        Name_And_Address = new V8.Name_And_Address
                         {
                             Fullname = "Ola Nordmann",
                             Postalcode = "0001",
@@ -324,7 +324,7 @@ public class SendDataTransferObjectConverterTests
                     },
                     Delivery_Time = DateTime.Today.AddDays(3),
                     Delivery_TimeSpecified = true,
-                    Print_If_Unread = new Print_If_Unread()
+                    Print_If_Unread = new Print_If_Unread
                     {
                         Print_If_Unread_After = deadline,
                         Print_Details = DomainUtility.GetPrintDetailsDataTransferObject()
@@ -345,11 +345,11 @@ public class SendDataTransferObjectConverterTests
             var atTimes = new List<DateTime> { DateTime.Now, DateTime.Now.AddHours(3) };
             var afterHours = new List<int> { 4, 5 };
 
-            var sourceDto = new Sms_Notification()
+            var sourceDto = new Sms_Notification
             {
                 After_Hours = { 4, 5 },
             };
-            atTimes.Select(a => new Listed_Time() { TimeSpecified = true, Time = a })
+            atTimes.Select(a => new Listed_Time { TimeSpecified = true, Time = a })
                 .ToList().ForEach(a => sourceDto.At.Add(a));
 
             var expected = new SmsNotification();

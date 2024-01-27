@@ -20,7 +20,7 @@ public class DataTransferObjectConverterTests
             const int id = 123456789;
             const string sender = "sender";
 
-            var source = new V8.Inbox_Document()
+            var source = new V8.Inbox_Document
             {
                 Authentication_Level = Authentication_Level.PASSWORD,
                 Content_Type = contentType,
