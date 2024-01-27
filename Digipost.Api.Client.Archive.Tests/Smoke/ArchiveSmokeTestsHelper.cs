@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Digipost.Api.Client.Common;
-using Digipost.Api.Client.Common.Utilities;
 using Digipost.Api.Client.Shared.Tests;
 using Digipost.Api.Client.Tests.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,14 +50,14 @@ ___/ / /  / / /_/ / /| |/ /___  / / / /___ ___/ // /
 
         public ArchiveSmokeTestsHelper Get_Archive(string archiveName)
         {
-            _archive = _archiveApi.FetchArchives().Result.Where(a => archiveName.Equals(a.Name)).First();
-            Assert.True(_archive.Name.Equals(archiveName));
+            _archive = _archiveApi.FetchArchives().Result.First(a => archiveName.Equals(a.Name));
+            Assert.Equal(_archive.Name, archiveName);
             return this;
         }
 
         public ArchiveSmokeTestsHelper Get_Default_Archive()
         {
-            _archive = _archiveApi.FetchArchives().Result.Where(a => a.Name == null).First();
+            _archive = _archiveApi.FetchArchives().Result.First(a => a.Name == null);
             return this;
         }
 
@@ -114,7 +113,7 @@ ___/ / /  / / /_/ / /| |/ /___  / / / /___ ___/ // /
             foreach (var archiveDocument in _archivesWithDocuments.ArchiveDocuments)
             {
                 var documentStream = _archiveApi.StreamDocumentFromExternalId(archiveDocument.Id).Result;
-                Assert.Equal(true, documentStream.CanRead);
+                Assert.True(documentStream.CanRead);
                 Assert.True(documentStream.Length > 100);
             }
 

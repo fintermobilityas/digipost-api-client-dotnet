@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Digipost.Api.Client.Common.Entrypoint;
 using Digipost.Api.Client.Common.Exceptions;
 using Digipost.Api.Client.Common.Utilities;
@@ -44,20 +45,8 @@ namespace Digipost.Api.Client.Inbox.Tests.Integration
         public class FetchMethod : InboxApiIntegrationTests
         {
             [Fact]
-            public void ErrorShouldCauseDigipostResponseException()
-            {
-                Exception exception = null;
-                try
-                {
-                    _inbox.Fetch().Wait();
-                }
-                catch (AggregateException e)
-                {
-                    exception = e.InnerExceptions.ElementAt(0);
-                }
-
-                Assert.True(exception?.GetType() == typeof(ClientResponseException));
-            }
+            public Task ErrorShouldCauseDigipostResponseException() => 
+                Assert.ThrowsAsync<ClientResponseException>(() => _inbox.Fetch());
         }
     }
 }

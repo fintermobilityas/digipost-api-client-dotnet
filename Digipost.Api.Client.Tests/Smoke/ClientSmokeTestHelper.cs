@@ -257,7 +257,7 @@ namespace Digipost.Api.Client.Tests.Smoke
                 _testLogger.LogInformation($"Uri til dokument (pressthelink): '{sharedDocumentContent.Uri}'");
 
                 var documentStream = _digipostClient.GetDocumentSharing(new Sender(_testSender.Id)).FetchSharedDocument(sharedDocument.GetSharedDocumentContentStreamUri()).Result;
-                Assert.Equal(true, documentStream.CanRead);
+                Assert.True(documentStream.CanRead);
                 Assert.True(documentStream.Length > 500);
             }
         }

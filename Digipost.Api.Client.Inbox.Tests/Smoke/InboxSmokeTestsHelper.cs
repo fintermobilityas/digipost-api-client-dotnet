@@ -58,7 +58,7 @@ namespace Digipost.Api.Client.Inbox.Tests.Smoke
 
             var documentStream = _inbox.FetchDocument(_inboxDocument.GetGetDocumentContentUri()).Result;
 
-            Assert.Equal(true, documentStream.CanRead);
+            Assert.True(documentStream.CanRead);
             Assert.True(documentStream.Length > 500);
 
             return this;
