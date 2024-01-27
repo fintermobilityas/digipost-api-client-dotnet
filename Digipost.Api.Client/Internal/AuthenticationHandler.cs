@@ -19,17 +19,17 @@ internal sealed class AuthenticationHandler : DelegatingHandler
     static ILogger<DigipostClient> _logger;
     static readonly string UserAgent = $"digipost-api-client-dotnet/{Assembly.GetExecutingAssembly().GetName().Version} (netcore/{Environment.Version})";
 
-    public AuthenticationHandler(ClientConfig clientConfig, X509Certificate2 businessCertificate, ILoggerFactory loggerFactory)
+    public AuthenticationHandler(ClientConfig clientConfig, X509Certificate2 certificate, ILoggerFactory loggerFactory)
     {
         _logger = loggerFactory.CreateLogger<DigipostClient>();
         ClientConfig = clientConfig;
-        BusinessCertificate = businessCertificate;
+        Certificate = certificate;
         Method = WebRequestMethods.Http.Get;
     }
 
     ClientConfig ClientConfig { get; }
 
-    X509Certificate2 BusinessCertificate { get; }
+    X509Certificate2 Certificate { get; }
 
     string Method { get; set; }
 
@@ -56,7 +56,7 @@ internal sealed class AuthenticationHandler : DelegatingHandler
             request.Headers.Add("X-Content-SHA256", contentHash);
         }
 
-        var signature = ComputeSignature(sha256, Method, request.RequestUri, date, contentHash, brokerId, BusinessCertificate, ClientConfig.LogRequestAndResponse);
+        var signature = ComputeSignature(sha256, Method, request.RequestUri, date, contentHash, brokerId, Certificate, ClientConfig.LogRequestAndResponse);
         request.Headers.Add("X-Digipost-Signature", signature);
 
         return await base.SendAsync(request, cancellationToken);

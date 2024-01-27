@@ -153,6 +153,11 @@ public sealed class DigipostClient : IDigipostClient
 
     static HttpClient BuildNonPooledHttpClient(ClientConfig clientConfig, X509Certificate2 certificate, ILoggerFactory loggerFactory)
     {
+        if (!certificate.HasPrivateKey)
+        {
+            throw new InvalidOperationException("Certificate must contain a private key.");
+        }
+        
         var httpMessageHandler = new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate

@@ -37,8 +37,14 @@ namespace Digipost.Api.Client.Extensions
             return AddHttpClient(serviceCollection, clientConfig, certificate, httpClientName);
         }
 
-        static IHttpClientBuilder AddHttpClient(IServiceCollection serviceCollection, ClientConfig clientConfig, X509Certificate2 certificate, string httpClientName) =>
-            serviceCollection.AddHttpClient(
+        static IHttpClientBuilder AddHttpClient(IServiceCollection serviceCollection, ClientConfig clientConfig, X509Certificate2 certificate, string httpClientName)
+        {
+            if (!certificate.HasPrivateKey)
+            {
+                throw new InvalidOperationException("Certificate must contain a private key.");
+            }
+            
+            return serviceCollection.AddHttpClient(
                     httpClientName, client =>
                     {
                         client.Timeout = TimeSpan.FromMilliseconds(clientConfig.TimeoutMilliseconds);
@@ -60,6 +66,8 @@ namespace Digipost.Api.Client.Extensions
 
                     return httpMessageHandler;
                 })
-                .AddHttpMessageHandler(serviceProvider => new AuthenticationHandler(clientConfig, certificate, serviceProvider.GetRequiredService<ILoggerFactory>()));
+                .AddHttpMessageHandler(serviceProvider => new AuthenticationHandler(clientConfig, certificate,
+                    serviceProvider.GetRequiredService<ILoggerFactory>()));
+        }
     }
 }
