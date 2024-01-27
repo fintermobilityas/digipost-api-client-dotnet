@@ -10,7 +10,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Digipost.Api.Client.Shared" />
         <ProjectReference Include="..\Digipost.Api.Client.Common\Digipost.Api.Client.Common.csproj" />
     </ItemGroup>
 

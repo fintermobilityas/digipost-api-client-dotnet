@@ -6,16 +6,14 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+        <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Digipost.Api.Client.Shared" />
         <ProjectReference Include="..\Digipost.Api.Client.Common\Digipost.Api.Client.Common.csproj" />
         <ProjectReference Include="..\Digipost.Api.Client.Inbox\Digipost.Api.Client.Inbox.csproj" />
         <ProjectReference Include="..\Digipost.Api.Client.Archive\Digipost.Api.Client.Archive.csproj" />
         <ProjectReference Include="..\Digipost.Api.Client.Send\Digipost.Api.Client.Send.csproj" />
-        <ProjectReference Include="..\Digipost.Api.Client.Tests\Digipost.Api.Client.Tests.csproj" />
         <ProjectReference Include="..\Digipost.Api.Client\Digipost.Api.Client.csproj" />
     </ItemGroup>
 

@@ -80,7 +80,7 @@ public class ArchiveExamples
         var archive = (await archiveApi.FetchArchives()).First();
         var searchBy = new Dictionary<string, string>
         {
-            ["key"] = "val"
+            { "key", "val" }
         };
 
         var fetchArchiveDocuments = await archiveApi.FetchArchiveDocuments(archive.GetNextDocumentsUri(searchBy));
@@ -97,7 +97,7 @@ public class ArchiveExamples
 
         var searchBy = new Dictionary<string, string>
         {
-            ["key"] = "val"
+            { "key", "val" }
         };
 
         while (current.HasMoreDocuments())
@@ -126,7 +126,10 @@ public class ArchiveExamples
     {
         var archiveDocument = new ArchiveDocument(Guid.NewGuid(), "invoice_123123.pdf", "pdf", "application/psd", readFileFromDisk("invoice_123123.pdf"))
         {
-            Attributes = { ["invoicenumber"] = "123123" }
+            Attributes =
+            {
+                { "invoicenumber", "123123"}
+            }
         };
     }
 
