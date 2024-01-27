@@ -162,7 +162,7 @@ namespace Digipost.Api.Client.Archive
 
         public async Task<Stream> StreamDocumentFromExternalId(string externalId)
         {
-            var archive = GetArchiveDocument(_root.GetGetArchiveDocumentsByUuidUri(externalId)).Result;
+            var archive = await GetArchiveDocument(_root.GetGetArchiveDocumentsByUuidUri(externalId));
             var documentContentStreamUri = archive.One().GetDocumentContentStreamUri();
 
             return await StreamDocument(documentContentStreamUri);
@@ -170,7 +170,7 @@ namespace Digipost.Api.Client.Archive
 
         public async Task<Stream> StreamDocumentFromExternalId(Guid guid)
         {
-            var archive = GetArchiveDocument(_root.GetGetArchiveDocumentsByUuidUri(guid)).Result;
+            var archive = await GetArchiveDocument(_root.GetGetArchiveDocumentsByUuidUri(guid));
             var documentContentStreamUri = archive.One().GetDocumentContentStreamUri();
 
             return await StreamDocument(documentContentStreamUri);

@@ -51,12 +51,7 @@ namespace Digipost.Api.Client.Api
 
             return identificationResult;
         }
-
-        public ISearchDetailsResult Search(string search)
-        {
-            return SearchAsync(search).Result;
-        }
-
+        
         public async Task<ISearchDetailsResult> SearchAsync(string search)
         {
             _logger.LogDebug("Outgoing search request, term: '{search}'.", search);
