@@ -22,7 +22,118 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Digipost.Api.Client
 {
-    public class DigipostClient
+    /// <summary>
+    /// Interface for interacting with the Digipost API.
+    /// </summary>
+    public interface IDigipostClient
+    {
+        /// <summary>
+        /// Retrieves the Root entrypoint, which is the starting point of the REST API of Digipost.
+        /// </summary>
+        /// <param name="apiRootUri">The API root URI.</param>
+        /// <returns>The Root entrypoint.</returns>
+        Root GetRoot(ApiRootUri apiRootUri);
+
+        /// <summary>
+        /// Fetches the sender information.
+        /// </summary>
+        /// <param name="sender">The sender is optional. If not specified, the broker will be used.</param>
+        /// <returns>The sender information.</returns>
+        SenderInformation GetSenderInformation(Sender sender = null);
+
+        /// <summary>
+        /// Retrieves the sender information for the specified sender organisation.
+        /// </summary>
+        /// <param name="senderOrganisation">The sender organisation.</param>
+        /// <returns>The sender information.</returns>
+        SenderInformation GetSenderInformation(SenderOrganisation senderOrganisation);
+
+        /// <summary>
+        /// Retrieves the inbox for the specified sender.
+        /// </summary>
+        /// <param name="senderId">The sender ID.</param>
+        /// <returns>The inbox for the specified sender.</returns>
+        Inbox.Inbox GetInbox(Sender senderId);
+
+        /// <summary>
+        /// Get the archive API for a specific sender or all senders.
+        /// </summary>
+        /// <param name="senderId">The specific sender ID. Default is null to get archive API for all senders.</param>
+        /// <returns>The archive API for the specific sender or all senders.</returns>
+        Archive.IArchiveApi GetArchive(Sender senderId = null);
+
+        /// <summary>
+        /// Get access to the document api.
+        /// </summary>
+        /// <param name="sender">Optional parameter for sender if you are a broker. If you don't specify a sender, your broker ident will be used</param>
+        /// <returns></returns>
+        IDocumentsApi DocumentsApi(Sender sender = null);
+
+        /// <summary>
+        /// Retrieves the API for managing documents in Digipost.
+        /// </summary>
+        /// <param name="sender">The sender of the message. If not specified, the default sender will be used.</param>
+        /// <returns>The Documents API.</returns>
+        IDocumentsApi GetDocumentApi(Sender sender = null);
+
+        /// <summary>
+        /// Retrieves the instance of <see cref="IShareDocumentsApi"/> for sharing documents.
+        /// </summary>
+        /// <param name="sender">The sender of the message. Default is null.</param>
+        /// <returns>The instance of <see cref="IShareDocumentsApi"/>.</returns>
+        IShareDocumentsApi GetDocumentSharing(Sender sender = null);
+
+        /// <summary>
+        /// Identifies the recipient in Digipost.
+        /// </summary>
+        /// <param name="identification">The identification information of the recipient.</param>
+        /// <returns>The identification result.</returns>
+        IIdentificationResult Identify(IIdentification identification);
+
+        /// <summary>
+        /// Identifies the specified recipient.
+        /// </summary>
+        /// <param name="identification">The identification information of the recipient.</param>
+        /// <returns>A task representing the asynchronous operation and containing the identification result.</returns>
+        Task<IIdentificationResult> IdentifyAsync(IIdentification identification);
+
+        /// <summary>
+        /// Sends a message using the Digipost API.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        /// <returns>The result of message delivery.</returns>
+        IMessageDeliveryResult SendMessage(IMessage message);
+
+        /// <summary>
+        /// Sends a message asynchronously.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        /// <returns>A task representing the asynchronous operation. The result of the task will be an instance of <see cref="IMessageDeliveryResult"/>.</returns>
+        Task<IMessageDeliveryResult> SendMessageAsync(IMessage message);
+
+        /// <summary>
+        /// Adds additional data to a Digipost message.
+        /// </summary>
+        /// <param name="additionalData">The additional data to add to the message.</param>
+        /// <param name="uri">The URI of the message to add the additional data to.</param>
+        void AddAdditionalData(AdditionalData additionalData, AddAdditionalDataUri uri);
+
+        /// <summary>
+        /// Searches for details matching a specified query string.
+        /// </summary>
+        /// <param name="query">The query string to search.</param>
+        /// <returns>An object that contains the search results.</returns>
+        ISearchDetailsResult Search(string query);
+
+        /// <summary>
+        /// Searches for details using the given query.
+        /// </summary>
+        /// <param name="query">The query to search for.</param>
+        /// <returns>The search details result.</returns>
+        Task<ISearchDetailsResult> SearchAsync(string query);
+    }
+
+    public class DigipostClient : IDigipostClient
     {
         private readonly ClientConfig _clientConfig;
         private readonly RequestHelper _requestHelper;
