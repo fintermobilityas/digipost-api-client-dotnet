@@ -8,142 +8,141 @@ using System.Xml;
 using Digipost.Api.Client.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 
-namespace Digipost.Api.Client.Common.Utilities
+namespace Digipost.Api.Client.Common.Utilities;
+
+internal class RequestHelper
 {
-    internal class RequestHelper
+    readonly ILogger<RequestHelper> _logger;
+
+    internal RequestHelper(HttpClient httpClient, ILoggerFactory loggerFactory)
     {
-        private ILogger<RequestHelper> _logger;
+        HttpClient = httpClient;
+        _logger = loggerFactory.CreateLogger<RequestHelper>();
+    }
 
-        internal RequestHelper(HttpClient httpClient, ILoggerFactory loggerFactory)
+    internal HttpClient HttpClient { get; set; }
+
+    internal Task<T> Post<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false)
+    {
+        ValidateXml(messageActionRequestContent, skipMetaDataValidation);
+
+        var postAsync = HttpClient.PostAsync(uri, httpContent);
+
+        return Send<T>(postAsync);
+    }
+
+    internal Task<T> Get<T>(Uri uri)
+    {
+        return Send<T>(HttpClient.GetAsync(uri));
+    }
+
+    internal Task<T> Put<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false)
+    {
+        ValidateXml(messageActionRequestContent, skipMetaDataValidation);
+
+        var postAsync = HttpClient.PutAsync(uri, httpContent);
+
+        return Send<T>(postAsync);
+    }
+
+    internal Task<string> Delete(Uri uri)
+    {
+        return Send<string>(HttpClient.DeleteAsync(uri));
+    }
+
+    internal async Task<Stream> GetStream(Uri uri)
+    {
+        var responseTask = HttpClient.GetAsync(uri);
+        var httpResponseMessage = await responseTask.ConfigureAwait(false);
+
+        if (!httpResponseMessage.IsSuccessStatusCode)
         {
-            HttpClient = httpClient;
-            _logger = loggerFactory.CreateLogger<RequestHelper>();
-        }
-
-        internal HttpClient HttpClient { get; set; }
-
-        internal Task<T> Post<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false)
-        {
-            ValidateXml(messageActionRequestContent, skipMetaDataValidation);
-
-            var postAsync = HttpClient.PostAsync(uri, httpContent);
-
-            return Send<T>(postAsync);
-        }
-
-        internal Task<T> Get<T>(Uri uri)
-        {
-            return Send<T>(HttpClient.GetAsync(uri));
-        }
-
-        internal Task<T> Put<T>(HttpContent httpContent, XmlDocument messageActionRequestContent, Uri uri, bool skipMetaDataValidation = false)
-        {
-            ValidateXml(messageActionRequestContent, skipMetaDataValidation);
-
-            var postAsync = HttpClient.PutAsync(uri, httpContent);
-
-            return Send<T>(postAsync);
-        }
-
-        internal Task<string> Delete(Uri uri)
-        {
-            return Send<string>(HttpClient.DeleteAsync(uri));
-        }
-
-        internal async Task<Stream> GetStream(Uri uri)
-        {
-            var responseTask = HttpClient.GetAsync(uri);
-            var httpResponseMessage = await responseTask.ConfigureAwait(false);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                var responseContent = await ReadResponse(httpResponseMessage).ConfigureAwait(false);
-                HandleResponseErrorAndThrow(responseContent, httpResponseMessage.StatusCode);
-            }
-
-            return await httpResponseMessage.Content.ReadAsStreamAsync();
-        }
-
-        private async Task<T> Send<T>(Task<HttpResponseMessage> responseTask)
-        {
-            var httpResponseMessage = await responseTask.ConfigureAwait(false);
-
             var responseContent = await ReadResponse(httpResponseMessage).ConfigureAwait(false);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                HandleResponseErrorAndThrow(responseContent, httpResponseMessage.StatusCode);
-
-            return HandleSuccessResponse<T>(responseContent);
+            HandleResponseErrorAndThrow(responseContent, httpResponseMessage.StatusCode);
         }
 
-        private void HandleResponseErrorAndThrow(string responseContent, HttpStatusCode statusCode)
+        return await httpResponseMessage.Content.ReadAsStreamAsync();
+    }
+
+    async Task<T> Send<T>(Task<HttpResponseMessage> responseTask)
+    {
+        var httpResponseMessage = await responseTask.ConfigureAwait(false);
+
+        var responseContent = await ReadResponse(httpResponseMessage).ConfigureAwait(false);
+
+        if (!httpResponseMessage.IsSuccessStatusCode)
+            HandleResponseErrorAndThrow(responseContent, httpResponseMessage.StatusCode);
+
+        return HandleSuccessResponse<T>(responseContent);
+    }
+
+    void HandleResponseErrorAndThrow(string responseContent, HttpStatusCode statusCode)
+    {
+        var emptyResponse = string.IsNullOrEmpty(responseContent);
+
+        if (!emptyResponse)
+            ThrowNotEmptyResponseError(responseContent);
+        else
         {
-            var emptyResponse = string.IsNullOrEmpty(responseContent);
-
-            if (!emptyResponse)
-                ThrowNotEmptyResponseError(responseContent);
-            else
-            {
-                ThrowEmptyResponseError(statusCode);
-            }
+            ThrowEmptyResponseError(statusCode);
         }
+    }
 
-        private void ValidateXml(XmlDocument document, bool skipMetaDataValidation)
+    void ValidateXml(XmlDocument document, bool skipMetaDataValidation)
+    {
+        if (document.InnerXml.Length == 0)
         {
-            if (document.InnerXml.Length == 0)
-            {
-                return;
-            }
-
-            var xmlValidator = new ApiClientXmlValidator(skipMetaDataValidation);
-            bool isValidXml;
-            string validationMessages;
-
-            if (skipMetaDataValidation || !xmlValidator.CheckIfDataTypesAssemblyIsIncluded())
-            {
-                isValidXml = xmlValidator.Validate(GetDocumentXmlWithoutMetaData(document), out validationMessages);
-            }
-            else
-            {
-                isValidXml = xmlValidator.Validate(document.InnerXml, out validationMessages);
-            }
-
-            if (!isValidXml)
-            {
-                _logger.LogError($"Xml was invalid. Stopped sending message. Feilmelding: '{validationMessages}'");
-                throw new XmlException($"Xml was invalid. Stopped sending message. Feilmelding: '{validationMessages}'");
-            }
+            return;
         }
 
-        private string GetDocumentXmlWithoutMetaData(XmlDocument document)
+        var xmlValidator = new ApiClientXmlValidator(skipMetaDataValidation);
+        bool isValidXml;
+        string validationMessages;
+
+        if (skipMetaDataValidation || !xmlValidator.CheckIfDataTypesAssemblyIsIncluded())
         {
-            return Regex.Replace(document.InnerXml, @"<data-type[^>]*>(.*?)</data-type>", "").Trim();
+            isValidXml = xmlValidator.Validate(GetDocumentXmlWithoutMetaData(document), out validationMessages);
         }
-
-        private static async Task<string> ReadResponse(HttpResponseMessage requestResult)
+        else
         {
-            var contentResult = await requestResult.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return contentResult;
+            isValidXml = xmlValidator.Validate(document.InnerXml, out validationMessages);
         }
 
-        private void ThrowNotEmptyResponseError(string responseContent)
+        if (!isValidXml)
         {
-            var errorDataTransferObject = SerializeUtil.Deserialize<V8.Error>(responseContent);
-            var error = errorDataTransferObject.FromDataTransferObject();
-
-            _logger.LogError("Error occured, check inner Error object for more information.", error);
-            throw new ClientResponseException("Error occured, check inner Error object for more information.", error);
+            _logger.LogError($"Xml was invalid. Stopped sending message. Feilmelding: '{validationMessages}'");
+            throw new XmlException($"Xml was invalid. Stopped sending message. Feilmelding: '{validationMessages}'");
         }
+    }
 
-        private void ThrowEmptyResponseError(HttpStatusCode httpStatusCode)
-        {
-            _logger.LogError((int) httpStatusCode + ": " + httpStatusCode);
-            throw new ClientResponseException((int) httpStatusCode + ": " + httpStatusCode);
-        }
+    string GetDocumentXmlWithoutMetaData(XmlDocument document)
+    {
+        return Regex.Replace(document.InnerXml, @"<data-type[^>]*>(.*?)</data-type>", "").Trim();
+    }
 
-        private static T HandleSuccessResponse<T>(string responseContent)
-        {
-            return SerializeUtil.Deserialize<T>(responseContent);
-        }
+    static async Task<string> ReadResponse(HttpResponseMessage requestResult)
+    {
+        var contentResult = await requestResult.Content.ReadAsStringAsync().ConfigureAwait(false);
+        return contentResult;
+    }
+
+    void ThrowNotEmptyResponseError(string responseContent)
+    {
+        var errorDataTransferObject = SerializeUtil.Deserialize<V8.Error>(responseContent);
+        var error = errorDataTransferObject.FromDataTransferObject();
+
+        _logger.LogError("Error occured, check inner Error object for more information.", error);
+        throw new ClientResponseException("Error occured, check inner Error object for more information.", error);
+    }
+
+    void ThrowEmptyResponseError(HttpStatusCode httpStatusCode)
+    {
+        _logger.LogError((int) httpStatusCode + ": " + httpStatusCode);
+        throw new ClientResponseException((int) httpStatusCode + ": " + httpStatusCode);
+    }
+
+    static T HandleSuccessResponse<T>(string responseContent)
+    {
+        return SerializeUtil.Deserialize<T>(responseContent);
     }
 }

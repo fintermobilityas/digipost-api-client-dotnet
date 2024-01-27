@@ -5,17 +5,17 @@ using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Extensions;
 using V8;
 
-namespace Digipost.Api.Client.Inbox
+namespace Digipost.Api.Client.Inbox;
+
+internal static class InboxDataTransferObjectConverter
 {
-    internal static class InboxDataTransferObjectConverter
+    internal static IEnumerable<InboxDocument> FromDataTransferObject(this V8.Inbox inbox)
     {
-        internal static IEnumerable<InboxDocument> FromDataTransferObject(this V8.Inbox inbox)
-        {
             return inbox.Document?.Select(FromDataTransferObject) ?? new List<InboxDocument>();
         }
 
-        internal static InboxDocument FromDataTransferObject(this Inbox_Document inboxDocument)
-        {
+    internal static InboxDocument FromDataTransferObject(this Inbox_Document inboxDocument)
+    {
             return new InboxDocument
             {
                 Attachments = inboxDocument.Attachment?.Select(FromDataTransferObject) ?? new List<InboxDocument>(),
@@ -30,5 +30,4 @@ namespace Digipost.Api.Client.Inbox
                 Links = inboxDocument.Link.FromDataTransferObject()
             };
         }
-    }
 }

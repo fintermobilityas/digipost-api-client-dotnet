@@ -1,17 +1,16 @@
-namespace Digipost.Api.Client.Common.Search
+namespace Digipost.Api.Client.Common.Search;
+
+public interface ISearchDetailsAddress
 {
-    public interface ISearchDetailsAddress
-    {
-        string Street { get; set; }
+    string Street { get; set; }
 
-        string HouseNumber { get; set; }
+    string HouseNumber { get; set; }
 
-        string HouseLetter { get; set; }
+    string HouseLetter { get; set; }
 
-        string AdditionalAddressLine { get; set; }
+    string AdditionalAddressLine { get; set; }
 
-        string PostalCode { get; set; }
+    string PostalCode { get; set; }
 
-        string City { get; set; }
-    }
+    string City { get; set; }
 }

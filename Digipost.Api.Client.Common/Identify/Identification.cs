@@ -1,14 +1,13 @@
 ﻿using Digipost.Api.Client.Common.Recipient;
 
-namespace Digipost.Api.Client.Common.Identify
+namespace Digipost.Api.Client.Common.Identify;
+
+public class Identification : IIdentification
 {
-    public class Identification : IIdentification
+    public Identification(DigipostRecipient digipostRecipient)
     {
-        public Identification(DigipostRecipient digipostRecipient)
-        {
             DigipostRecipient = digipostRecipient;
         }
 
-        public DigipostRecipient DigipostRecipient { get; set; }
-    }
+    public DigipostRecipient DigipostRecipient { get; set; }
 }

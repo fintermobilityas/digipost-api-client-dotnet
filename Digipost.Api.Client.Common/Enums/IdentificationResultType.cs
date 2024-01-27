@@ -1,13 +1,12 @@
-﻿namespace Digipost.Api.Client.Common.Enums
+﻿namespace Digipost.Api.Client.Common.Enums;
+
+public enum IdentificationResultType
 {
-    public enum IdentificationResultType
-    {
-        DigipostAddress,
+    DigipostAddress,
 
-        InvalidReason,
+    InvalidReason,
 
-        Personalias,
+    Personalias,
 
-        UnidentifiedReason
-    }
+    UnidentifiedReason
 }

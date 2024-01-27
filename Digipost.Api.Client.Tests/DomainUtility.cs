@@ -14,27 +14,27 @@ using Environment = Digipost.Api.Client.Common.Environment;
 using Identification = Digipost.Api.Client.Common.Identify.Identification;
 using Message = V8.Message;
 
-namespace Digipost.Api.Client.Tests
+namespace Digipost.Api.Client.Tests;
+
+public static class DomainUtility
 {
-    public static class DomainUtility
+    public static ClientConfig GetClientConfig()
     {
-        public static ClientConfig GetClientConfig()
-        {
             return new ClientConfig(new Broker(1010), Environment.Production);
         }
 
-        public static Sender GetSender()
-        {
+    public static Sender GetSender()
+    {
             return new Sender(1010);
         }
 
-        public static IMessage GetSimpleMessageWithRecipientById()
-        {
+    public static IMessage GetSimpleMessageWithRecipientById()
+    {
             return GetSimpleMessageWithRecipientById(GetDocument());
         }
 
-        public static IMessage GetSimpleMessageWithRecipientById(IDocument document)
-        {
+    public static IMessage GetSimpleMessageWithRecipientById(IDocument document)
+    {
             var message = new Send.Message(
                 GetSender(),
                 new RecipientById(IdentificationType.PersonalIdentificationNumber, "00000000000"),
@@ -43,8 +43,8 @@ namespace Digipost.Api.Client.Tests
             return message;
         }
 
-        public static IMessage GetMessageWithBytesAndStaticGuidRecipientById()
-        {
+    public static IMessage GetMessageWithBytesAndStaticGuidRecipientById()
+    {
             var deliverytime = DateTime.Today.AddDays(3);
             var recipientById = GetRecipientByDigipostId();
 
@@ -63,8 +63,8 @@ namespace Digipost.Api.Client.Tests
             };
         }
 
-        public static Message GetMessageDataTransferObjectWithBytesAndStaticGuidRecipientById()
-        {
+    public static Message GetMessageDataTransferObjectWithBytesAndStaticGuidRecipientById()
+    {
             var message = new Message()
             {
                 Sender_Id = long.Parse("1010"),
@@ -97,32 +97,32 @@ namespace Digipost.Api.Client.Tests
             return message;
         }
 
-        public static IMessage GetSimpleMessageWithRecipientByNameAndAddress()
-        {
+    public static IMessage GetSimpleMessageWithRecipientByNameAndAddress()
+    {
             return new Send.Message(GetSender(), GetRecipientByNameAndAddress(), GetDocument());
         }
 
-        public static IDocument GetDocument(IDigipostDataType dataType = null)
-        {
+    public static IDocument GetDocument(IDigipostDataType dataType = null)
+    {
             return new Document("simple-document-dotnet", "pdf", ContentResource.Hoveddokument.Pdf())
             {
                 DataType = dataType
             };
         }
 
-        public static IIdentification GetPersonalIdentification()
-        {
+    public static IIdentification GetPersonalIdentification()
+    {
             var identification = new Identification(new RecipientById(IdentificationType.PersonalIdentificationNumber, "00000000000"));
             return identification;
         }
 
-        public static RecipientById GetRecipientByDigipostId()
-        {
+    public static RecipientById GetRecipientByDigipostId()
+    {
             return new RecipientById(IdentificationType.DigipostAddress, "ola.nordmann#246BB");
         }
 
-        public static RecipientByNameAndAddress GetRecipientByNameAndAddress()
-        {
+    public static RecipientByNameAndAddress GetRecipientByNameAndAddress()
+    {
             return new RecipientByNameAndAddress("Ola Nordmann",
                 postalCode: "0001",
                 city: "Oslo",
@@ -130,8 +130,8 @@ namespace Digipost.Api.Client.Tests
             );
         }
 
-        public static PrintDetails GetPrintDetails()
-        {
+    public static PrintDetails GetPrintDetails()
+    {
             return
                 new PrintDetails(
                     new PrintRecipient("Ola Nordmann", new NorwegianAddress("0115", "Oslo", "Osloveien 15")),
@@ -139,8 +139,8 @@ namespace Digipost.Api.Client.Tests
                         new NorwegianAddress("5510", "Sophaugen", "Sophauggata 22")));
         }
 
-        public static Print_Details GetPrintDetailsDataTransferObject()
-        {
+    public static Print_Details GetPrintDetailsDataTransferObject()
+    {
             return new Print_Details
             {
                 Recipient = new Print_Recipient()
@@ -166,8 +166,8 @@ namespace Digipost.Api.Client.Tests
             };
         }
 
-        public static PrintIfUnread GetPrintIfUnread()
-        {
+    public static PrintIfUnread GetPrintIfUnread()
+    {
             return
                 new PrintIfUnread(
                     DateTime.Now.AddDays(3),
@@ -175,8 +175,8 @@ namespace Digipost.Api.Client.Tests
                     );
         }
 
-        public static Print_If_Unread GetPrintIfUnreadTransferObject()
-        {
+    public static Print_If_Unread GetPrintIfUnreadTransferObject()
+    {
             return new Print_If_Unread
             {
                 Print_If_Unread_After = DateTime.Now.AddDays(3),
@@ -184,13 +184,13 @@ namespace Digipost.Api.Client.Tests
             };
         }
 
-        public static NorwegianAddress GetNorwegianAddress()
-        {
+    public static NorwegianAddress GetNorwegianAddress()
+    {
             return new NorwegianAddress("0001", "Oslo", "Addr1", "Addr2", "Addr3");
         }
 
-        public static ForeignAddress GetForeignAddress()
-        {
+    public static ForeignAddress GetForeignAddress()
+    {
             return new ForeignAddress(
                 CountryIdentifier.Country,
                 "NO",
@@ -200,14 +200,13 @@ namespace Digipost.Api.Client.Tests
                 "Adresselinje4");
         }
 
-        public static IPrintRecipient GetPrintRecipientWithNorwegianAddress()
-        {
+    public static IPrintRecipient GetPrintRecipientWithNorwegianAddress()
+    {
             return new PrintRecipient("name", GetNorwegianAddress());
         }
 
-        public static IPrintReturnRecipient GetPrintReturnRecipientWithNorwegianAddress()
-        {
+    public static IPrintReturnRecipient GetPrintReturnRecipientWithNorwegianAddress()
+    {
             return new PrintReturnRecipient("name", GetNorwegianAddress());
         }
-    }
 }

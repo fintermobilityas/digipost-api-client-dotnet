@@ -1,17 +1,16 @@
 using System;
 
-namespace Digipost.Api.Client.Archive
+namespace Digipost.Api.Client.Archive;
+
+public class ArchiveDocumentContent
 {
-    public class ArchiveDocumentContent
+    public ArchiveDocumentContent(string contentType, Uri uri)
     {
-        public ArchiveDocumentContent(string contentType, Uri uri)
-        {
             ContentType = contentType;
             Uri = uri;
         }
 
-        public string ContentType { get; }
+    public string ContentType { get; }
 
-        public Uri Uri { get; }
-    }
+    public Uri Uri { get; }
 }

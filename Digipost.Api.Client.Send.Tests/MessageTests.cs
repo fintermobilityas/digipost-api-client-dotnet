@@ -3,17 +3,17 @@ using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Tests;
 using Xunit;
 
-namespace Digipost.Api.Client.Send.Tests
-{
-    public class MessageTests
-    {
-        internal readonly Sender Sender = new Sender(1010);
+namespace Digipost.Api.Client.Send.Tests;
 
-        public class ConstructorMethod : MessageTests
+public class MessageTests
+{
+    internal readonly Sender Sender = new Sender(1010);
+
+    public class ConstructorMethod : MessageTests
+    {
+        [Fact]
+        public void ConstructWithRecipientAndPrimaryDocument()
         {
-            [Fact]
-            public void ConstructWithRecipientAndPrimaryDocument()
-            {
                 //Arrange
                 var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
                 );
@@ -24,9 +24,9 @@ namespace Digipost.Api.Client.Send.Tests
                 Assert.NotNull(message.PrimaryDocument);
             }
 
-            [Fact]
-            public void ConstructWithRecipientByIdAndPrintDetailsMethod()
-            {
+        [Fact]
+        public void ConstructWithRecipientByIdAndPrintDetailsMethod()
+        {
                 //Arrange
                 var recipient = DomainUtility.GetRecipientByDigipostId();
                 var document = DomainUtility.GetDocument();
@@ -41,13 +41,13 @@ namespace Digipost.Api.Client.Send.Tests
                 Assert.Equal(document, message.PrimaryDocument);
                 Assert.Equal(printDetails, message.PrintDetails);
             }
-        }
+    }
 
-        public class DeliveryTimeSpecifiedMethod : MessageTests
+    public class DeliveryTimeSpecifiedMethod : MessageTests
+    {
+        [Fact]
+        public void DeliveryTimeNotSpecifiedGivesFalse()
         {
-            [Fact]
-            public void DeliveryTimeNotSpecifiedGivesFalse()
-            {
                 //Arrange
                 var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
                 );
@@ -58,9 +58,9 @@ namespace Digipost.Api.Client.Send.Tests
                 Assert.False(message.DeliveryTimeSpecified);
             }
 
-            [Fact]
-            public void DeliveryTimeSpecifiedGivesTrue()
-            {
+        [Fact]
+        public void DeliveryTimeSpecifiedGivesTrue()
+        {
                 //Arrange
                 var message = new Message(Sender, DomainUtility.GetRecipientByDigipostId(), DomainUtility.GetDocument()
                 ) {DeliveryTime = DateTime.Today};
@@ -70,6 +70,5 @@ namespace Digipost.Api.Client.Send.Tests
                 //Assert
                 Assert.True(message.DeliveryTimeSpecified);
             }
-        }
     }
 }

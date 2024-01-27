@@ -7,17 +7,17 @@ using Digipost.Api.Client.Common.Identify;
 using Digipost.Api.Client.Common.Utilities;
 using V8;
 
-namespace Digipost.Api.Client.Send.Actions
+namespace Digipost.Api.Client.Send.Actions;
+
+internal class AddAdditionalDataAction : DigipostAction<IAdditionalData>
 {
-    internal class AddAdditionalDataAction : DigipostAction<IAdditionalData>
+    public AddAdditionalDataAction(IAdditionalData additionalData)
+        : base(additionalData)
     {
-        public AddAdditionalDataAction(IAdditionalData additionalData)
-            : base(additionalData)
-        {
         }
 
-        internal override HttpContent Content(IAdditionalData requestContent)
-        {
+    internal override HttpContent Content(IAdditionalData requestContent)
+    {
             var xmlMessage = Serialize(requestContent);
             var messageContent = new StringContent(xmlMessage);
 
@@ -29,9 +29,8 @@ namespace Digipost.Api.Client.Send.Actions
             return messageContent;
         }
 
-        protected override string Serialize(IAdditionalData requestContent)
-        {
+    protected override string Serialize(IAdditionalData requestContent)
+    {
             return SerializeUtil.Serialize(requestContent.ToDataTransferObject());
         }
-    }
 }

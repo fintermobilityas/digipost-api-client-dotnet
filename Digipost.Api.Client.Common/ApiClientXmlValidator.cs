@@ -3,37 +3,36 @@ using System.Reflection;
 using Digipost.Api.Client.Resources.Xsd;
 using Digipost.Api.Client.Shared.Xml;
 
-namespace Digipost.Api.Client.Common
+namespace Digipost.Api.Client.Common;
+
+public class ApiClientXmlValidator : XmlValidator
 {
-    public class ApiClientXmlValidator : XmlValidator
+    public ApiClientXmlValidator(bool skipDataTypes = false)
     {
-        public ApiClientXmlValidator(bool skipDataTypes = false)
-        {
-            AddXsd(Namespace.DigipostApiV8, XsdResource.GetApiV8Xsd());
+        AddXsd(Namespace.DigipostApiV8, XsdResource.GetApiV8Xsd());
 
-            if (!skipDataTypes)
+        if (!skipDataTypes)
+        {
+            var dataTypesAssembly = GetDataTypesAssembly();
+            if (dataTypesAssembly != null)
             {
-                var dataTypesAssembly = GetDataTypesAssembly();
-                if (dataTypesAssembly != null)
-                {
-                    AddXsd(Namespace.DataTypes, XsdResource.GetDataTypesXsd(dataTypesAssembly));
-                }
+                AddXsd(Namespace.DataTypes, XsdResource.GetDataTypesXsd(dataTypesAssembly));
             }
         }
+    }
 
-        private Assembly GetDataTypesAssembly()
+    Assembly GetDataTypesAssembly()
+    {
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                if (assembly.FullName.StartsWith("Digipost.Api.Client.DataTypes.Core"))
-                    return assembly;
-            }
-            return null;
+            if (assembly.FullName.StartsWith("Digipost.Api.Client.DataTypes.Core"))
+                return assembly;
         }
+        return null;
+    }
 
-        public bool CheckIfDataTypesAssemblyIsIncluded()
-        {
-            return GetDataTypesAssembly() != null;
-        }
+    public bool CheckIfDataTypesAssemblyIsIncluded()
+    {
+        return GetDataTypesAssembly() != null;
     }
 }

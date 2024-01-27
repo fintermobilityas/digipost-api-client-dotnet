@@ -4,15 +4,15 @@ using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Tests.CompareObjects;
 using Xunit;
 
-namespace Digipost.Api.Client.Send.Tests
+namespace Digipost.Api.Client.Send.Tests;
+
+public class SmsNotificationTests
 {
-    public class SmsNotificationTests
+    public class ConstructorMethod : SmsNotificationTests
     {
-        public class ConstructorMethod : SmsNotificationTests
+        [Fact]
+        public void WithAfterHours()
         {
-            [Fact]
-            public void WithAfterHours()
-            {
                 //Arrange
                 var firstSmsNotification = 2;
                 var secondSmsNotification = 5;
@@ -26,9 +26,9 @@ namespace Digipost.Api.Client.Send.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void WithSendingTime()
-            {
+        [Fact]
+        public void WithSendingTime()
+        {
                 //Arrange
                 var firstSmsNotification = DateTime.Today;
                 var secondSmsNotification = DateTime.Today.AddDays(1);
@@ -41,6 +41,5 @@ namespace Digipost.Api.Client.Send.Tests
                 //Assert
                 Comparator.AssertEqual(expected, actual);
             }
-        }
     }
 }

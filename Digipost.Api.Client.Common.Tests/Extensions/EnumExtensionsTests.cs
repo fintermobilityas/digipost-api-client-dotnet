@@ -4,16 +4,16 @@ using Digipost.Api.Client.Common.Extensions;
 using V8;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Extensions
-{
-    public class EnumExtensionsTests
-    {
+namespace Digipost.Api.Client.Common.Tests.Extensions;
 
-        public class ToAuthenticationLevel
+public class EnumExtensionsTests
+{
+
+    public class ToAuthenticationLevel
+    {
+        [Fact]
+        public void Converts_All_Enum_Values()
         {
-            [Fact]
-            public void Converts_All_Enum_Values()
-            {
                 var enumValues = Enum.GetValues(typeof(AuthenticationLevel));
                 var enumValuesDto = Enum.GetValues(typeof(V8.Authentication_Level));
 
@@ -26,13 +26,13 @@ namespace Digipost.Api.Client.Common.Tests.Extensions
                     currentEnum.ToAuthenticationLevel();
                 }
             }
-        }
+    }
 
-        public class ToEventType
+    public class ToEventType
+    {
+        [Fact]
+        public void Convert_All_Enum_Values()
         {
-            [Fact]
-            public void Convert_All_Enum_Values()
-            {
                 var enumValues = Enum.GetValues(typeof(DocumentEventType));
                 var enumValuesDto = Enum.GetValues(typeof(V8.Event_Type));
 
@@ -44,13 +44,13 @@ namespace Digipost.Api.Client.Common.Tests.Extensions
                     currentEnum.ToEventType();
                 }
             }
-        }
+    }
 
-        public class ToSensitivityLevel
+    public class ToSensitivityLevel
+    {
+        [Fact]
+        public void Converts_All_Enum_Values()
         {
-            [Fact]
-            public void Converts_All_Enum_Values()
-            {
                 var enumValues = Enum.GetValues(typeof(SensitivityLevel));
                 var enumValuesDto = Enum.GetValues(typeof(V8.Sensitivity_Level));
 
@@ -62,13 +62,13 @@ namespace Digipost.Api.Client.Common.Tests.Extensions
                     currentEnum.ToSensitivityLevel();
                 }
             }
-        }
+    }
 
-        public class ToPrintColors
+    public class ToPrintColors
+    {
+        [Fact]
+        public void Converts_All_Enum_Values()
         {
-            [Fact]
-            public void Converts_All_Enum_Values()
-            {
                 var enumValues = Enum.GetValues(typeof(PrintColors));
                 var enumValuesDto = Enum.GetValues(typeof(V8.Print_Colors));
 
@@ -80,13 +80,13 @@ namespace Digipost.Api.Client.Common.Tests.Extensions
                     currentEnum.ToPrintColors();
                 }
             }
-        }
+    }
 
-        public class ToNondeliverableHandling
+    public class ToNondeliverableHandling
+    {
+        [Fact]
+        public void Converts_All_Enum_Values()
         {
-            [Fact]
-            public void Converts_All_Enum_Values()
-            {
                 var enumValues = Enum.GetValues(typeof(NondeliverableHandling));
                 var enumValuesDto = Enum.GetValues(typeof(V8.Nondeliverable_Handling));
 
@@ -98,14 +98,14 @@ namespace Digipost.Api.Client.Common.Tests.Extensions
                     currentEnum.ToNondeliverablehandling();
                 }
             }
-        }
+    }
 
 
-        public class ToDeliveryMethod
+    public class ToDeliveryMethod
+    {
+        [Fact]
+        public void Converts_All_Enum_Values()
         {
-            [Fact]
-            public void Converts_All_Enum_Values()
-            {
                 var enumValuesDto = Enum.GetValues(typeof(V8.Channel));
                 var enumValues = Enum.GetValues(typeof(DeliveryMethod));
 
@@ -117,13 +117,13 @@ namespace Digipost.Api.Client.Common.Tests.Extensions
                     currentEnum.ToDeliveryMethod();
                 }
             }
-        }
+    }
 
-        public class ToMessageStatus
+    public class ToMessageStatus
+    {
+        [Fact]
+        public void Converts_All_Enum_Values()
         {
-            [Fact]
-            public void Converts_All_Enum_Values()
-            {
                 var enumValuesDto = Enum.GetValues(typeof(V8.Message_Status));
                 var enumValues = Enum.GetValues(typeof(MessageStatus));
 
@@ -135,6 +135,5 @@ namespace Digipost.Api.Client.Common.Tests.Extensions
                     currentEnum.ToMessageStatus();
                 }
             }
-        }
     }
 }

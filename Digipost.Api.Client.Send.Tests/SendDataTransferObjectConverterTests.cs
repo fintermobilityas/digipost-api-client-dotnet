@@ -10,15 +10,15 @@ using Digipost.Api.Client.Tests.CompareObjects;
 using V8;
 using Xunit;
 
-namespace Digipost.Api.Client.Send.Tests
+namespace Digipost.Api.Client.Send.Tests;
+
+public class SendDataTransferObjectConverterTests
 {
-    public class SendDataTransferObjectConverterTests
+    public class FromDataTransferObjectConverterMethod
     {
-        public class FromDataTransferObjectConverterMethod
+        [Fact]
+        public void Document()
         {
-            [Fact]
-            public void Document()
-            {
                 //Arrange
                 IDocument source = new Document("TestSubject", "txt", new byte[2], AuthenticationLevel.Password, SensitivityLevel.Sensitive, new SmsNotification(3));
                 var expectedDto = new V8.Document
@@ -40,9 +40,9 @@ namespace Digipost.Api.Client.Send.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void Message()
-            {
+        [Fact]
+        public void Message()
+        {
                 //Arrange
                 var deliverytime = DateTime.Now.AddDays(3);
 
@@ -103,9 +103,9 @@ namespace Digipost.Api.Client.Send.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void SmsNotification()
-            {
+        [Fact]
+        public void SmsNotification()
+        {
                 //Arrange
                 var atTimes = new List<DateTime> {DateTime.Now, DateTime.Now.AddHours(3)};
                 var afterHours = new List<int> {4, 5};
@@ -128,13 +128,13 @@ namespace Digipost.Api.Client.Send.Tests
                 //Assert
                 Comparator.AssertEqual(expectedDto, actual);
             }
-        }
+    }
 
-        public class ToDataTransferObjectConverterMethod
+    public class ToDataTransferObjectConverterMethod
+    {
+        [Fact]
+        public void Document()
         {
-            [Fact]
-            public void Document()
-            {
                 //Arrange
                 var source = new V8.Document
                 {
@@ -160,9 +160,9 @@ namespace Digipost.Api.Client.Send.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void Message()
-            {
+        [Fact]
+        public void Message()
+        {
                 //Arrange
                 var source = DomainUtility.GetMessageWithBytesAndStaticGuidRecipientById();
 
@@ -175,9 +175,9 @@ namespace Digipost.Api.Client.Send.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void MessageWithPrintDetailsAndRecipientById()
-            {
+        [Fact]
+        public void MessageWithPrintDetailsAndRecipientById()
+        {
                 //Arrange
                 var printDetails = DomainUtility.GetPrintDetails();
                 var source = DomainUtility.GetMessageWithBytesAndStaticGuidRecipientById();
@@ -193,9 +193,9 @@ namespace Digipost.Api.Client.Send.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void MessageWithPrintDetailsAndRecipientByNameAndAddress()
-            {
+        [Fact]
+        public void MessageWithPrintDetailsAndRecipientByNameAndAddress()
+        {
                 //Arrange
                 var printDetails = DomainUtility.GetPrintDetails();
                 var sender = new Sender(1010);
@@ -262,9 +262,9 @@ namespace Digipost.Api.Client.Send.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void MessageWithPrintIfUnread()
-            {
+        [Fact]
+        public void MessageWithPrintIfUnread()
+        {
                                 //Arrange
                 var printDetails = DomainUtility.GetPrintDetails();
                 var sender = new Sender(1010);
@@ -338,9 +338,9 @@ namespace Digipost.Api.Client.Send.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void SmsNotification()
-            {
+        [Fact]
+        public void SmsNotification()
+        {
                 //Arrange
                 var atTimes = new List<DateTime> {DateTime.Now, DateTime.Now.AddHours(3)};
                 var afterHours = new List<int> {4, 5};
@@ -362,6 +362,5 @@ namespace Digipost.Api.Client.Send.Tests
                 //Assert
                 Comparator.AssertEqual(expected, actual);
             }
-        }
     }
 }

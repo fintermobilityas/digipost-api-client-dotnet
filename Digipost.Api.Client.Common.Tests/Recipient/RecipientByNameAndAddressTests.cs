@@ -1,15 +1,15 @@
 ﻿using Digipost.Api.Client.Common.Recipient;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Recipient
+namespace Digipost.Api.Client.Common.Tests.Recipient;
+
+public class RecipientByNameAndAddressTests
 {
-    public class RecipientByNameAndAddressTests
+    public class ConstructorMethod : RecipientByNameAndAddressTests
     {
-        public class ConstructorMethod : RecipientByNameAndAddressTests
+        [Fact]
+        public void SimpleConstructor()
         {
-            [Fact]
-            public void SimpleConstructor()
-            {
                 //Arrange
                 const string fullName = "Ola Nordmann";
                 const string addressLine1 = "Biskop Gunnerus Gate 14";
@@ -26,6 +26,5 @@ namespace Digipost.Api.Client.Common.Tests.Recipient
                 Assert.Equal(city, recipientByNameAndAddress.City);
                 Assert.Equal(addressLine1, recipientByNameAndAddress.AddressLine1);
             }
-        }
     }
 }

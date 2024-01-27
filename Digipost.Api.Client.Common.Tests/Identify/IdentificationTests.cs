@@ -2,15 +2,15 @@
 using Digipost.Api.Client.Tests;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Identify
+namespace Digipost.Api.Client.Common.Tests.Identify;
+
+public class IdentificationTests
 {
-    public class IdentificationTests
+    public class ConstructorMethod : IdentificationTests
     {
-        public class ConstructorMethod : IdentificationTests
+        [Fact]
+        public void SimpleConstructor()
         {
-            [Fact]
-            public void SimpleConstructor()
-            {
                 //Arrange
                 var recipientByNameAndAddress = DomainUtility.GetRecipientByNameAndAddress();
                 var identification = new Identification(recipientByNameAndAddress);
@@ -20,6 +20,5 @@ namespace Digipost.Api.Client.Common.Tests.Identify
                 //Assert
                 Assert.Equal(recipientByNameAndAddress, identification.DigipostRecipient);
             }
-        }
     }
 }

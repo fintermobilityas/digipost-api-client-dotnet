@@ -5,15 +5,15 @@ using Digipost.Api.Client.Tests;
 using Digipost.Api.Client.Tests.CompareObjects;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Print
+namespace Digipost.Api.Client.Common.Tests.Print;
+
+public class PrintIfUnreadAfterTests
 {
-    public class PrintIfUnreadAfterTests
+    public class ConstructorMethod : PrintIfUnreadAfterTests
     {
-        public class ConstructorMethod : PrintIfUnreadAfterTests
+        [Fact]
+        public void SimpleConstructor()
         {
-            [Fact]
-            public void SimpleConstructor()
-            {
                 DateTime deadline = DateTime.Now.AddDays(3);
                 PrintDetails printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
                         DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors);
@@ -30,6 +30,5 @@ namespace Digipost.Api.Client.Common.Tests.Print
 
                 Comparator.AssertEqual(printDetails, printIfUnreadAfter.PrintDetails);
             }
-        }
     }
 }

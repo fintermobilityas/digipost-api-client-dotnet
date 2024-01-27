@@ -6,16 +6,16 @@ using Digipost.Api.Client.Common.Identify;
 using V8;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Identify
-{
-    public class IdentificationResultTests
-    {
+namespace Digipost.Api.Client.Common.Tests.Identify;
 
-        public class ConstructorMethod_second_parameter_can_handle_all_identification_error
+public class IdentificationResultTests
+{
+
+    public class ConstructorMethod_second_parameter_can_handle_all_identification_error
+    {
+        [Fact]
+        public void Handles_identificationresultcode()
         {
-            [Fact]
-            public void Handles_identificationresultcode()
-            {
                 var actualidentificationresultcodes = Enum.GetValues(typeof(V8.Identification_Result_Code)).Cast<V8.Identification_Result_Code>().ToArray();
                 var expectedidentificationresultcodes = new[]
                 {
@@ -46,9 +46,9 @@ namespace Digipost.Api.Client.Common.Tests.Identify
                 }
             }
 
-            [Fact]
-            public void Handles_invalidreason()
-            {
+        [Fact]
+        public void Handles_invalidreason()
+        {
                 var actualInvalidreasons = Enum.GetValues(typeof(V8.Invalid_Reason)).Cast<V8.Invalid_Reason>().ToArray();
                 var expectedInvalidreasons = new[]
                 {
@@ -73,9 +73,9 @@ namespace Digipost.Api.Client.Common.Tests.Identify
                 }
             }
 
-            [Fact]
-            public void Handles_unidentifiedreason()
-            {
+        [Fact]
+        public void Handles_unidentifiedreason()
+        {
                 var actualUnidentifiedreasons = Enum.GetValues(typeof(V8.Unidentified_Reason)).Cast<V8.Unidentified_Reason>().ToArray();
                 var expectedUnidentifiedreasons = new[]
                 {
@@ -98,6 +98,5 @@ namespace Digipost.Api.Client.Common.Tests.Identify
                     Assert.Null(identificationResult.Data);
                 }
             }
-        }
     }
 }

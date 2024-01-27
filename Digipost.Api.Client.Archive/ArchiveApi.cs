@@ -10,182 +10,181 @@ using Digipost.Api.Client.Common.Utilities;
 using Microsoft.Extensions.Logging;
 using V8;
 
-namespace Digipost.Api.Client.Archive
+namespace Digipost.Api.Client.Archive;
+
+public interface IArchiveApi
 {
-    public interface IArchiveApi
+    /// <summary>
+    /// List all the archives available to the current sender
+    /// </summary>
+    /// <returns></returns>
+    Task<IEnumerable<Archive>> FetchArchives();
+
+    Task<Archive> ArchiveDocuments(Archive archiveWithDocuments);
+
+    Task<Archive> ArchiveDocumentsAsync(Archive archiveWithDocuments);
+
+    Task<IEnumerable<Archive>> FetchArchiveDocumentsByReferenceId(string referenceId);
+
+    Task<ArchiveDocument> FetchArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentByUuidUri);
+
+    Task<Archive> FetchArchiveDocuments(ArchiveNextDocumentsUri nextDocumentsUri);
+
+    Task<ArchiveDocument> UpdateDocument(ArchiveDocument archiveDocument, ArchiveDocumentUpdateUri updateUri);
+
+    Task DeleteDocument(ArchiveDocumentDeleteUri deleteUri);
+
+    /**
+     * This will hash and create a Guid the same way as java UUID.nameUUIDFromBytes
+     */
+    Task<Archive> GetArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentUri);
+
+    Task<Archive> FetchDocumentFromExternalId(String externalId);
+
+    Task<Archive> FetchDocumentFromExternalId(Guid externalIdGuid);
+
+    Task<Stream> StreamDocumentFromExternalId(String externalId);
+
+    Task<Stream> StreamDocumentFromExternalId(Guid externalIdGuid);
+
+    Task<Stream> StreamDocument(ArchiveDocumentContentStreamUri documentContentStreamUri);
+
+    Task<ArchiveDocumentContent> GetDocumentContent(ArchiveDocumentContentUri archiveDocumentContentUri);
+}
+
+internal class ArchiveApi : IArchiveApi
+{
+    readonly Root _root;
+    readonly RequestHelper _requestHelper;
+    readonly ILogger<ArchiveApi> _logger;
+
+    internal ArchiveApi(RequestHelper requestHelper, ILoggerFactory loggerFactory, Root root)
     {
-        /// <summary>
-        /// List all the archives available to the current sender
-        /// </summary>
-        /// <returns></returns>
-        Task<IEnumerable<Archive>> FetchArchives();
-
-        Task<Archive> ArchiveDocuments(Archive archiveWithDocuments);
-
-        Task<Archive> ArchiveDocumentsAsync(Archive archiveWithDocuments);
-
-        Task<IEnumerable<Archive>> FetchArchiveDocumentsByReferenceId(string referenceId);
-
-        Task<ArchiveDocument> FetchArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentByUuidUri);
-
-        Task<Archive> FetchArchiveDocuments(ArchiveNextDocumentsUri nextDocumentsUri);
-
-        Task<ArchiveDocument> UpdateDocument(ArchiveDocument archiveDocument, ArchiveDocumentUpdateUri updateUri);
-
-        Task DeleteDocument(ArchiveDocumentDeleteUri deleteUri);
-
-        /**
-         * This will hash and create a Guid the same way as java UUID.nameUUIDFromBytes
-         */
-        Task<Archive> GetArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentUri);
-
-        Task<Archive> FetchDocumentFromExternalId(String externalId);
-
-        Task<Archive> FetchDocumentFromExternalId(Guid externalIdGuid);
-
-        Task<Stream> StreamDocumentFromExternalId(String externalId);
-
-        Task<Stream> StreamDocumentFromExternalId(Guid externalIdGuid);
-
-        Task<Stream> StreamDocument(ArchiveDocumentContentStreamUri documentContentStreamUri);
-
-        Task<ArchiveDocumentContent> GetDocumentContent(ArchiveDocumentContentUri archiveDocumentContentUri);
+        _root = root;
+        _logger = loggerFactory.CreateLogger<ArchiveApi>();
+        _requestHelper = requestHelper;
     }
 
-    internal class ArchiveApi : IArchiveApi
+    public async Task<IEnumerable<Archive>> FetchArchives()
     {
-        private readonly Root _root;
-        private readonly RequestHelper _requestHelper;
-        private readonly ILogger<ArchiveApi> _logger;
+        var archivesUri = _root.GetGetArchivesUri();
+        var archives = await _requestHelper.Get<Archives>(archivesUri).ConfigureAwait(false);
 
-        internal ArchiveApi(RequestHelper requestHelper, ILoggerFactory loggerFactory, Root root)
-        {
-            _root = root;
-            _logger = loggerFactory.CreateLogger<ArchiveApi>();
-            _requestHelper = requestHelper;
-        }
+        return archives.Archive.Select(ArchiveDataTransferObjectConverter.FromDataTransferObject);
+    }
 
-        public async Task<IEnumerable<Archive>> FetchArchives()
-        {
-            var archivesUri = _root.GetGetArchivesUri();
-            var archives = await _requestHelper.Get<Archives>(archivesUri).ConfigureAwait(false);
+    public async Task<IEnumerable<Archive>> FetchArchiveDocumentsByReferenceId(string referenceId)
+    {
+        var archives = await _requestHelper.Get<Archives>(_root.GetGetArchiveDocumentsReferenceIdUri(referenceId)).ConfigureAwait(false);
 
-            return archives.Archive.Select(ArchiveDataTransferObjectConverter.FromDataTransferObject);
-        }
+        return archives.Archive.Select(ArchiveDataTransferObjectConverter.FromDataTransferObject);
+    }
 
-        public async Task<IEnumerable<Archive>> FetchArchiveDocumentsByReferenceId(string referenceId)
-        {
-            var archives = await _requestHelper.Get<Archives>(_root.GetGetArchiveDocumentsReferenceIdUri(referenceId)).ConfigureAwait(false);
+    public async Task<ArchiveDocument> FetchArchiveDocument(GetArchiveDocumentByUuidUri nextDocumentsUri)
+    {
+        var archive = await GetArchiveDocument(nextDocumentsUri).ConfigureAwait(false);
+        return archive.One();
+    }
 
-            return archives.Archive.Select(ArchiveDataTransferObjectConverter.FromDataTransferObject);
-        }
+    public async Task<Archive> FetchArchiveDocuments(ArchiveNextDocumentsUri nextDocumentsUri)
+    {
+        var result = await _requestHelper.Get<V8.Archive>(nextDocumentsUri).ConfigureAwait(false);
 
-        public async Task<ArchiveDocument> FetchArchiveDocument(GetArchiveDocumentByUuidUri nextDocumentsUri)
-        {
-            var archive = await GetArchiveDocument(nextDocumentsUri).ConfigureAwait(false);
-            return archive.One();
-        }
+        return result.FromDataTransferObject();
+    }
 
-        public async Task<Archive> FetchArchiveDocuments(ArchiveNextDocumentsUri nextDocumentsUri)
-        {
-            var result = await _requestHelper.Get<V8.Archive>(nextDocumentsUri).ConfigureAwait(false);
+    public async Task<Archive> GetArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentUri)
+    {
+        var result = await _requestHelper.Get<V8.Archive>(getArchiveDocumentUri).ConfigureAwait(false);
+        return result.FromDataTransferObject();
+    }
 
-            return result.FromDataTransferObject();
-        }
+    public async Task<ArchiveDocument> UpdateDocument(ArchiveDocument archiveDocument, ArchiveDocumentUpdateUri updateUri)
+    {
+        var messageAction = new ArchiveDocumentAction(archiveDocument);
+        var httpContent = messageAction.Content(archiveDocument);
 
-        public async Task<Archive> GetArchiveDocument(GetArchiveDocumentByUuidUri getArchiveDocumentUri)
-        {
-            var result = await _requestHelper.Get<V8.Archive>(getArchiveDocumentUri).ConfigureAwait(false);
-            return result.FromDataTransferObject();
-        }
+        var updatedArchiveDocument = _requestHelper.Put<Archive_Document>(httpContent, messageAction.RequestContent, updateUri);
 
-        public async Task<ArchiveDocument> UpdateDocument(ArchiveDocument archiveDocument, ArchiveDocumentUpdateUri updateUri)
-        {
-            var messageAction = new ArchiveDocumentAction(archiveDocument);
-            var httpContent = messageAction.Content(archiveDocument);
+        if (updatedArchiveDocument.IsFaulted && updatedArchiveDocument.Exception != null)
+            throw updatedArchiveDocument.Exception?.InnerException;
 
-            var updatedArchiveDocument = _requestHelper.Put<Archive_Document>(httpContent, messageAction.RequestContent, updateUri);
+        return (await updatedArchiveDocument.ConfigureAwait(false)).FromDataTransferObject();
+    }
 
-            if (updatedArchiveDocument.IsFaulted && updatedArchiveDocument.Exception != null)
-                throw updatedArchiveDocument.Exception?.InnerException;
+    public async Task DeleteDocument(ArchiveDocumentDeleteUri deleteUri)
+    {
+        await _requestHelper.Delete(deleteUri);
+    }
 
-            return (await updatedArchiveDocument.ConfigureAwait(false)).FromDataTransferObject();
-        }
+    public Task<Archive> ArchiveDocuments(Archive archiveWithDocuments)
+    {
+        var result = ArchiveDocumentsAsync(archiveWithDocuments);
 
-        public async Task DeleteDocument(ArchiveDocumentDeleteUri deleteUri)
-        {
-            await _requestHelper.Delete(deleteUri);
-        }
+        if (result.IsFaulted && result.Exception != null)
+            throw result.Exception.InnerException;
 
-        public Task<Archive> ArchiveDocuments(Archive archiveWithDocuments)
-        {
-            var result = ArchiveDocumentsAsync(archiveWithDocuments);
+        return result;
+    }
 
-            if (result.IsFaulted && result.Exception != null)
-                throw result.Exception.InnerException;
+    public async Task<Archive> ArchiveDocumentsAsync(Archive archiveWithDocuments)
+    {
+        _logger.LogDebug("Outgoing archive '{count}' documents to archive: {name}", archiveWithDocuments.ArchiveDocuments.Count, archiveWithDocuments.Name ?? "default");
 
-            return result;
-        }
+        var archiveUri = _root.GetArchiveDocumentsUri();
 
-        public async Task<Archive> ArchiveDocumentsAsync(Archive archiveWithDocuments)
-        {
-            _logger.LogDebug("Outgoing archive '{count}' documents to archive: {name}", archiveWithDocuments.ArchiveDocuments.Count, archiveWithDocuments.Name ?? "default");
+        var archiveAction = new ArchiveAction(archiveWithDocuments);
+        var httpContent = archiveAction.Content(archiveWithDocuments);
 
-            var archiveUri = _root.GetArchiveDocumentsUri();
+        var task = _requestHelper.Post<V8.Archive>(httpContent, archiveAction.RequestContent, archiveUri);
 
-            var archiveAction = new ArchiveAction(archiveWithDocuments);
-            var httpContent = archiveAction.Content(archiveWithDocuments);
+        if (task.IsFaulted && task.Exception != null)
+            throw task.Exception?.InnerException;
 
-            var task = _requestHelper.Post<V8.Archive>(httpContent, archiveAction.RequestContent, archiveUri);
+        var result = (await task.ConfigureAwait(false)).FromDataTransferObject();
 
-            if (task.IsFaulted && task.Exception != null)
-                throw task.Exception?.InnerException;
+        _logger.LogDebug("Response received for archiving to '{name}'", archiveWithDocuments.Name ?? "default");
 
-            var result = (await task.ConfigureAwait(false)).FromDataTransferObject();
+        return result;
+    }
 
-            _logger.LogDebug("Response received for archiving to '{name}'", archiveWithDocuments.Name ?? "default");
+    public async Task<Archive> FetchDocumentFromExternalId(string externalId)
+    {
+        var result = await _requestHelper.Get<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalId)).ConfigureAwait(false);
+        return result.FromDataTransferObject();
+    }
 
-            return result;
-        }
+    public async Task<Archive> FetchDocumentFromExternalId(Guid externalIdGuid)
+    {
+        var result = await _requestHelper.Get<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalIdGuid)).ConfigureAwait(false);
+        return result.FromDataTransferObject();
+    }
 
-        public async Task<Archive> FetchDocumentFromExternalId(string externalId)
-        {
-            var result = await _requestHelper.Get<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalId)).ConfigureAwait(false);
-            return result.FromDataTransferObject();
-        }
+    public async Task<Stream> StreamDocumentFromExternalId(string externalId)
+    {
+        var archive = await GetArchiveDocument(_root.GetGetArchiveDocumentsByUuidUri(externalId));
+        var documentContentStreamUri = archive.One().GetDocumentContentStreamUri();
 
-        public async Task<Archive> FetchDocumentFromExternalId(Guid externalIdGuid)
-        {
-            var result = await _requestHelper.Get<V8.Archive>(_root.GetGetArchiveDocumentsByUuidUri(externalIdGuid)).ConfigureAwait(false);
-            return result.FromDataTransferObject();
-        }
+        return await StreamDocument(documentContentStreamUri);
+    }
 
-        public async Task<Stream> StreamDocumentFromExternalId(string externalId)
-        {
-            var archive = await GetArchiveDocument(_root.GetGetArchiveDocumentsByUuidUri(externalId));
-            var documentContentStreamUri = archive.One().GetDocumentContentStreamUri();
+    public async Task<Stream> StreamDocumentFromExternalId(Guid guid)
+    {
+        var archive = await GetArchiveDocument(_root.GetGetArchiveDocumentsByUuidUri(guid));
+        var documentContentStreamUri = archive.One().GetDocumentContentStreamUri();
 
-            return await StreamDocument(documentContentStreamUri);
-        }
+        return await StreamDocument(documentContentStreamUri);
+    }
 
-        public async Task<Stream> StreamDocumentFromExternalId(Guid guid)
-        {
-            var archive = await GetArchiveDocument(_root.GetGetArchiveDocumentsByUuidUri(guid));
-            var documentContentStreamUri = archive.One().GetDocumentContentStreamUri();
+    public async Task<Stream> StreamDocument(ArchiveDocumentContentStreamUri documentContentStreamUri)
+    {
+        return await _requestHelper.GetStream(documentContentStreamUri).ConfigureAwait(false);
+    }
 
-            return await StreamDocument(documentContentStreamUri);
-        }
+    public async Task<ArchiveDocumentContent> GetDocumentContent(ArchiveDocumentContentUri archiveDocumentContentUri)
+    {
+        var result = await _requestHelper.Get<Archive_Document_Content>(archiveDocumentContentUri).ConfigureAwait(false);
 
-        public async Task<Stream> StreamDocument(ArchiveDocumentContentStreamUri documentContentStreamUri)
-        {
-            return await _requestHelper.GetStream(documentContentStreamUri).ConfigureAwait(false);
-        }
-
-        public async Task<ArchiveDocumentContent> GetDocumentContent(ArchiveDocumentContentUri archiveDocumentContentUri)
-        {
-            var result = await _requestHelper.Get<Archive_Document_Content>(archiveDocumentContentUri).ConfigureAwait(false);
-
-            return result.FromDataTransferObject();
-        }
+        return result.FromDataTransferObject();
     }
 }

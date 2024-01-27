@@ -1,23 +1,22 @@
 using System.Collections.Generic;
 
-namespace Digipost.Api.Client.Common.Search
+namespace Digipost.Api.Client.Common.Search;
+
+public interface ISearchDetails
 {
-    public interface ISearchDetails
-    {
-        string FirstName { get; set; }
+    string FirstName { get; set; }
 
-        string MiddleName { get; set; }
+    string MiddleName { get; set; }
 
-        string LastName { get; set; }
+    string LastName { get; set; }
 
-        string DigipostAddress { get; set; }
+    string DigipostAddress { get; set; }
 
-        string MobileNumber { get; set; }
+    string MobileNumber { get; set; }
 
-        string OrganizationName { get; set; }
+    string OrganizationName { get; set; }
 
-        string OrganizationNumber { get; set; }
+    string OrganizationNumber { get; set; }
 
-        IEnumerable<SearchDetailsAddress> SearchDetailsAddress { get; set; }
-    }
+    IEnumerable<SearchDetailsAddress> SearchDetailsAddress { get; set; }
 }

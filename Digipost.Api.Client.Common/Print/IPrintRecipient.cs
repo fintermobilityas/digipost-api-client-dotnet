@@ -1,9 +1,8 @@
-﻿namespace Digipost.Api.Client.Common.Print
-{
-    public interface IPrintRecipient
-    {
-        string Name { get; set; }
+﻿namespace Digipost.Api.Client.Common.Print;
 
-        Address Address { get; set; }
-    }
+public interface IPrintRecipient
+{
+    string Name { get; set; }
+
+    Address Address { get; set; }
 }

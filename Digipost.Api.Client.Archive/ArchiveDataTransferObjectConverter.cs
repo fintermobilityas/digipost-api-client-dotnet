@@ -3,12 +3,12 @@ using System.Linq;
 using Digipost.Api.Client.Common;
 using V8;
 
-namespace Digipost.Api.Client.Archive
+namespace Digipost.Api.Client.Archive;
+
+internal static class ArchiveDataTransferObjectConverter
 {
-    internal static class ArchiveDataTransferObjectConverter
+    internal static V8.Archive ToDataTransferObject(this Archive a)
     {
-        internal static V8.Archive ToDataTransferObject(this Archive a)
-        {
             var dto = new V8.Archive()
             {
                 Name = a.Name,
@@ -24,8 +24,8 @@ namespace Digipost.Api.Client.Archive
             return dto;
         }
 
-        internal static Archive_Document ToDataTransferObject(this ArchiveDocument ad)
-        {
+    internal static Archive_Document ToDataTransferObject(this ArchiveDocument ad)
+    {
             var dto = new Archive_Document()
             {
                 Uuid = ad.Id.ToString(),
@@ -54,8 +54,8 @@ namespace Digipost.Api.Client.Archive
             return dto;
         }
 
-        internal static ArchiveDocument FromDataTransferObject(this Archive_Document ad)
-        {
+    internal static ArchiveDocument FromDataTransferObject(this Archive_Document ad)
+    {
             return new ArchiveDocument(
                 new Guid(ad.Uuid),
                 ad.File_Name,
@@ -72,8 +72,8 @@ namespace Digipost.Api.Client.Archive
             };
         }
 
-        internal static Archive FromDataTransferObject(this V8.Archive a)
-        {
+    internal static Archive FromDataTransferObject(this V8.Archive a)
+    {
             return new Archive(new Sender(a.Sender_Id), a.Name)
             {
                 ArchiveDocuments = a.Documents.Select(FromDataTransferObject).ToList(),
@@ -81,9 +81,8 @@ namespace Digipost.Api.Client.Archive
             };
         }
 
-        internal static ArchiveDocumentContent FromDataTransferObject(this Archive_Document_Content result)
-        {
+    internal static ArchiveDocumentContent FromDataTransferObject(this Archive_Document_Content result)
+    {
             return new ArchiveDocumentContent(result.Content_Type, new Uri(result.Uri, UriKind.Absolute));
         }
-    }
 }

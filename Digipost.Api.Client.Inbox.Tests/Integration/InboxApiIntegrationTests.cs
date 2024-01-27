@@ -13,40 +13,39 @@ using Digipost.Api.Client.Tests.Fakes;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
-namespace Digipost.Api.Client.Inbox.Tests.Integration
+namespace Digipost.Api.Client.Inbox.Tests.Integration;
+
+public class InboxApiIntegrationTests
 {
-    public class InboxApiIntegrationTests
+    readonly Inbox _inbox = GetInbox();
+
+    static Inbox GetInbox()
     {
-        private readonly Inbox _inbox = GetInbox();
-
-        private static Inbox GetInbox()
+        var httpClient = new HttpClient(
+            new FakeResponseHandler {ResultCode = HttpStatusCode.NotFound, HttpContent = XmlResource.Inbox.GetError()}
+        )
         {
-            var httpClient = new HttpClient(
-                new FakeResponseHandler {ResultCode = HttpStatusCode.NotFound, HttpContent = XmlResource.Inbox.GetError()}
-            )
-            {
-                BaseAddress = new Uri("http://www.fakeBaseAddress.no")
-            };
-            var requestHelper = new RequestHelper(httpClient, new NullLoggerFactory());
+            BaseAddress = new Uri("http://www.fakeBaseAddress.no")
+        };
+        var requestHelper = new RequestHelper(httpClient, new NullLoggerFactory());
 
-            var links = new Dictionary<string, Link>
-            {
-                ["GET_INBOX"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/inbox") {Rel = httpClient.BaseAddress + "relations/get_inbox"}
-            };
-            var root = new Root("")
-            {
-                Links = links
-            };
-
-            var inbox = new Inbox(requestHelper, root);
-            return inbox;
-        }
-
-        public class FetchMethod : InboxApiIntegrationTests
+        var links = new Dictionary<string, Link>
         {
-            [Fact]
-            public Task ErrorShouldCauseDigipostResponseException() => 
-                Assert.ThrowsAsync<ClientResponseException>(() => _inbox.Fetch());
-        }
+            ["GET_INBOX"] = new Link(httpClient.BaseAddress + $"{DomainUtility.GetSender().Id}/inbox") {Rel = httpClient.BaseAddress + "relations/get_inbox"}
+        };
+        var root = new Root("")
+        {
+            Links = links
+        };
+
+        var inbox = new Inbox(requestHelper, root);
+        return inbox;
+    }
+
+    public class FetchMethod : InboxApiIntegrationTests
+    {
+        [Fact]
+        public Task ErrorShouldCauseDigipostResponseException() => 
+            Assert.ThrowsAsync<ClientResponseException>(() => _inbox.Fetch());
     }
 }

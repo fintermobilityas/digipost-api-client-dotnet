@@ -5,15 +5,15 @@ using Digipost.Api.Client.Tests;
 using Digipost.Api.Client.Tests.CompareObjects;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Print
+namespace Digipost.Api.Client.Common.Tests.Print;
+
+public class PrintDetailsTests
 {
-    public class PrintDetailsTests
+    public class ConstructorMethod : PrintDetailsTests
     {
-        public class ConstructorMethod : PrintDetailsTests
+        [Fact]
+        public void SimpleConstructor()
         {
-            [Fact]
-            public void SimpleConstructor()
-            {
                 //Arrange
                 var printDetails = new PrintDetails(DomainUtility.GetPrintRecipientWithNorwegianAddress(),
                     DomainUtility.GetPrintReturnRecipientWithNorwegianAddress(), PrintColors.Colors);
@@ -34,9 +34,9 @@ namespace Digipost.Api.Client.Common.Tests.Print
                 Comparator.AssertEqual(printinstruction, printDetails.PrintInstructions.PrintInstruction);
             }
 
-            [Fact]
-            public void CanSetShreddedDeliverableHandling()
-            {
+        [Fact]
+        public void CanSetShreddedDeliverableHandling()
+        {
                 //Arrange
                 List<PrintInstruction> printinstruction = new List<PrintInstruction>();
                 printinstruction.Add(new PrintInstruction("test", "testing"));
@@ -57,6 +57,5 @@ namespace Digipost.Api.Client.Common.Tests.Print
                 Assert.Equal(NondeliverableHandling.Shred, printDetails.NondeliverableHandling);
                 Comparator.AssertEqual(printinstruction, printDetails.PrintInstructions.PrintInstruction);
             }
-        }
     }
 }

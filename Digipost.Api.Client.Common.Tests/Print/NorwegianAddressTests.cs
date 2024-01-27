@@ -1,15 +1,15 @@
 ﻿using Digipost.Api.Client.Common.Print;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Print
+namespace Digipost.Api.Client.Common.Tests.Print;
+
+public class NorwegianAddressTests
 {
-    public class NorwegianAddressTests
+    public class ConstructorMethod : NorwegianAddressTests
     {
-        public class ConstructorMethod : NorwegianAddressTests
+        [Fact]
+        public void WhatYouAreTestingOnMethod()
         {
-            [Fact]
-            public void WhatYouAreTestingOnMethod()
-            {
                 //Arrange
                 var norwegianAddress = new NorwegianAddress("0001", "Oslo", "Addr1", "Addr2", "Addr3");
 
@@ -22,6 +22,5 @@ namespace Digipost.Api.Client.Common.Tests.Print
                 Assert.Equal("Addr2", norwegianAddress.AddressLine2);
                 Assert.Equal("Addr3", norwegianAddress.AddressLine3);
             }
-        }
     }
 }

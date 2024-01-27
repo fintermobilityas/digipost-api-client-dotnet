@@ -2,41 +2,40 @@
 using Digipost.Api.Client.Shared.Resources.Resource;
 using System.Reflection;
 
-namespace Digipost.Api.Client.Resources.Content
+namespace Digipost.Api.Client.Resources.Content;
+
+internal class ContentResource
 {
-    internal class ContentResource
+    static readonly ResourceUtility ResourceUtility = new ResourceUtility(typeof(XsdResource).GetTypeInfo().Assembly,"Digipost.Api.Client.Resources.Content.Data");
+
+    static byte[] GetResource(params string[] path)
     {
-        private static readonly ResourceUtility ResourceUtility = new ResourceUtility(typeof(XsdResource).GetTypeInfo().Assembly,"Digipost.Api.Client.Resources.Content.Data");
+        return ResourceUtility.ReadAllBytes(path);
+    }
 
-        private static byte[] GetResource(params string[] path)
+    internal static class Hoveddokument
+    {
+        public static byte[] Pdf()
         {
-            return ResourceUtility.ReadAllBytes(path);
+            return GetResource("Hoveddokument.pdf");
         }
 
-        internal static class Hoveddokument
+        public static byte[] PlainText()
         {
-            public static byte[] Pdf()
-            {
-                return GetResource("Hoveddokument.pdf");
-            }
+            return GetResource("Hoveddokument.pdf");
+        }
+    }
 
-            public static byte[] PlainText()
-            {
-                return GetResource("Hoveddokument.pdf");
-            }
+    internal static class Vedlegg
+    {
+        public static byte[] Pdf()
+        {
+            return GetResource("Vedlegg.pdf");
         }
 
-        internal static class Vedlegg
+        public static byte[] Text()
         {
-            public static byte[] Pdf()
-            {
-                return GetResource("Vedlegg.pdf");
-            }
-
-            public static byte[] Text()
-            {
-                return GetResource("Vedlegg.pdf");
-            }
+            return GetResource("Vedlegg.pdf");
         }
     }
 }

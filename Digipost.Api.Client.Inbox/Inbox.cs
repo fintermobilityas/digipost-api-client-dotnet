@@ -5,45 +5,44 @@ using Digipost.Api.Client.Common.Entrypoint;
 using Digipost.Api.Client.Common.Relations;
 using Digipost.Api.Client.Common.Utilities;
 
-namespace Digipost.Api.Client.Inbox
+namespace Digipost.Api.Client.Inbox;
+
+internal interface IInbox
 {
-    internal interface IInbox
+    Task<IEnumerable<InboxDocument>> Fetch(int offset = 0, int limit = 100);
+
+    Task<Stream> FetchDocument(GetInboxDocumentContentUri document);
+
+    Task DeleteDocument(InboxDocumentDeleteUri document);
+}
+
+public class Inbox : IInbox
+{
+    readonly Root _inboxRoot;
+    readonly RequestHelper _requestHelper;
+
+    internal Inbox(RequestHelper requestHelper, Root root)
     {
-        Task<IEnumerable<InboxDocument>> Fetch(int offset = 0, int limit = 100);
-
-        Task<Stream> FetchDocument(GetInboxDocumentContentUri document);
-
-        Task DeleteDocument(InboxDocumentDeleteUri document);
+        _inboxRoot = root;
+        _requestHelper = requestHelper;
     }
 
-    public class Inbox : IInbox
+    public async Task<IEnumerable<InboxDocument>> Fetch(int offset = 0, int limit = 100)
     {
-        private readonly Root _inboxRoot;
-        private readonly RequestHelper _requestHelper;
+        var inboxPath = _inboxRoot.GetGetInboxUri(offset, limit);
 
-        internal Inbox(RequestHelper requestHelper, Root root)
-        {
-            _inboxRoot = root;
-            _requestHelper = requestHelper;
-        }
+        var result = await _requestHelper.Get<V8.Inbox>(inboxPath).ConfigureAwait(false);
 
-        public async Task<IEnumerable<InboxDocument>> Fetch(int offset = 0, int limit = 100)
-        {
-            var inboxPath = _inboxRoot.GetGetInboxUri(offset, limit);
+        return result.FromDataTransferObject();
+    }
 
-            var result = await _requestHelper.Get<V8.Inbox>(inboxPath).ConfigureAwait(false);
+    public async Task<Stream> FetchDocument(GetInboxDocumentContentUri getInboxDocumentContentUri)
+    {
+        return await _requestHelper.GetStream(getInboxDocumentContentUri).ConfigureAwait(false);
+    }
 
-            return result.FromDataTransferObject();
-        }
-
-        public async Task<Stream> FetchDocument(GetInboxDocumentContentUri getInboxDocumentContentUri)
-        {
-            return await _requestHelper.GetStream(getInboxDocumentContentUri).ConfigureAwait(false);
-        }
-
-        public async Task DeleteDocument(InboxDocumentDeleteUri deleteUri)
-        {
-            await _requestHelper.Delete(deleteUri).ConfigureAwait(false);
-        }
+    public async Task DeleteDocument(InboxDocumentDeleteUri deleteUri)
+    {
+        await _requestHelper.Delete(deleteUri).ConfigureAwait(false);
     }
 }

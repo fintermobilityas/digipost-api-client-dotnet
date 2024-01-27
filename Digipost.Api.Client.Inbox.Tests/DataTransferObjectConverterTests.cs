@@ -5,15 +5,15 @@ using Digipost.Api.Client.Tests.CompareObjects;
 using V8;
 using Xunit;
 
-namespace Digipost.Api.Client.Inbox.Tests
+namespace Digipost.Api.Client.Inbox.Tests;
+
+public class DataTransferObjectConverterTests
 {
-    public class DataTransferObjectConverterTests
+    public class FromDataTransferObject : DataTransferObjectConverterTests
     {
-        public class FromDataTransferObject : DataTransferObjectConverterTests
+        [Fact]
+        public void InboxDocument()
         {
-            [Fact]
-            public void InboxDocument()
-            {
                 const string contentType = "txt";
                 var firstAccessed = DateTime.Today.AddDays(2);
                 var deliveryTime = DateTime.Today;
@@ -46,9 +46,9 @@ namespace Digipost.Api.Client.Inbox.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void InboxWithEmptyListOnNullResult()
-            {
+        [Fact]
+        public void InboxWithEmptyListOnNullResult()
+        {
                 var source = new V8.Inbox();
                 var expected = new List<InboxDocument>();
 
@@ -56,6 +56,5 @@ namespace Digipost.Api.Client.Inbox.Tests
 
                 Comparator.AssertEqual(expected, actual);
             }
-        }
     }
 }

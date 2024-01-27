@@ -4,15 +4,15 @@ using Digipost.Api.Client.Internal;
 using Digipost.Api.Client.Resources.Certificate;
 using Xunit;
 
-namespace Digipost.Api.Client.Tests.Handlers
+namespace Digipost.Api.Client.Tests.Handlers;
+
+public class AuthenticationHandlerTests
 {
-    public class AuthenticationHandlerTests
+    public class ComputeSignatureMethod
     {
-        public class ComputeSignatureMethod
+        [Fact]
+        public void ReturnsCorrectSignature()
         {
-            [Fact]
-            public void ReturnsCorrectSignature()
-            {
                 //Arrange
                 const string senderId = "1337";
                 const string uri = "http://fakeuri.no/someendpoint";
@@ -32,13 +32,13 @@ namespace Digipost.Api.Client.Tests.Handlers
                 //Assert
                 Assert.Equal(expectedSignature, computedSignature);
             }
-        }
+    }
 
-        public class ComputeHashMethod
+    public class ComputeHashMethod
+    {
+        [Fact]
+        public void ReturnsCorrectHash()
         {
-            [Fact]
-            public void ReturnsCorrectHash()
-            {
                 //Arrange
                 var contentBytes = Encoding.UTF8.GetBytes("This is the content to hash.");
 
@@ -50,6 +50,5 @@ namespace Digipost.Api.Client.Tests.Handlers
 
                 Assert.Equal(expectedHash, computedHash);
             }
-        }
     }
 }

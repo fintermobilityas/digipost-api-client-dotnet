@@ -5,17 +5,17 @@ using Digipost.Api.Client.Common;
 using Digipost.Api.Client.Common.Actions;
 using Digipost.Api.Client.Common.Utilities;
 
-namespace Digipost.Api.Client.Archive.Actions
+namespace Digipost.Api.Client.Archive.Actions;
+
+internal class ArchiveDocumentAction : DigipostAction<ArchiveDocument>
 {
-    internal class ArchiveDocumentAction : DigipostAction<ArchiveDocument>
+    public ArchiveDocumentAction(ArchiveDocument archiveDocument)
+        : base(archiveDocument)
     {
-        public ArchiveDocumentAction(ArchiveDocument archiveDocument)
-            : base(archiveDocument)
-        {
         }
 
-        internal override HttpContent Content(ArchiveDocument requestContent)
-        {
+    internal override HttpContent Content(ArchiveDocument requestContent)
+    {
             var xmlMessage = Serialize(requestContent);
             var messageContent = new StringContent(xmlMessage);
 
@@ -27,10 +27,9 @@ namespace Digipost.Api.Client.Archive.Actions
             return messageContent;
         }
 
-        protected override string Serialize(ArchiveDocument requestContent)
-        {
+    protected override string Serialize(ArchiveDocument requestContent)
+    {
             var messageDataTransferObject = requestContent.ToDataTransferObject();
             return SerializeUtil.Serialize(messageDataTransferObject);
         }
-    }
 }

@@ -1,9 +1,8 @@
-namespace Digipost.Api.Client.Common.Enums
+namespace Digipost.Api.Client.Common.Enums;
+
+public enum HashAlgoritm
 {
-    public enum HashAlgoritm
-    {
-        NONE,
-        MD5,
-        SHA256
-    }
+    NONE,
+    MD5,
+    SHA256
 }

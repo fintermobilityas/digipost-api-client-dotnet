@@ -1,17 +1,16 @@
 using System;
 
-namespace Digipost.Api.Client.Common.Share
+namespace Digipost.Api.Client.Common.Share;
+
+public class SharedDocumentContent
 {
-    public class SharedDocumentContent
+    public SharedDocumentContent(string contentType, Uri uri)
     {
-        public SharedDocumentContent(string contentType, Uri uri)
-        {
             ContentType = contentType;
             Uri = uri;
         }
 
-        public string ContentType { get; }
+    public string ContentType { get; }
 
-        public Uri Uri { get; }
-    }
+    public Uri Uri { get; }
 }

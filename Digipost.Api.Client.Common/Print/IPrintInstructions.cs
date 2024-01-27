@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace Digipost.Api.Client.Common.Print
+namespace Digipost.Api.Client.Common.Print;
+
+public interface IPrintInstructions
 {
-    public interface IPrintInstructions
-    {
-        List<PrintInstruction> PrintInstruction { get; set; }
-    }
+    List<PrintInstruction> PrintInstruction { get; set; }
 }

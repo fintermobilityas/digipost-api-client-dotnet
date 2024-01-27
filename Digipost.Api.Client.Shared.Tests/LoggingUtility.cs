@@ -3,12 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace Digipost.Api.Client.Shared.Tests
+namespace Digipost.Api.Client.Shared.Tests;
+
+public static class LoggingUtility
 {
-    public static class LoggingUtility
+    public static IServiceProvider CreateServiceProviderAndSetUpLogging()
     {
-        public static IServiceProvider CreateServiceProviderAndSetUpLogging()
-        {
             var services = new ServiceCollection();
 
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
@@ -23,5 +23,4 @@ namespace Digipost.Api.Client.Shared.Tests
 
             return services.BuildServiceProvider();
         }
-    }
 }

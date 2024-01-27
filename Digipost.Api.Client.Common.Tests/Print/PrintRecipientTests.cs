@@ -3,16 +3,16 @@ using Digipost.Api.Client.Tests;
 using Digipost.Api.Client.Tests.CompareObjects;
 using Xunit;
 
-namespace Digipost.Api.Client.Common.Tests.Print
-{
-    public class PrintRecipientTests
-    {
-        public class ConstructorMethod : PrintRecipientTests
+namespace Digipost.Api.Client.Common.Tests.Print;
 
+public class PrintRecipientTests
+{
+    public class ConstructorMethod : PrintRecipientTests
+
+    {
+        [Fact]
+        public void SimpleConstructor()
         {
-            [Fact]
-            public void SimpleConstructor()
-            {
                 //Arrange
                 const string name = "name";
 
@@ -25,6 +25,5 @@ namespace Digipost.Api.Client.Common.Tests.Print
 
                 Comparator.AssertEqual(DomainUtility.GetNorwegianAddress(), printRecipient.Address);
             }
-        }
     }
 }

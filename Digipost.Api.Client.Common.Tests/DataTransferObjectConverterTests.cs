@@ -11,15 +11,15 @@ using V8;
 using Xunit;
 using Identification = Digipost.Api.Client.Common.Identify.Identification;
 
-namespace Digipost.Api.Client.Common.Tests
+namespace Digipost.Api.Client.Common.Tests;
+
+public class DataTransferObjectConverterTests
 {
-    public class DataTransferObjectConverterTests
+    public class ToDataTransferObjectMethod : DataTransferObjectConverterTests
     {
-        public class ToDataTransferObjectMethod : DataTransferObjectConverterTests
+        [Fact]
+        public void ForeignAddress()
         {
-            [Fact]
-            public void ForeignAddress()
-            {
                 //Arrange
                 var source = new ForeignAddress(
                     CountryIdentifier.Countrycode,
@@ -46,9 +46,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void IdentificationByAddressReturnsDigipostResultWithDigipostAddressResultType()
-            {
+        [Fact]
+        public void IdentificationByAddressReturnsDigipostResultWithDigipostAddressResultType()
+        {
                 //Arrange
                 const string digipostAddress = "ola.nordmann#1234";
                 var source = new V8.Identification_Result()
@@ -70,9 +70,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void IdentificationByAddressReturnsIdentifiedResultWithPersonalAliasResultType()
-            {
+        [Fact]
+        public void IdentificationByAddressReturnsIdentifiedResultWithPersonalAliasResultType()
+        {
                 //Arrange
                 const string personAlias = "fewoinf23nio3255n32oi5n32oi5n#1234";
                 var source = new V8.Identification_Result()
@@ -94,15 +94,15 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void IdentificationByAddressReturnsInvalidResultWithInvalidReason()
-            {
+        [Fact]
+        public void IdentificationByAddressReturnsInvalidResultWithInvalidReason()
+        {
                 // We validate the request with the XSD, so it will fail before the request is sent.
             }
 
-            [Fact]
-            public void IdentificationByAddressReturnsUnidentifiedResultWithUnidentifiedReason()
-            {
+        [Fact]
+        public void IdentificationByAddressReturnsUnidentifiedResultWithUnidentifiedReason()
+        {
                 //Arrange
                 var reason = V8.Unidentified_Reason.NOT_FOUND;
                 var source = new V8.Identification_Result()
@@ -125,9 +125,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void IdentificationByNameAndAddress()
-            {
+        [Fact]
+        public void IdentificationByNameAndAddress()
+        {
                 //Arrange
                 var source = new Identification(
                     new RecipientByNameAndAddress("Ola Nordmann", "Osloveien 22", "0001", "Oslo")
@@ -164,9 +164,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void IdentificationByNameAndAddressAcceptsNoBirthDate()
-            {
+        [Fact]
+        public void IdentificationByNameAndAddressAcceptsNoBirthDate()
+        {
                 //Arrange
                 var source = new Identification(
                     new RecipientByNameAndAddress("Ola Nordmann", "Osloveien 22", "0001", "Oslo")
@@ -201,9 +201,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void IdentificationByOrganizationNumber()
-            {
+        [Fact]
+        public void IdentificationByOrganizationNumber()
+        {
                 //Arrange
                 var source = new Identification(new RecipientById(IdentificationType.OrganizationNumber, "123456789"));
                 var expectedDto = new V8.Identification()
@@ -218,9 +218,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void IdentificationByOrganizationNumberReturnsDigipostResultWithDigipostAddressResultType()
-            {
+        [Fact]
+        public void IdentificationByOrganizationNumberReturnsDigipostResultWithDigipostAddressResultType()
+        {
                 //Arrange
                 const string digipostAddress = "bedriften#1234";
                 var source = new V8.Identification_Result()
@@ -242,15 +242,15 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void IdentificationByOrganizationNumberReturnsIdentifiedResultWithPersonAliasResultType()
-            {
+        [Fact]
+        public void IdentificationByOrganizationNumberReturnsIdentifiedResultWithPersonAliasResultType()
+        {
                 // Will not happen since we do not have a register of organizations that does not have Digipost
             }
 
-            [Fact]
-            public void IdentificationByOrganizationNumberReturnsInvalidResultWithInvalidReason()
-            {
+        [Fact]
+        public void IdentificationByOrganizationNumberReturnsInvalidResultWithInvalidReason()
+        {
                 //Arrange
                 object invalidValue = Invalid_Reason.INVALID_ORGANISATION_NUMBER;
                 var source = new Identification_Result()
@@ -273,9 +273,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void IdentificationByOrganizationNumberReturnsUnidentifiedResultWithUnidentifiedReason()
-            {
+        [Fact]
+        public void IdentificationByOrganizationNumberReturnsUnidentifiedResultWithUnidentifiedReason()
+        {
                 //Arrange
                 var reason = Unidentified_Reason.NOT_FOUND;
                 var source = new Identification_Result()
@@ -298,9 +298,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void IdentificationByPinReturnsDigipostResultWithNoneResultType()
-            {
+        [Fact]
+        public void IdentificationByPinReturnsDigipostResultWithNoneResultType()
+        {
                 //Arrange
                 var source = new Identification_Result()
                 {
@@ -321,9 +321,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void IdentificationByPinReturnsIdentifiedResultWithNoneResultType()
-            {
+        [Fact]
+        public void IdentificationByPinReturnsIdentifiedResultWithNoneResultType()
+        {
                 //Arrange
 
                 var source = new Identification_Result()
@@ -346,9 +346,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void IdentificationByPinReturnsInvalidResultWithInvalidReason()
-            {
+        [Fact]
+        public void IdentificationByPinReturnsInvalidResultWithInvalidReason()
+        {
                 //Arrange
                 object invalidValue = Invalid_Reason.INVALID_PERSONAL_IDENTIFICATION_NUMBER;
                 var source = new Identification_Result()
@@ -371,15 +371,15 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expected, actual);
             }
 
-            [Fact]
-            public void IdentificationByPinReturnsUnidentifiedResultWithUnidentifiedReason()
-            {
+        [Fact]
+        public void IdentificationByPinReturnsUnidentifiedResultWithUnidentifiedReason()
+        {
                 //This case will never happen because Digipost cannot be used to find PINs in use.
             }
 
-            [Fact]
-            public void NorwegianAddress()
-            {
+        [Fact]
+        public void NorwegianAddress()
+        {
                 //Arrange
                 var source = new NorwegianAddress("0001", "Oslo", "Addr1", "Addr2", "Addr3");
 
@@ -399,9 +399,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void PrintDetails()
-            {
+        [Fact]
+        public void PrintDetails()
+        {
                 //Arrange
                 var source = new PrintDetails(
                     new PrintRecipient(
@@ -457,9 +457,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Assert.Null(DataTransferObjectConverter.ToDataTransferObject((IPrintDetails) null));
             }
 
-            [Fact]
-            public void PrintIfUnread()
-            {
+        [Fact]
+        public void PrintIfUnread()
+        {
                 //Arrange
                 DateTime printifunreadafter = DateTime.Now.AddDays(3);
                 PrintDetails printDetails = new PrintDetails(
@@ -517,9 +517,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Assert.Null(DataTransferObjectConverter.ToDataTransferObject((IPrintIfUnread) null));
             }
 
-            [Fact]
-            public void PrintRecipientFromForeignAddress()
-            {
+        [Fact]
+        public void PrintRecipientFromForeignAddress()
+        {
                 //Arrange
                 var source = new PrintRecipient(
                     "Name",
@@ -552,9 +552,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void PrintRecipientFromNorwegianAddress()
-            {
+        [Fact]
+        public void PrintRecipientFromNorwegianAddress()
+        {
                 //Arrange
                 var source = new PrintRecipient(
                     "Name",
@@ -580,9 +580,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void PrintReturnRecipientFromForeignAddress()
-            {
+        [Fact]
+        public void PrintReturnRecipientFromForeignAddress()
+        {
                 //Arrange
                 var source = new PrintReturnRecipient(
                     "Name",
@@ -615,9 +615,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void PrintReturnRecipientFromNorwegianAddress()
-            {
+        [Fact]
+        public void PrintReturnRecipientFromNorwegianAddress()
+        {
                 //Arrange
                 var source = new PrintReturnRecipient(
                     "Name",
@@ -643,9 +643,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void RecipientById()
-            {
+        [Fact]
+        public void RecipientById()
+        {
                 //Arrange
                 var source = new RecipientById(
                     IdentificationType.DigipostAddress,
@@ -665,9 +665,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void RecipientByNameAndAddress()
-            {
+        [Fact]
+        public void RecipientByNameAndAddress()
+        {
                 //Arrange
                 var birthDate = DateTime.Now;
 
@@ -702,9 +702,9 @@ namespace Digipost.Api.Client.Common.Tests
                 Comparator.AssertEqual(expectedDto, actualDto);
             }
 
-            [Fact]
-            public void SearchResult()
-            {
+        [Fact]
+        public void SearchResult()
+        {
                 //Arrange
                 var recipient0 = new V8.Recipient()
                 {
@@ -817,13 +817,13 @@ namespace Digipost.Api.Client.Common.Tests
                 //Assert
                 Comparator.AssertEqual(expected, actual);
             }
-        }
+    }
 
-        public class FromDataTransferObjectMethod : DataTransferObjectConverterTests
+    public class FromDataTransferObjectMethod : DataTransferObjectConverterTests
+    {
+        [Fact]
+        public void Error()
         {
-            [Fact]
-            public void Error()
-            {
                 //Arrange
                 var source = new V8.Error()
                 {
@@ -845,6 +845,5 @@ namespace Digipost.Api.Client.Common.Tests
                 //Assert
                 Comparator.AssertEqual(expected, actual);
             }
-        }
     }
 }
