@@ -26,6 +26,16 @@ namespace Digipost.Api.Client;
 public interface IDigipostClient
 {
     /// <summary>
+    /// The sender of the message, i.e. what the receiver of the message sees as the sender of the message.
+    /// </summary>
+    public Sender Sender { get; }
+
+    /// <summary>
+    /// Contains configuration for sending digital post.
+    /// </summary>
+    public ClientConfig ClientConfig { get; }
+    
+    /// <summary>
     /// Retrieves the Root entrypoint, which is the starting point of the REST API of Digipost.
     /// </summary>
     /// <param name="apiRootUri">The API root URI.</param>
@@ -124,10 +134,12 @@ public interface IDigipostClient
 
 public sealed class DigipostClient : IDigipostClient
 {
-    readonly ClientConfig _clientConfig;
     readonly RequestHelper _requestHelper;
     readonly IMemoryCache _entrypointCache;
     readonly ILoggerFactory _loggerFactory;
+    
+    public Sender Sender => ClientConfig.Sender;
+    public ClientConfig ClientConfig { get; }
 
     public DigipostClient(ClientConfig clientConfig, X509Certificate2 certificate, ILoggerFactory loggerFactory) : 
         this(clientConfig, BuildNonPooledHttpClient(clientConfig, certificate, loggerFactory), loggerFactory)
@@ -135,13 +147,12 @@ public sealed class DigipostClient : IDigipostClient
 
     }
     
-    
     internal DigipostClient(ClientConfig clientConfig, HttpClient httpClient, ILoggerFactory loggerFactory)
     {
         _loggerFactory = loggerFactory;
         _entrypointCache = new MemoryCache(new MemoryCacheOptions());
 
-        _clientConfig = clientConfig;
+        ClientConfig = clientConfig;
         _requestHelper = new RequestHelper(httpClient, _loggerFactory);
     }
 
@@ -180,7 +191,7 @@ public sealed class DigipostClient : IDigipostClient
 
         return httpClient;
     }
-    
+
     public async Task<Root> GetRootAsync(ApiRootUri apiRootUri, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"root{apiRootUri}";
@@ -204,7 +215,7 @@ public sealed class DigipostClient : IDigipostClient
     
     public async Task<SenderInformation> GetSenderInformationAsync(Sender sender = null, CancellationToken cancellationToken = default)
     {
-        var senderToUse = sender ?? new Sender(_clientConfig.Broker.Id);
+        var senderToUse = sender ?? new Sender(ClientConfig.Broker.Id);
         var root = await GetRootAsync(new ApiRootUri(), cancellationToken);
         var senderInformationUri = root.GetSenderInformationUri(senderToUse);
 
@@ -233,7 +244,7 @@ public sealed class DigipostClient : IDigipostClient
     
     public async Task<IDocumentsApi> DocumentsApiAsync(Sender sender = null, CancellationToken cancellationToken = default)
     {
-        var senderToUse = sender ?? new Sender(_clientConfig.Broker.Id);
+        var senderToUse = sender ?? new Sender(ClientConfig.Broker.Id);
         var root = await GetRootAsync(new ApiRootUri(sender), cancellationToken);
         return new DocumentsApi(_requestHelper, root, senderToUse);
     }
@@ -259,7 +270,7 @@ public sealed class DigipostClient : IDigipostClient
     public async Task<IMessageDeliveryResult> SendMessageAsync(IMessage message, CancellationToken cancellationToken)
     {
         var sendMessageApi = await _sendMessageApi();
-        return await sendMessageApi.SendMessageAsync(message, _clientConfig.SkipMetaDataValidation, cancellationToken);
+        return await sendMessageApi.SendMessageAsync(message, ClientConfig.SkipMetaDataValidation, cancellationToken);
     }
 
     public async Task AddAdditionalDataAsync(AdditionalData additionalData, AddAdditionalDataUri uri, CancellationToken cancellationToken)
