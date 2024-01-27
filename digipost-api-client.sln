@@ -24,8 +24,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.Send.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.Tests", "Digipost.Api.Client.Tests\Digipost.Api.Client.Tests.csproj", "{966A701B-7E91-4C41-BA28-B5C5E800E63D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Digipost.Api.Client.Shared.Tests", "Digipost.Api.Client.Shared.Tests\Digipost.Api.Client.Shared.Tests.csproj", "{A4322FAD-E7DB-4D2D-A1A8-2A7A893A2FAA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,9 +78,5 @@ Global
 		{966A701B-7E91-4C41-BA28-B5C5E800E63D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{966A701B-7E91-4C41-BA28-B5C5E800E63D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{966A701B-7E91-4C41-BA28-B5C5E800E63D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4322FAD-E7DB-4D2D-A1A8-2A7A893A2FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4322FAD-E7DB-4D2D-A1A8-2A7A893A2FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4322FAD-E7DB-4D2D-A1A8-2A7A893A2FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4322FAD-E7DB-4D2D-A1A8-2A7A893A2FAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

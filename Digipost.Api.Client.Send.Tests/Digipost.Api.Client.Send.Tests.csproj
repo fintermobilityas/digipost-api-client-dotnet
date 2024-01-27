@@ -16,6 +16,5 @@
         <ProjectReference Include="..\Digipost.Api.Client.Resources\Digipost.Api.Client.Resources.csproj" />
         <ProjectReference Include="..\Digipost.Api.Client.Send\Digipost.Api.Client.Send.csproj" />
         <ProjectReference Include="..\Digipost.Api.Client.Tests\Digipost.Api.Client.Tests.csproj" />
-        <ProjectReference Include="..\Digipost.Api.Client.Shared.Tests\Digipost.Api.Client.Shared.Tests.csproj" />
     </ItemGroup>
 </Project>

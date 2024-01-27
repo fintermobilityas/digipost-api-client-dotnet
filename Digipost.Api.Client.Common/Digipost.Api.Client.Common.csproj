@@ -12,7 +12,6 @@
    <ItemGroup>
         <PackageReference Include="Digipost.Api.Client.Shared" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-        <PackageReference Include="NLog.Extensions.Logging" />
         <PackageReference Include="System.ComponentModel.Annotations" />
         <ProjectReference Include="..\Digipost.Api.Client.Resources\Digipost.Api.Client.Resources.csproj"/>
     </ItemGroup>

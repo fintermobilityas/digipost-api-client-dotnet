@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
@@ -15,10 +14,8 @@ using Digipost.Api.Client.Internal;
 using Digipost.Api.Client.Resources.Certificate;
 using Digipost.Api.Client.Resources.Xml;
 using Digipost.Api.Client.Send;
-using Digipost.Api.Client.Shared.Tests;
 using Digipost.Api.Client.Tests.Fakes;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Environment = Digipost.Api.Client.Common.Environment;
 
@@ -45,9 +42,8 @@ public class DigipostApiIntegrationTests
         FakeResponseHandler fakehandler)
     {
         ClientConfig.LogRequestAndResponse = true;
-        var serviceProvider = LoggingUtility.CreateServiceProviderAndSetUpLogging();
 
-        var allDelegationHandlers = new List<DelegatingHandler> { new AuthenticationHandler(ClientConfig, Certificate, serviceProvider.GetService<ILoggerFactory>()) };
+        var allDelegationHandlers = new List<DelegatingHandler> { new AuthenticationHandler(ClientConfig, Certificate, new NullLoggerFactory()) };
 
         var httpClient = HttpClientFactory.Create(
             fakehandler,
@@ -62,10 +58,8 @@ public class DigipostApiIntegrationTests
     SendMessageApi GetDigipostApi(FakeResponseHandler fakeResponseHandler)
     {
         var httpClient = GetHttpClient(fakeResponseHandler);
-
-        var serviceProvider = LoggingUtility.CreateServiceProviderAndSetUpLogging();
-
-        var requestHelper = new RequestHelper(httpClient, serviceProvider.GetService<ILoggerFactory>()) { HttpClient = httpClient };
+        
+        var requestHelper = new RequestHelper(httpClient, new NullLoggerFactory()) { HttpClient = httpClient };
 
         var links = new Dictionary<string, Link>
         {
@@ -78,7 +72,7 @@ public class DigipostApiIntegrationTests
             Links = links
         };
 
-        var digipostApi = new SendMessageApi(new SendRequestHelper(requestHelper), serviceProvider.GetService<ILoggerFactory>(), root);
+        var digipostApi = new SendMessageApi(new SendRequestHelper(requestHelper), new NullLoggerFactory(), root);
         return digipostApi;
     }
 
