@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.ConcurrencyTest.Enums;
 using Environment = Digipost.Api.Client.Common.Environment;
@@ -18,10 +19,10 @@ namespace Digipost.Api.Client.ConcurrencyTest
         public static void Run()
         {
             Console.WriteLine("Starting program ...");
-            Digipost(NumberOfRequests, ThreadsActive, ProcessingType);
+            await Digipost(NumberOfRequests, ThreadsActive, ProcessingType);
         }
 
-        private static void Digipost(int numberOfRequests, int connectionLimit, ProcessingType processingType)
+        private static async Task Digipost(int numberOfRequests, int connectionLimit, ProcessingType processingType)
         {
             Console.WriteLine("Starting to send digipost: {0}, with requests: {1}, poolcount: {2}", processingType,
                 numberOfRequests, connectionLimit);
@@ -31,11 +32,11 @@ namespace Digipost.Api.Client.ConcurrencyTest
             switch (processingType)
             {
                 case ProcessingType.Parallel:
-                    new DigipostParalell(numberOfRequests, connectionLimit, DegreeOfParallelism, clientConfig,
-                        Thumbprint).Run(RequestType);
+                    await new DigipostParalell(numberOfRequests, connectionLimit, DegreeOfParallelism, clientConfig,
+                        Thumbprint).RunAsync(RequestType);
                     break;
                 case ProcessingType.Async:
-                    new DigipostAsync(numberOfRequests, connectionLimit, clientConfig, Thumbprint).Run(RequestType);
+                    await new DigipostAsync(numberOfRequests, connectionLimit, clientConfig, Thumbprint).RunAsync(RequestType);
                     break;
             }
         }

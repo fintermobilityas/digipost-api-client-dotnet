@@ -1,8 +1,11 @@
 <Project>
     <PropertyGroup>
-
         <LangVersion>12.0</LangVersion>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <AnalysisLevel>latest</AnalysisLevel>
+    </PropertyGroup>
 
+    <PropertyGroup>
         <Authors>Digipost AS</Authors>
         <Company>Posten Norge AS</Company>
         <Copyright>Copyright © 2022 Posten Norge AS</Copyright>
@@ -13,8 +16,6 @@
         <Description>Klientbibliotek for integrasjon mot Digipost REST-API.</Description>
 
         <PackageOutputPath Condition="$(PackageOutputPath) == ''">$(MSBuildThisFileDirectory)\nupkgs</PackageOutputPath>
-
-        <UserSecretsId>enterprise-certificate</UserSecretsId>
     </PropertyGroup>
 
 </Project>

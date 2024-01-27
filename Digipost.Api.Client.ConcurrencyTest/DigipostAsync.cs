@@ -1,28 +1,25 @@
 ﻿using System.Net;
+using System.Threading.Tasks;
 using Digipost.Api.Client.Common;
 using Digipost.Api.Client.ConcurrencyTest.Enums;
 
 namespace Digipost.Api.Client.ConcurrencyTest
 {
-    internal class DigipostAsync : DigipostRunner
+    internal class DigipostAsync(
+        int numberOfRequests,
+        int defaultConnectionLimit,
+        ClientConfig clientconfig,
+        string thumbprint)
+        : DigipostRunner(clientconfig, thumbprint, numberOfRequests)
     {
-        private readonly int _defaultConnectionLimit;
-
-        public DigipostAsync(int numberOfRequests, int defaultConnectionLimit, ClientConfig clientconfig,
-            string thumbprint)
-            : base(clientconfig, thumbprint, numberOfRequests)
-        {
-            _defaultConnectionLimit = defaultConnectionLimit;
-        }
-
-        public override void Run(RequestType requestType)
+        public override async Task RunAsync(RequestType requestType)
         {
             Stopwatch.Start();
-            ServicePointManager.DefaultConnectionLimit = _defaultConnectionLimit;
+            ServicePointManager.DefaultConnectionLimit = defaultConnectionLimit;
 
             while (RunsLeft() > 0)
             {
-                Send(Client, requestType);
+                await SendAsync(Client, requestType);
             }
 
             Stopwatch.Stop();

@@ -38,7 +38,7 @@ namespace Digipost.Api.Client.ConcurrencyTest
             return Interlocked.Decrement(ref _itemsLeft);
         }
 
-        public abstract void Run(RequestType requestType);
+        public abstract Task RunAsync(RequestType requestType);
 
         public IMessage GetMessage()
         {
@@ -71,7 +71,7 @@ namespace Digipost.Api.Client.ConcurrencyTest
             return _documentBytes ?? (_documentBytes = ContentResource.Hoveddokument.PlainText());
         }
 
-        public async Task Send(DigipostClient digipostClient, RequestType requestType)
+        public async Task SendAsync(DigipostClient digipostClient, RequestType requestType)
         {
             try
             {

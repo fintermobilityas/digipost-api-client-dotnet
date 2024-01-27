@@ -7,23 +7,18 @@ using Digipost.Api.Client.Send;
 
 namespace Digipost.Api.Client.ConcurrencyTest
 {
-    internal class DigipostParalell : DigipostRunner
+    internal class DigipostParalell(
+        int numberOfRequests,
+        int defaultConnectionLimit,
+        int degreeOfParallelism,
+        ClientConfig clientConfig,
+        string thumbprint)
+        : DigipostRunner(clientConfig, thumbprint, numberOfRequests)
     {
-        private readonly int _defaultConnectionLimit;
-        private readonly int _degreeOfParallelism;
-
-        public DigipostParalell(int numberOfRequests, int defaultConnectionLimit, int degreeOfParallelism,
-            ClientConfig clientConfig, string thumbprint)
-            : base(clientConfig, thumbprint, numberOfRequests)
-        {
-            _defaultConnectionLimit = defaultConnectionLimit;
-            _degreeOfParallelism = degreeOfParallelism;
-        }
-
-        public override void Run(RequestType requestType)
+        public override async Task RunAsync(RequestType requestType)
         {
             Stopwatch.Start();
-            ServicePointManager.DefaultConnectionLimit = _defaultConnectionLimit;
+            ServicePointManager.DefaultConnectionLimit = defaultConnectionLimit;
 
             var messages = new List<IMessage>();
             while (RunsLeft() > 0)
@@ -31,8 +26,12 @@ namespace Digipost.Api.Client.ConcurrencyTest
                 messages.Add(GetMessage());
             }
 
-            var options = new ParallelOptions {MaxDegreeOfParallelism = _degreeOfParallelism};
-            Parallel.ForEach(messages, options, message => Send(Client, requestType));
+            var options = new ParallelOptions {MaxDegreeOfParallelism = degreeOfParallelism};
+            
+            await Parallel.ForEachAsync(messages, options, async (_, _) =>
+            {
+                await SendAsync(Client, requestType);
+            });
 
             Stopwatch.Stop();
             DisplayTestResults();
