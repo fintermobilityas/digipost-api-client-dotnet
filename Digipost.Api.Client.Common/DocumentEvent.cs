@@ -46,9 +46,7 @@ public class DocumentEvent
     }
 }
 
-public abstract class EventMetadata
-{
-}
+public abstract class EventMetadata;
 
 public class RequestForRegistrationExpiredMetadata : EventMetadata
 {

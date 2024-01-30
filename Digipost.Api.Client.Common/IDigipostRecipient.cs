@@ -1,5 +1,3 @@
 ﻿namespace Digipost.Api.Client.Common;
 
-public interface IDigipostRecipient
-{
-}
+public interface IDigipostRecipient;
