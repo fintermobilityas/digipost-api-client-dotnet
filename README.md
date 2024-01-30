@@ -17,7 +17,7 @@ Follow these instructions to set up and send a message using the Digipost API fr
 ```sh
 git clone https://github.com/fintermobilityas/digipost-api-client-dotnet
 cd digipost-api-client-dotnet
-rider .
+rider digipost-api-client.sln
 ```
 
 ### Demo
