@@ -7,7 +7,7 @@ public static class UuidInterop
 {
     public static string NameUuidFromBytes(string input)
     {
-        var md5 = MD5.Create();
+        using var md5 = MD5.Create();
         var hash = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
         hash[6] &= 0x0f;
         hash[6] |= 0x30;
