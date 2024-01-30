@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ public interface IArchiveApi
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An asynchronous task that returns an IEnumerable of Archive objects.</returns>
-    IAsyncEnumerable<Archive> FetchArchivesAsync(CancellationToken cancellationToken);
+    Task<List<Archive>> FetchArchivesAsync(CancellationToken cancellationToken);
     
     /// <summary>
     /// Archives the given documents asynchronously.
@@ -36,7 +37,7 @@ public interface IArchiveApi
     /// <param name="referenceId">The reference ID to fetch the documents for.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An asynchronous task that returns an IEnumerable of Archive objects.</returns>
-    IAsyncEnumerable<Archive> FetchArchiveDocumentsByReferenceIdAsync(string referenceId, CancellationToken cancellationToken);
+    Task<List<Archive>> FetchArchiveDocumentsByReferenceIdAsync(string referenceId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Fetches the archive document by UUID.
@@ -142,33 +143,17 @@ internal sealed class ArchiveApi : IArchiveApi
         _requestHelper = requestHelper;
     }
 
-    public async IAsyncEnumerable<Archive> FetchArchivesAsync([EnumeratorCancellation] CancellationToken cancellationToken)
+    public async Task<List<Archive>> FetchArchivesAsync(CancellationToken cancellationToken)
     {
         var archivesUri = _root.GetGetArchivesUri();
         var archives = await _requestHelper.GetAsync<Archives>(archivesUri, cancellationToken);
-        if (archives is not { Archive.Count: > 0 })
-        {
-            yield break;
-        }
-
-        foreach (var archive in archives.Archive)
-        {
-            yield return archive.FromDataTransferObject();
-        }
+        return archives?.Archive?.Select(x => x.FromDataTransferObject()).ToList() ?? [];
     }
 
-    public async IAsyncEnumerable<Archive> FetchArchiveDocumentsByReferenceIdAsync(string referenceId, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public async Task<List<Archive>> FetchArchiveDocumentsByReferenceIdAsync(string referenceId, CancellationToken cancellationToken)
     {
         var archives = await _requestHelper.GetAsync<Archives>(_root.GetGetArchiveDocumentsReferenceIdUri(referenceId), cancellationToken);
-        if (archives is not { Archive.Count: > 0 })
-        {
-            yield break;
-        }
-        
-        foreach (var archive in archives.Archive)
-        {
-            yield return archive.FromDataTransferObject();
-        }
+        return archives?.Archive?.Select(x => x.FromDataTransferObject()).ToList() ?? [];
     }
 
     public async Task<ArchiveDocument> FetchArchiveDocumentAsync(GetArchiveDocumentByUuidUri nextDocumentsUri, CancellationToken cancellationToken)
