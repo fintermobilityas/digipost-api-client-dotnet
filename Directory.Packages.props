@@ -10,7 +10,7 @@
     <PackageVersion Include="Digipost.Api.Client.Shared" Version="7.1.5" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
