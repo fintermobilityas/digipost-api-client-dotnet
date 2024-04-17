@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageVersion Include="CompareNETObjects" Version="4.83.0" />
     <PackageVersion Include="Difi.Felles.Utility" Version="5.0.1" />
-    <PackageVersion Include="Digipost.Api.Client.DataTypes.Core" Version="4.0.0" />
+    <PackageVersion Include="Digipost.Api.Client.DataTypes.Core" Version="4.1.0" />
     <PackageVersion Include="Digipost.Api.Client.Shared" Version="7.1.5" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
