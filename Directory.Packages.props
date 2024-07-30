@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="CompareNETObjects" Version="4.83.0" />
@@ -19,5 +19,8 @@
     <PackageVersion Include="NLog.Extensions.Logging" Version="5.3.8" />
     <PackageVersion Include="xunit" Version="2.8.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.1" />
+    <!-- Transitive dependencies -->
+    <PackageVersion Include="System.Formats.Asn1" Version="[8.0.1,)" />
+    <PackageVersion Include="System.Text.Json" Version="[8.0.4,)" />
   </ItemGroup>
 </Project>
