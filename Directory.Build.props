@@ -6,6 +6,12 @@
     </PropertyGroup>
 
     <PropertyGroup>
+      <NuGetAudit>true</NuGetAudit>
+      <NuGetAuditMode>all</NuGetAuditMode>
+      <NuGetAuditLevel>low</NuGetAuditLevel>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <Authors>Digipost AS</Authors>
         <Company>Posten Norge AS</Company>
         <Copyright>Copyright © 2024 Posten Norge AS</Copyright>
