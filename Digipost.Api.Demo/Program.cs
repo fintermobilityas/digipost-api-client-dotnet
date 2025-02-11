@@ -26,7 +26,12 @@ const string certificatePassword = "mypassword";
 const string digipostAddress = "my.digipost#id";
 
 var clientConfig = new ClientConfig(new Broker(brokerId), Environment.Test);
-using var x509Certificate2 = new X509Certificate2(certificatePath, certificatePassword);
+var certficiate = File.ReadAllBytes(certificatePath);
+#if NET8_0
+using var x509Certificate2 = new X509Certificate2(certficiate, certificatePassword);
+#elif NET9_0_OR_GREATER
+using var x509Certificate2 = X509CertificateLoader.LoadPkcs12(certficiate, certificatePassword);
+#endif
 
 serviceCollection.AddSingleTenantDigipostClient(clientConfig, x509Certificate2);
 var serviceProvider = serviceCollection.BuildServiceProvider();
