@@ -17,9 +17,8 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
-          6.0.425
-          8.0.401
-          9.0.100-rc.1.24452.12
+          8.0.405
+          9.0.102
 
     - name: Install dependencies
       run: dotnet restore
